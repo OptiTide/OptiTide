@@ -14,6 +14,8 @@ class StorefrontController extends Controller
 
         return view('storefront.home', [
             'webTiers' => $products->where('category', ProductCategory::WebDevelopment),
+            'seoPlans' => $products->where('category', ProductCategory::Seo),
+            'smmPlans' => $products->where('category', ProductCategory::Smm),
             'hostingPlans' => $products->where('category', ProductCategory::Hosting),
             'categories' => $products->groupBy('category'),
         ]);

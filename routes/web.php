@@ -8,6 +8,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContractSignatureController;
 use App\Http\Controllers\IntakeController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\NotFoundController;
 use App\Http\Controllers\ProofingController;
 use App\Http\Controllers\SeoAuditController;
@@ -41,6 +42,14 @@ Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{blog:slug}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/sitemap.xml', [BlogController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [BlogController::class, 'robots'])->name('robots');
+
+// Standalone launch/holding page (route:cache-safe — Route::view, no closure).
+Route::view('/coming-soon', 'coming-soon')->name('coming-soon');
+
+// Local SEO landing pages: /web-design-sydney etc. (before the CMS catch-all).
+Route::get('/web-design-{city}', [LocationController::class, 'show'])
+    ->where('city', '[a-z0-9-]+')
+    ->name('location.show');
 
 Route::middleware('auth')->group(function () {
     // Each POST opens a Stripe Checkout Session (an external call); throttle per

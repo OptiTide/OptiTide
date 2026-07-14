@@ -1,0 +1,206 @@
+// =============================================================================
+// OptiTide storefront theme — Bootstrap 5, bold & punchy, conversion-first.
+// Loaded ONLY on public storefront pages (see components/site-layout.blade.php).
+// The Filament admin/client panels keep their own Tailwind build — isolated.
+// =============================================================================
+
+// --- Ocean brand palette (must come BEFORE the Bootstrap import) -------------
+$primary:      #0e7490; // deep ocean teal
+$info:         #22d3ee; // bright aqua / surf
+$success:      #0d9488; // seafoam
+$dark:         #082f49; // deep sea navy
+$body-color:   #1e293b;
+
+$font-family-sans-serif: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+$headings-font-weight: 800;
+
+$border-radius:    .6rem;
+$border-radius-lg:  1rem;
+$border-radius-xl:  1.25rem;
+$enable-negative-margins: true;
+
+@import "bootstrap/scss/bootstrap";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+// --- Coral accent CTA (sunset-over-ocean — high contrast against the teal) ----
+.btn-accent {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #ff7a59;
+    --bs-btn-border-color: #ff7a59;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #f2653f;
+    --bs-btn-hover-border-color: #f2653f;
+    --bs-btn-active-bg: #e0562f;
+    --bs-btn-active-border-color: #e0562f;
+    font-weight: 700;
+    box-shadow: 0 .6rem 1.4rem rgba(255, 122, 89, .4);
+}
+.text-accent { color: #ff7a59 !important; }
+.bg-accent-subtle { background-color: #fff1ec !important; }
+.text-gradient-ocean {
+    background: linear-gradient(90deg, #0e7490, #06b6d4);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+// --- Type / layout helpers ---------------------------------------------------
+.eyebrow {
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: .78rem;
+}
+.display-hero { font-weight: 800; line-height: 1.03; letter-spacing: -.02em; }
+.section { padding-block: clamp(3.5rem, 8vw, 6rem); }
+.lh-sm { line-height: 1.35; }
+
+// --- Backgrounds -------------------------------------------------------------
+.hero-gradient { background: linear-gradient(135deg, #0c4a6e 0%, #0e7490 45%, #06b6d4 100%); }
+.dotted {
+    background-image: radial-gradient(rgba(255,255,255,.16) 1px, transparent 1px);
+    background-size: 22px 22px;
+}
+.bg-mesh {
+    background:
+        radial-gradient(40rem 20rem at 90% -10%, rgba(14,116,144,.10), transparent 60%),
+        radial-gradient(35rem 18rem at -10% 110%, rgba(34,211,238,.12), transparent 60%);
+}
+.wave svg { display: block; width: 100%; height: auto; }
+
+// --- Cards / hover -----------------------------------------------------------
+.card-lift { transition: transform .2s ease, box-shadow .2s ease; }
+.card-lift:hover { transform: translateY(-6px); box-shadow: 0 1.75rem 3.25rem rgba(15, 23, 42, .14) !important; }
+.pricing-popular {
+    position: relative; overflow: hidden;
+    border-color: $primary !important;
+    box-shadow: 0 0 0 2px $primary, 0 1.75rem 3rem rgba(14, 116, 144, .22) !important;
+}
+.pricing-popular::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 5px;
+    background: linear-gradient(90deg, #0e7490, #22d3ee);
+}
+@media (min-width: 992px) {
+    .pricing-popular { transform: translateY(-.75rem) scale(1.03); z-index: 2; }
+}
+
+// --- Icon tiles --------------------------------------------------------------
+.feature-ico {
+    width: 3.25rem; height: 3.25rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: .9rem; font-size: 1.5rem;
+}
+.step-num {
+    width: 2.75rem; height: 2.75rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%; font-weight: 800;
+}
+
+// --- Avatars (testimonials — initials, no external images) -------------------
+.avatar-initials {
+    width: 2.75rem; height: 2.75rem; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; color: #fff;
+}
+
+// --- Placeholders ------------------------------------------------------------
+.logo-placeholder {
+    height: 2rem; border-radius: .4rem; opacity: .75;
+    background: repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #eef2f7 10px, #eef2f7 20px);
+}
+.work-tile {
+    aspect-ratio: 4 / 3; border-radius: 1rem;
+    display: flex; align-items: end; padding: 1.1rem;
+    color: #fff; font-weight: 700;
+    transition: transform .2s ease;
+}
+.work-tile:hover { transform: translateY(-5px); }
+
+// --- Hero browser mockup + floating stat cards -------------------------------
+.mockup {
+    border-radius: 1rem; overflow: hidden;
+    background: #fff; box-shadow: 0 2rem 4rem rgba(2, 6, 23, .35);
+}
+.mockup-bar { background: #f1f5f9; padding: .6rem .8rem; }
+.mockup-dot { width: .6rem; height: .6rem; border-radius: 50%; display: inline-block; }
+.float-card {
+    position: absolute; background: #fff; color: #0f172a;
+    border-radius: .8rem; box-shadow: 0 1rem 2.5rem rgba(2, 6, 23, .25);
+    padding: .75rem .9rem;
+}
+@media (min-width: 992px) { .float-card { position: absolute; } }
+@media (max-width: 991.98px) { .float-card { position: static; margin-top: .75rem; display: inline-flex; } }
+
+// --- Scroll reveal (pure CSS; degrades to visible when unsupported) ----------
+@media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+        .reveal { animation: reveal-up linear both; animation-timeline: view(); animation-range: entry 0% cover 26%; }
+        @keyframes reveal-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+    }
+    .marquee-track { animation: marquee 40s linear infinite; will-change: transform; }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+}
+
+// ── Shock-Hosting "expensive" primitives (ocean re-skin) ─────────────────────
+.glow { position: relative; }
+.glow::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background: radial-gradient(closest-side, rgba(34, 211, 238, .55), transparent 72%);
+    filter: blur(60px); opacity: .5; transform: scale(1.15);
+}
+
+.glass {
+    background: rgba(255, 255, 255, .07);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 1.1rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), 0 1rem 2.5rem rgba(2, 6, 23, .25);
+}
+
+.ribbon {
+    position: absolute; top: 1rem; right: -.25rem; z-index: 3;
+    background: #ff7a59; color: #fff; font-weight: 700; font-size: .72rem;
+    letter-spacing: .06em; padding: .35rem .85rem; border-radius: .5rem 0 0 .5rem;
+    box-shadow: 0 .5rem 1rem rgba(255, 122, 89, .45);
+}
+
+.section--deep {
+    background: linear-gradient(160deg, #082f49 0%, #0c4a6e 55%, #0e7490 120%);
+    color: #dbf2fb;
+}
+
+.trust-pill {
+    display: inline-flex; align-items: center; gap: .45rem;
+    padding: .5rem .9rem; border-radius: 999px; font-weight: 600; font-size: .85rem;
+    border: 1px solid rgba(34, 211, 238, .4); background: rgba(34, 211, 238, .09); color: #e6fbff;
+}
+
+.stat-num {
+    font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.2rem); line-height: 1;
+    color: #22d3ee; text-shadow: 0 0 24px rgba(34, 211, 238, .4);
+    font-variant-numeric: tabular-nums;
+}
+
+.reach-map { position: relative; }
+.pin { fill: #22d3ee; }
+
+@media (prefers-reduced-motion: no-preference) {
+    .pin-ping {
+        transform-box: fill-box; transform-origin: center;
+        animation: ping 2.4s cubic-bezier(0, 0, .2, 1) infinite;
+    }
+    @keyframes ping {
+        0% { transform: scale(1); opacity: .7; }
+        75%, 100% { transform: scale(2.8); opacity: 0; }
+    }
+    // "Living water" — subtle hero-gradient drift
+    .hero-gradient { background-size: 160% 160%; animation: tide 18s ease-in-out infinite; }
+    @keyframes tide {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    // Reach-band city pins ripple (box-shadow — no transform conflict)
+    .reach-ping { animation: reachpulse 2.4s ease-out infinite; }
+    @keyframes reachpulse {
+        0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, .5); }
+        70%, 100% { box-shadow: 0 0 0 15px rgba(34, 211, 238, 0); }
+    }
+}
