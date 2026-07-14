@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pandoc -t markdown \"/c/Users/Blue-Ringed Octopus/Downloads/OptiTide Web App Blueprint.docx\")",
+      "Bash(py --version)"
+    ]
+  }
+}
