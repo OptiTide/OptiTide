@@ -1,4 +1,7 @@
-<x-site-layout title="Services & Pricing — OptiTide">
+<x-site-layout
+    title="Services &amp; Pricing — Web Design, SEO, Social Media &amp; Hosting | OptiTide"
+    description="Web design, SEO, social media &amp; hosting plans for Australian businesses — transparent AUD pricing (GST incl.), no lock-in. Websites from $750, hosting from $25/mo."
+>
     <section class="section">
         <div class="container">
             <div class="text-center mx-auto" style="max-width:44rem">

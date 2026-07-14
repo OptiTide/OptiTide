@@ -1,4 +1,26 @@
-<x-site-layout :title="$product->name.' — OptiTide'">
+@php
+    $metaDesc = \Illuminate\Support\Str::of($product->description)->limit(150).' '.$product->price->format().' AUD, GST incl. Australian-owned, no lock-in.';
+    $priceValue = preg_replace('/[^\d.]/', '', $product->price->format());
+    $productSchema = array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'Product',
+        'name' => $product->name,
+        'description' => $product->description,
+        'category' => $product->category->getLabel(),
+        'brand' => ['@type' => 'Brand', 'name' => 'OptiTide'],
+        'offers' => [
+            '@type' => 'Offer',
+            'price' => $priceValue,
+            'priceCurrency' => $product->currency ?? 'AUD',
+            'availability' => 'https://schema.org/InStock',
+            'url' => url()->current(),
+        ],
+    ]);
+@endphp
+<x-site-layout :title="$product->name.' — OptiTide'" :description="$metaDesc">
+    <x-slot:head>
+        <script type="application/ld+json">{!! json_encode($productSchema, JSON_HEX_TAG | JSON_UNESCAPED_UNICODE) !!}</script>
+    </x-slot:head>
     <section class="section">
         <div class="container">
             @if (request()->boolean('subscribed'))

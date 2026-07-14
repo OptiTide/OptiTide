@@ -1,4 +1,7 @@
-<x-site-layout title="Contact — OptiTide">
+<x-site-layout
+    title="Contact OptiTide — Web Design, SEO, Social Media &amp; Hosting"
+    description="Talk to OptiTide — an Australian-owned digital agency for web design, SEO, social media &amp; hosting. Get a free SEO audit, no obligation. Fast replies from real humans."
+>
     <section class="section">
         <div class="container">
             <div class="row g-5 align-items-start">
