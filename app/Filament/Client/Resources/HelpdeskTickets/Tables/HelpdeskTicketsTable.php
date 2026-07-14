@@ -2,6 +2,7 @@
 
 namespace App\Filament\Client\Resources\HelpdeskTickets\Tables;
 
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -25,6 +26,9 @@ class HelpdeskTicketsTable
                     ->label('Opened')
                     ->dateTime()
                     ->sortable(),
+            ])
+            ->recordActions([
+                ViewAction::make()->label('Open'),
             ]);
     }
 }
