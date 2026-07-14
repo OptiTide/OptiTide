@@ -57,10 +57,23 @@ class CmsPage extends Model
         static::deleted(fn () => Cache::forget('cms:footer_pages'));
     }
 
-    /** Cached footer link list — resolves titles per the request locale at access time. */
+    /**
+     * Cached footer link list. Only plain arrays (slug + title) are cached — an
+     * Eloquent Collection of HasTranslations models serialises to a
+     * __PHP_Incomplete_Class under the database cache driver. Titles resolve to
+     * the active locale when the cache is (re)populated; the saved/deleted hooks
+     * above clear the key on any change.
+     */
     public static function footerPages(): Collection
     {
-        return Cache::rememberForever('cms:footer_pages', fn () => static::inFooter()->get(['slug', 'title']));
+        $rows = Cache::rememberForever('cms:footer_pages', fn () => static::inFooter()
+            ->get(['slug', 'title'])
+            ->map(fn ($page) => ['slug' => $page->slug, 'title' => $page->title])
+            ->toArray());
+
+        // Hydrate rows to objects so callers keep using ->slug / ->title
+        // (store-layout.blade.php iterates with object access).
+        return new Collection(array_map(fn ($row) => (object) $row, $rows));
     }
 
     public static function uniqueSlug(string $base, ?int $ignoreId = null): string
