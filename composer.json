@@ -20,6 +20,7 @@
         "laravel/reverb": "^1.10",
         "laravel/tinker": "^3.0",
         "league/flysystem-aws-s3-v3": "^3.0",
+        "predis/predis": "^3.5",
         "relaticle/flowforge": "^4.0",
         "spatie/laravel-backup": "^10.3",
         "spatie/laravel-onboard": "^2.6",
