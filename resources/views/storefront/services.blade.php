@@ -1,54 +1,61 @@
-<x-store-layout title="Services & Pricing — OptiTide">
-    <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div class="max-w-2xl">
-            <h1 class="text-4xl font-bold tracking-tight text-slate-900">Services &amp; pricing</h1>
-            <p class="mt-3 text-slate-600">Transparent AUD pricing. One-time packages go in your cart; hosting plans are monthly subscriptions you activate directly.</p>
-        </div>
-
-        @foreach (\App\Enums\ProductCategory::cases() as $category)
-            @continue(! isset($grouped[$category->value]))
-            <div class="mt-16" id="{{ $category->value === 'web_development' ? 'web' : ($category->value === 'hosting' ? 'hosting' : $category->value) }}">
-                <h2 class="text-2xl font-bold tracking-tight text-slate-900">{{ $category->getLabel() }}</h2>
-
-                @php
-                    // Full literal class names so Tailwind's scanner sees them.
-                    $grid = match ($category) {
-                        \App\Enums\ProductCategory::Seo => 'lg:grid-cols-4',
-                        \App\Enums\ProductCategory::WebDevelopment => 'lg:grid-cols-3',
-                        default => 'lg:grid-cols-2',
-                    };
-                @endphp
-                <div class="mt-8 grid gap-6 sm:grid-cols-2 {{ $grid }}">
-                    @foreach ($grouped[$category->value] as $product)
-                        <div class="flex flex-col rounded-2xl border border-slate-200 p-6 transition hover:border-sky-300 hover:shadow-md">
-                            <h3 class="font-semibold text-slate-900">{{ $product->name }}</h3>
-                            <p class="mt-1.5 line-clamp-2 flex-none text-sm text-slate-600">{{ $product->description }}</p>
-                            <p class="mt-5 text-3xl font-bold tracking-tight text-slate-900">
-                                {{ $product->price->format() }}@if ($product->isSubscription())<span class="text-sm font-medium text-slate-500">/{{ $product->billing_interval }}</span>@endif
-                            </p>
-                            <ul class="mt-4 flex-1 space-y-2 text-sm text-slate-600">
-                                @foreach (array_slice($product->features ?? [], 0, 4) as $feature)
-                                    <li class="flex gap-2">
-                                        <svg class="h-5 w-5 flex-none text-sky-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"/></svg>
-                                        {{ $feature }}
-                                    </li>
-                                @endforeach
-                            </ul>
-                            <div class="mt-6 flex gap-2">
-                                @if ($product->isSubscription())
-                                    <a href="{{ route('services.show', $product) }}" class="flex-1 rounded-xl bg-slate-900 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-slate-700">View plan</a>
-                                @else
-                                    <form method="POST" action="{{ route('cart.add', $product) }}" class="flex-1">
-                                        @csrf
-                                        <button type="submit" class="w-full rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-500">Add to cart</button>
-                                    </form>
-                                    <a href="{{ route('services.show', $product) }}" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-400">Details</a>
-                                @endif
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+<x-site-layout title="Services & Pricing — OptiTide">
+    <section class="section">
+        <div class="container">
+            <div class="text-center mx-auto" style="max-width:44rem">
+                <p class="eyebrow text-primary mb-2">Services &amp; pricing</p>
+                <h1 class="fw-bold display-5 text-dark">Transparent AUD pricing</h1>
+                <p class="fs-5 text-secondary mt-3 mb-0">One-time packages go in your cart; hosting plans are monthly subscriptions you activate directly.</p>
             </div>
-        @endforeach
+
+            @foreach (\App\Enums\ProductCategory::cases() as $category)
+                @continue(! isset($grouped[$category->value]))
+                <div class="mt-5 pt-4" id="{{ $category->value === 'web_development' ? 'web' : ($category->value === 'hosting' ? 'hosting' : $category->value) }}">
+                    <h2 class="fw-bold display-6 text-dark text-center mb-4">{{ $category->getLabel() }}</h2>
+
+                    @php
+                        // Bootstrap column widths per category (mirrors the old grid density).
+                        $col = match ($category) {
+                            \App\Enums\ProductCategory::Seo => 'col-md-6 col-lg-3',
+                            \App\Enums\ProductCategory::WebDevelopment => 'col-md-6 col-lg-4',
+                            default => 'col-md-6',
+                        };
+                    @endphp
+                    <div class="row g-4 justify-content-center">
+                        @foreach ($grouped[$category->value] as $product)
+                            <div class="{{ $col }}">
+                                <div class="card border-0 shadow-sm rounded-4 card-lift h-100">
+                                    <div class="card-body d-flex flex-column p-4">
+                                        <h3 class="h5 fw-bold text-dark mb-1">{{ $product->name }}</h3>
+                                        <p class="text-secondary small mb-0">{{ $product->description }}</p>
+                                        <p class="fw-bold text-dark mt-4 mb-0" style="font-size:2rem;line-height:1.1">
+                                            {{ $product->price->format() }}@if ($product->isSubscription())<span class="fs-6 fw-medium text-secondary">/{{ $product->billing_interval }}</span>@endif
+                                        </p>
+                                        <ul class="list-unstyled d-grid gap-2 small text-secondary mt-4 mb-0 flex-grow-1">
+                                            @foreach (array_slice($product->features ?? [], 0, 4) as $feature)
+                                                <li class="d-flex">
+                                                    <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+                                                    <span>{{ $feature }}</span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                        <div class="d-flex gap-2 mt-4">
+                                            @if ($product->isSubscription())
+                                                <a href="{{ route('services.show', $product) }}" class="btn btn-primary fw-semibold flex-fill">View plan</a>
+                                            @else
+                                                <form method="POST" action="{{ route('cart.add', $product) }}" class="flex-fill">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-accent fw-semibold w-100"><i class="bi bi-cart3 me-1"></i>Add to cart</button>
+                                                </form>
+                                                <a href="{{ route('services.show', $product) }}" class="btn btn-outline-primary fw-semibold">Details</a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+        </div>
     </section>
-</x-store-layout>
+</x-site-layout>

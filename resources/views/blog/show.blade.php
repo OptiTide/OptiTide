@@ -15,7 +15,7 @@
     }
 @endphp
 
-<x-store-layout
+<x-site-layout
     :title="$blog->metaTitle()"
     :description="$blog->metaDescription()"
     :canonical="route('blog.show', $blog)"
@@ -27,17 +27,29 @@
         <script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
     </x-slot:head>
 
-    <article class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-        <a href="{{ route('blog.index') }}" class="text-sm font-medium text-sky-600 transition hover:text-sky-700">← All articles</a>
+    <article class="section">
+        <div class="container">
+            <div class="mx-auto" style="max-width:46rem">
+                <a href="{{ route('blog.index') }}" class="d-inline-flex align-items-center text-decoration-none fw-medium text-primary mb-4">
+                    <i class="bi bi-arrow-left me-2"></i>All articles
+                </a>
 
-        <h1 class="mt-6 text-4xl font-bold leading-tight tracking-tight text-slate-900">{{ $blog->title }}</h1>
-        <p class="mt-4 text-sm font-medium text-slate-400">
-            Published {{ $blog->published_at?->format('j M Y') }}
-            @if ($blog->author) · {{ $blog->author->name }} @endif
-        </p>
+                <p class="eyebrow text-primary mb-2"><i class="bi bi-journal-text me-1"></i>Article</p>
+                <h1 class="fw-bold display-5 lh-sm text-dark mb-3">{{ $blog->title }}</h1>
+                <p class="d-flex flex-wrap align-items-center gap-2 text-secondary small mb-0">
+                    <span><i class="bi bi-calendar3 me-1"></i>Published {{ $blog->published_at?->format('j M Y') }}</span>
+                    @if ($blog->author)
+                        <span class="text-muted">·</span>
+                        <span><i class="bi bi-person-circle me-1"></i>{{ $blog->author->name }}</span>
+                    @endif
+                </p>
 
-        <div class="prose prose-slate mt-10 max-w-none prose-headings:font-semibold prose-a:text-sky-600">
-            {!! $blog->safeBody() !!}
+                <hr class="my-4">
+
+                <div class="blog-prose fs-5 lh-lg text-body">
+                    {!! $blog->safeBody() !!}
+                </div>
+            </div>
         </div>
     </article>
-</x-store-layout>
+</x-site-layout>

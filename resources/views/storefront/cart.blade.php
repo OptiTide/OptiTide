@@ -1,55 +1,67 @@
-<x-store-layout title="Your Cart — OptiTide">
-    <section class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold tracking-tight text-slate-900">Your cart</h1>
+<x-site-layout title="Your Cart — OptiTide">
+    <section class="section">
+        <div class="container" style="max-width:48rem">
+            <p class="eyebrow text-primary">Checkout</p>
+            <h1 class="fw-bold display-6 text-dark mb-0">Your cart</h1>
 
-        @if ($lines->isEmpty())
-            <div class="mt-10 rounded-2xl border border-dashed border-slate-300 p-12 text-center">
-                <p class="text-slate-600">Your cart is empty.</p>
-                <a href="{{ route('services.index') }}" class="mt-4 inline-block rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700">
-                    Browse services
-                </a>
-            </div>
-        @else
-            <ul class="mt-8 divide-y divide-slate-200 border-y border-slate-200">
-                @foreach ($lines as $line)
-                    <li class="flex items-center justify-between gap-4 py-5">
-                        <div>
-                            <p class="font-semibold text-slate-900">{{ $line['product']->name }}</p>
-                            <p class="mt-0.5 text-sm text-slate-500">
-                                {{ $line['product']->price->format() }} each
-                                @if ($line['quantity'] > 1) &times; {{ $line['quantity'] }} @endif
-                            </p>
+            @if ($lines->isEmpty())
+                <div class="card border-0 shadow-sm rounded-4 mt-4">
+                    <div class="card-body text-center py-5">
+                        <div class="feature-ico mx-auto mb-3">
+                            <i class="bi bi-cart3 text-primary"></i>
                         </div>
-                        <div class="flex items-center gap-5">
-                            <p class="font-semibold text-slate-900">{{ $line['total']->format() }}</p>
-                            <form method="POST" action="{{ route('cart.remove', $line['product']) }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-sm font-medium text-slate-400 transition hover:text-rose-600" aria-label="Remove {{ $line['product']->name }}">
-                                    Remove
-                                </button>
-                            </form>
-                        </div>
-                    </li>
-                @endforeach
-            </ul>
+                        <p class="text-secondary mb-4">Your cart is empty.</p>
+                        <a href="{{ route('services.index') }}" class="btn btn-primary fw-semibold">
+                            <i class="bi bi-grid me-1"></i>Browse services
+                        </a>
+                    </div>
+                </div>
+            @else
+                <div class="card border-0 shadow-sm rounded-4 mt-4">
+                    <ul class="list-group list-group-flush">
+                        @foreach ($lines as $line)
+                            <li class="list-group-item d-flex align-items-center justify-content-between gap-3 py-3 px-4">
+                                <div>
+                                    <p class="fw-semibold text-dark mb-1">{{ $line['product']->name }}</p>
+                                    <p class="small text-secondary mb-0">
+                                        {{ $line['product']->price->format() }} each
+                                        @if ($line['quantity'] > 1) &times; {{ $line['quantity'] }} @endif
+                                    </p>
+                                </div>
+                                <div class="d-flex align-items-center gap-3">
+                                    <p class="fw-semibold text-dark mb-0">{{ $line['total']->format() }}</p>
+                                    <form method="POST" action="{{ route('cart.remove', $line['product']) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Remove {{ $line['product']->name }}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
 
-            <div class="mt-6 flex items-center justify-between">
-                <p class="text-sm text-slate-500">Subtotal <span class="text-xs">(AUD, GST handled at invoice)</span></p>
-                <p class="text-2xl font-bold tracking-tight text-slate-900">{{ $subtotal->format() }}</p>
-            </div>
+                <div class="d-flex align-items-center justify-content-between mt-4">
+                    <p class="small text-secondary mb-0">Subtotal <span class="text-muted">(AUD, GST handled at invoice)</span></p>
+                    <p class="fs-3 fw-bold text-dark mb-0">{{ $subtotal->format() }}</p>
+                </div>
 
-            <form method="POST" action="{{ route('checkout.store') }}" class="mt-8">
-                @csrf
-                <button type="submit" class="w-full rounded-xl bg-sky-600 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-sky-500">
-                    Proceed to secure checkout
-                </button>
-            </form>
-            @guest
-                <p class="mt-3 text-center text-xs text-slate-500">You'll be asked to sign in or create an account before payment.</p>
-            @endguest
+                <form method="POST" action="{{ route('checkout.store') }}" class="mt-4 d-grid">
+                    @csrf
+                    <button type="submit" class="btn btn-accent btn-lg fw-semibold">
+                        <i class="bi bi-lock-fill me-2"></i>Proceed to secure checkout
+                    </button>
+                </form>
+                @guest
+                    <p class="text-center small text-secondary mt-3 mb-0">You'll be asked to sign in or create an account before payment.</p>
+                @endguest
 
-            <p class="mt-6 text-center text-xs text-slate-400">Payments are processed securely by Stripe. We never see your card details.</p>
-        @endif
+                <p class="text-center small text-muted mt-4 mb-0">
+                    <i class="bi bi-shield-lock me-1"></i>Payments are processed securely by Stripe. We never see your card details.
+                </p>
+            @endif
+        </div>
     </section>
-</x-store-layout>
+</x-site-layout>
