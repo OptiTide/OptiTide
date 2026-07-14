@@ -1,0 +1,21 @@
+# FrankenPHP serves Laravel's public/ over plain HTTP on :8080.
+# TLS is terminated by Coolify's edge proxy (Traefik), so auto_https is off and
+# the app trusts the proxy (bootstrap/app.php: trustProxies(at: '*')) to detect
+# https/host for correct URLs, secure cookies and OAuth/Reverb callbacks.
+{
+	frankenphp
+	auto_https off
+	admin off
+	persist_config off
+	log {
+		output stdout
+		format json
+		level WARN
+	}
+}
+
+:8080 {
+	root * /app/public
+	encode zstd br gzip
+	php_server
+}
