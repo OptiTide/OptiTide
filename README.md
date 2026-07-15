@@ -32,7 +32,7 @@ brand and ready for Coolify.
 - Composer dependencies: `dompdf/dompdf` (PDF invoices) + `predis/predis` (Redis).
 - Resend for transactional email (plain HTTPS, no SDK).
 
-## Local development
+## Local Development
 
 ```bash
 cp .env.example .env

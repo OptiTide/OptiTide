@@ -22,7 +22,7 @@ ways to deploy:
    `REDIS_HOST`/`REDIS_PORT` (or `REDIS_URL`) with `SESSION_DRIVER=redis`.
 4. Expose port 80. Coolify's proxy terminates HTTPS in front.
 
-## Required environment variables
+## Required Environment Variables
 
 ```
 APP_ENV=production
@@ -58,14 +58,14 @@ BANK_BSB=062-000     BANK_ACCOUNT_NUMBER=12345678
 PAYONEER_ENABLED=true  PAYONEER_MODE=manual
 ```
 
-## First boot
+## First Boot
 
 - Migrations run automatically (entrypoint, with a DB-ready wait loop).
 - To seed the demo catalogue + admin login once, set `SEED_ON_BOOT=true` for the
   first deploy, then remove it. **Change the seeded passwords immediately.**
 - Health check: `GET /health` returns `{"status":"ok"}`.
 
-## Scheduled tasks (recurring billing)
+## Scheduled Tasks (Recurring Billing)
 
 Add two Coolify **Scheduled Tasks** against the app container:
 

@@ -14,7 +14,7 @@
             </div>
             <button class="btn btn-brand w-100">Send Reset Link</button>
         </form>
-        <p class="text-center small mt-3 mb-0"><a href="<?= route('login') ?>">Back to sign in</a></p>
+        <p class="text-center small mt-3 mb-0"><a href="<?= route('login') ?>">Back to Sign In</a></p>
     </div>
 </div>
 <?php $this->endSection(); ?>

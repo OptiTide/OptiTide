@@ -163,34 +163,65 @@ a:hover { color: var(--brand); }
     border-radius: 20px;
 }
 
-/* --- Coming-soon holding page --------------------------------------------- */
-.coming-soon {
+/* --- Landing / coming-soon page ------------------------------------------- */
+.landing {
     min-height: 100vh;
-    display: grid;
-    place-items: center;
-    text-align: center;
-    padding: 2rem;
     color: #e9e7ff;
     background:
-        radial-gradient(900px 500px at 15% 0%, rgba(217, 70, 239, .28), transparent 60%),
-        radial-gradient(900px 600px at 100% 100%, rgba(34, 211, 238, .22), transparent 55%),
-        linear-gradient(160deg, var(--navy-2), var(--navy));
+        radial-gradient(1000px 600px at 8% -5%, rgba(217, 70, 239, .22), transparent 55%),
+        radial-gradient(1000px 700px at 100% 8%, rgba(59, 130, 246, .18), transparent 55%),
+        radial-gradient(900px 700px at 50% 118%, rgba(34, 211, 238, .16), transparent 55%),
+        linear-gradient(170deg, #100c3a 0%, var(--navy) 55%, #08061f 100%);
 }
-.coming-soon .brand-mark { color: #fff; font-size: 2.4rem; justify-content: center; }
-.coming-soon .brand-icon { height: 1.15em; }
-.cs-title {
-    font-weight: 800;
-    letter-spacing: -.02em;
-    font-size: clamp(2.4rem, 7vw, 4rem);
-    margin: 1rem 0 .6rem;
+.lp-container { max-width: 1120px; margin: 0 auto; padding-left: 1.25rem; padding-right: 1.25rem; }
+.lp-nav {
+    position: sticky; top: 0; z-index: 30; padding: 1rem 0;
+    backdrop-filter: blur(10px);
+    background: rgba(10, 8, 40, .55);
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+.lp-brand { color: #fff; font-size: 1.4rem; }
+.lp-hero { text-align: center; padding: 5.5rem 1.25rem 3.5rem; }
+.lp-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .4rem 1rem; border-radius: 999px;
+    font-size: .8rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+    color: #f0d9ff; background: rgba(217, 70, 239, .12); border: 1px solid rgba(217, 70, 239, .35);
+}
+.lp-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-cyan); box-shadow: 0 0 10px var(--brand-cyan); }
+.lp-title {
+    font-weight: 800; letter-spacing: -.03em; line-height: 1.03;
+    font-size: clamp(2.6rem, 7vw, 4.6rem); margin: 1.4rem 0 1rem;
     background: var(--brand-gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
 }
-.cs-tag { color: #bcb8ea; max-width: 540px; margin: 0 auto 1.9rem; font-size: 1.05rem; line-height: 1.6; }
-.cs-foot { color: #706ca6; font-size: .8rem; margin-top: 2.75rem; margin-bottom: 0; }
+.lp-sub { color: #bab6ec; max-width: 620px; margin: 0 auto 2rem; font-size: 1.12rem; line-height: 1.6; }
+.lp-cta { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+.lp-cta .btn-outline-light { border-color: rgba(255, 255, 255, .25); color: #e9e7ff; }
+.lp-cta .btn-outline-light:hover { background: rgba(255, 255, 255, .08); color: #fff; }
+
+.lp-services { padding: 1.5rem 1.25rem 1rem; }
+.lp-card {
+    background: rgba(255, 255, 255, .045);
+    border: 1px solid rgba(255, 255, 255, .09);
+    border-radius: 16px; padding: 1.5rem 1.35rem;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.lp-card:hover { transform: translateY(-4px); border-color: rgba(139, 92, 246, .5); background: rgba(255, 255, 255, .06); }
+.lp-icon { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; font-size: 1.3rem; color: #fff; background: var(--brand-gradient); margin-bottom: 1rem; }
+.lp-card-title { font-size: 1.1rem; font-weight: 700; margin: 0 0 .4rem; color: #fff; }
+.lp-card-text { color: #aaa6da; font-size: .9rem; line-height: 1.5; margin: 0; }
+
+.lp-features { padding: 3rem 1.25rem 1rem; }
+.lp-feat { display: flex; gap: .9rem; align-items: flex-start; }
+.lp-feat i { font-size: 1.4rem; color: var(--brand-cyan); margin-top: .15rem; }
+.lp-feat h4 { font-size: 1rem; font-weight: 700; color: #fff; margin: 0 0 .25rem; }
+.lp-feat p { color: #aaa6da; font-size: .88rem; margin: 0; line-height: 1.5; }
+
+.lp-footer { margin-top: 4rem; padding: 1.5rem 0; border-top: 1px solid rgba(255, 255, 255, .07); }
+.lp-brand-sm { color: #fff; font-size: 1.1rem; }
+.lp-foot-meta { color: #726ea8; font-size: .82rem; }
 
 .money { font-variant-numeric: tabular-nums; }
 

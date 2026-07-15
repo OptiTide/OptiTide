@@ -38,7 +38,7 @@
             </div>
             <button class="btn btn-brand w-100">Create Account</button>
         </form>
-        <p class="text-center small mt-3 mb-0">Already have an account? <a href="<?= route('login') ?>">Sign in</a></p>
+        <p class="text-center small mt-3 mb-0">Already have an account? <a href="<?= route('login') ?>">Sign In</a></p>
     </div>
 </div>
 <?php $this->endSection(); ?>

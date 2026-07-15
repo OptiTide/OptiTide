@@ -21,8 +21,8 @@
             <button class="btn btn-brand w-100">Sign In</button>
         </form>
         <div class="d-flex justify-content-between mt-3 small">
-            <a href="<?= route('password.request') ?>">Forgot password?</a>
-            <a href="<?= route('register') ?>">Create an account</a>
+            <a href="<?= route('password.request') ?>">Forgot Password?</a>
+            <a href="<?= route('register') ?>">Create an Account</a>
         </div>
     </div>
 </div>
