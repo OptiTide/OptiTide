@@ -42,7 +42,7 @@ class PwaController extends Controller
     public function serviceWorker(Request $request): Response
     {
         $js = <<<'JS'
-const CACHE = 'optitide-v2';
+const CACHE = 'optitide-v3';
 const SHELL = ['/', '/offline', '/assets/css/app.css', '/assets/img/logo.png', '/assets/img/favicon.png'];
 
 self.addEventListener('install', (e) => {

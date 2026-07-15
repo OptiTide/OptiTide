@@ -184,7 +184,10 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
         <div class="text-center mb-5">
             <span class="mk-eyebrow">Plans &amp; Packages</span>
             <h2 class="mk-h2">Simple, Transparent Pricing</h2>
-            <p class="mk-lead mx-auto">Simple packages for every service — pick a plan that fits, or ask us for a custom quote. All prices are in Australian dollars and already include GST, so the price you see is the price you pay.</p>
+            <p class="mk-lead mx-auto">Simple packages for every service — pick a plan that fits, or ask us for a custom quote. All prices already include GST, so the price you see is the price you pay.</p>
+            <?php if (\App\Support\Currency::isConverted()): ?>
+                <p class="small text-muted mx-auto" style="max-width:640px"><i class="bi bi-info-circle"></i> Prices shown in <?= e(\App\Support\Currency::current()) ?> are indicative, converted from Australian dollars. Invoices are issued and settled in AUD.</p>
+            <?php endif; ?>
         </div>
         <?php foreach ($packages as $group): ?>
             <div class="mb-4">
@@ -199,7 +202,7 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
                                     <?php if ((int) $plan['price_cents'] === 0): ?>
                                         <span style="font-size:1.2rem">Custom Quote</span>
                                     <?php else: ?>
-                                        <?php if ($isCustom): ?><span class="mk-plan-from">from</span> <?php endif; ?><?= e(money((int) $plan['price_cents'], $plan['currency'])->format()) ?><?php if ($plan['billing_type'] === 'recurring'): ?><span class="mk-plan-per">/<?= e(substr($plan['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?>
+                                        <?php if ($isCustom): ?><span class="mk-plan-from">from</span> <?php endif; ?><?= e(\App\Support\Currency::display((int) $plan['price_cents'])) ?><?php if ($plan['billing_type'] === 'recurring'): ?><span class="mk-plan-per">/<?= e(substr($plan['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?>
                                     <?php endif; ?>
                                 </div>
                                 <?php if ($isCustom): ?>

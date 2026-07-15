@@ -178,6 +178,10 @@ a:hover { color: var(--brand); }
 .mk-topbar a:hover { color: #fff; }
 .mk-topbar i { color: var(--brand-bright); }
 .mk-topbar-tag { color: var(--brand-bright); font-weight: 600; font-style: italic; }
+.mk-ccy { display: inline-flex; align-items: center; gap: .25rem; margin-right: 1.1rem; }
+.mk-ccy i { color: #c7ccdb; }
+.mk-ccy-link { margin: 0 !important; padding: 0 .3rem; color: #9aa2b8 !important; font-weight: 600; }
+.mk-ccy-link.is-active { color: var(--brand-bright) !important; text-decoration: underline; }
 @media (max-width: 640px) { .mk-topbar-right { display: none; } .mk-topbar a { margin-right: .7rem; } }
 
 /* Moving announcement banner */

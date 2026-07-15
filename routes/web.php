@@ -43,6 +43,9 @@ $router->get('/blog/{slug}', [PublicSite\BlogController::class, 'show'])->name('
 // --- Referral capture -------------------------------------------------------
 $router->get('/r/{code}', [PublicSite\ReferralController::class, 'capture'])->name('referral.capture');
 
+// --- Display currency switch (AUD/USD) --------------------------------------
+$router->get('/set-currency', [PublicSite\CurrencyController::class, 'set'])->name('currency.set');
+
 // --- Legal ------------------------------------------------------------------
 $router->get('/terms', [PublicSite\LegalController::class, 'terms'])->name('legal.terms');
 $router->get('/privacy', [PublicSite\LegalController::class, 'privacy'])->name('legal.privacy');

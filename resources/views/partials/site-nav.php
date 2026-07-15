@@ -15,6 +15,11 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
             <span class="d-none d-md-inline"><i class="bi bi-geo-alt"></i> Serving all of Australia</span>
         </div>
         <div class="mk-topbar-right">
+            <?php $ccyNow = \App\Support\Currency::current(); $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/'); ?>
+            <span class="mk-ccy" title="Choose the currency prices are shown in">
+                <i class="bi bi-currency-exchange"></i>
+                <?php foreach (\App\Support\Currency::supported() as $code): ?><a class="mk-ccy-link <?= $ccyNow === $code ? 'is-active' : '' ?>" href="<?= route('currency.set') ?>?c=<?= e($code) ?>&amp;return=<?= $ccyReturn ?>"><?= e($code) ?></a><?php endforeach; ?>
+            </span>
             <span class="mk-topbar-tag">Grow Online. Lead Always.</span>
         </div>
     </div>
