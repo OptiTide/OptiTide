@@ -30,7 +30,9 @@ class RegisterController extends Controller
             'accept_terms'  => 'required',
         ], ['business_name' => 'Business name', 'accept_terms' => 'Terms acceptance']);
 
-        $user = Database::instance()->transaction(function () use ($data) {
+        $verifyToken = bin2hex(random_bytes(24));
+
+        $user = Database::instance()->transaction(function () use ($data, $verifyToken) {
             $client = Client::create([
                 'business_name' => $data['business_name'],
                 'contact_name'  => $data['name'],
@@ -47,6 +49,7 @@ class RegisterController extends Controller
                 'status'            => 'active',
                 'terms_accepted_at' => now(),
                 'referral_code'     => ReferralService::generateUniqueCode(),
+                'email_verify_token' => $verifyToken,
             ]);
         });
 
@@ -59,12 +62,19 @@ class RegisterController extends Controller
             setcookie(config('affiliate.cookie_name', 'ot_ref'), '', time() - 3600, '/');
         }
 
-        Mail::to($user['email'], $user['name'])
-            ->subject('Welcome to OptiTide')
-            ->view('emails.welcome', ['name' => $user['name'], 'url' => url('portal')])
-            ->send();
+        try {
+            Mail::to($user['email'], $user['name'])
+                ->subject('Confirm your email — OptiTide')
+                ->view('emails.verify-email', [
+                    'name' => $user['name'],
+                    'url'  => url('email/verify/' . $verifyToken),
+                ])
+                ->send();
+        } catch (\Throwable $e) {
+            // never block sign-up on the verification mail
+        }
 
-        Session::flash('success', 'Welcome to OptiTide!');
+        Session::flash('success', 'Welcome to OptiTide! We\'ve emailed you a link to confirm your email address.');
 
         return $this->redirect(route('portal.dashboard'));
     }

@@ -32,7 +32,7 @@ return new class {
         $out('Seeding demo client + portal login…');
         $client = $this->demoClient();
         $this->user('Demo Client', 'client@example.com', User::ROLE_CLIENT, $client['id']);
-        User::query()->where('email', 'client@example.com')->update(['terms_accepted_at' => now()]);
+        User::query()->where('email', 'client@example.com')->update(['terms_accepted_at' => now(), 'email_verified_at' => now()]);
 
         $this->demoEngagementsAndInvoices($client);
 

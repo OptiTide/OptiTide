@@ -57,6 +57,12 @@ $me = auth();
                     <form method="post" action="<?= route('impersonate.leave') ?>" class="m-0"><?= csrf_field() ?><button class="btn btn-sm btn-dark">Return to Admin</button></form>
                 </div>
             <?php endif; ?>
+            <?php if (! \App\Models\User::hasVerifiedEmail(\App\Core\Auth::user())): ?>
+                <div class="alert alert-warning d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <span><i class="bi bi-envelope-exclamation"></i> Please confirm your email address to secure your account. Check your inbox for the link we sent.</span>
+                    <form method="post" action="<?= route('email.verify.resend') ?>" class="m-0"><?= csrf_field() ?><button class="btn btn-sm btn-brand">Resend email</button></form>
+                </div>
+            <?php endif; ?>
             <?php $this->insert('partials.flash'); ?>
             <?= $this->yield('content') ?>
         </main>

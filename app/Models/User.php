@@ -28,4 +28,17 @@ class User extends Model
     {
         return in_array($role, [self::ROLE_ADMIN, self::ROLE_STAFF], true);
     }
+
+    /** A user row (array) has a confirmed email address. Staff are implicitly trusted. */
+    public static function hasVerifiedEmail(?array $user): bool
+    {
+        if (! $user) {
+            return false;
+        }
+        if (self::isStaffRole($user['role'] ?? null)) {
+            return true;
+        }
+
+        return ! empty($user['email_verified_at']);
+    }
 }

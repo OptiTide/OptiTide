@@ -62,6 +62,11 @@ $router->group(['middleware' => ['guest', 'csrf']], function ($router) {
     $router->post('/reset-password', [Auth\PasswordResetController::class, 'update'])->name('password.update');
 });
 
+// Email confirmation — the token is the credential, so the GET link works for
+// guests too (they may click it from a different device or browser).
+$router->get('/email/verify/{token}', [Auth\EmailVerificationController::class, 'verify'])->name('email.verify');
+$router->post('/email/verify/resend', [Auth\EmailVerificationController::class, 'resend'])->name('email.verify.resend')->middleware(['auth', 'csrf']);
+
 $router->post('/logout', [Auth\LogoutController::class, 'logout'])->name('logout')->middleware(['auth', 'csrf']);
 $router->post('/impersonate/leave', [\App\Controllers\ImpersonationController::class, 'leave'])->name('impersonate.leave')->middleware(['auth', 'csrf']);
 
