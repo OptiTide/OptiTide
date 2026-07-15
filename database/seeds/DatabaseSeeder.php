@@ -19,7 +19,7 @@ return new class {
 
         $out('Seeding users…');
         $this->user('OptiTide Admin', 'Hello@OptiTide.io', User::ROLE_ADMIN);
-        $this->user('Support VA', 'va@optitide.io', User::ROLE_STAFF);
+        $this->user('Support Staff', 'staff@optitide.io', User::ROLE_STAFF);
 
         $out('Seeding demo client + portal login…');
         $client = $this->demoClient();
@@ -30,7 +30,7 @@ return new class {
         $out('');
         $out('Done. Local logins (password: "password"):');
         $out('  Hello@OptiTide.io    (admin)');
-        $out('  va@optitide.io       (staff)');
+        $out('  staff@optitide.io    (staff)');
         $out('  client@example.com   (client portal)');
     }
 
@@ -58,21 +58,21 @@ return new class {
 
     private function services(array $categories): void
     {
-        // Named package plans per service line.
+        // Named package plans per service line (prices in cents, AUD, GST-incl).
         $catalogue = [
-            // Web Design & Development — 2 plans + 1 custom
-            ['web-design', 'Starter Website', 'one_off', null, 149900],
-            ['web-design', 'Business Website', 'one_off', null, 299900],
-            ['web-design', 'Custom Website', 'one_off', null, 499900],
-            // SEO — 2 plans + 1 custom (monthly)
-            ['seo', 'SEO Essentials', 'recurring', Service::INTERVAL_MONTHLY, 79000],
-            ['seo', 'SEO Growth', 'recurring', Service::INTERVAL_MONTHLY, 149000],
+            // Web Design & Development — 2 plans + 1 custom (quote)
+            ['web-design', 'Starter Website', 'one_off', null, 75000],
+            ['web-design', 'Business Website', 'one_off', null, 150000],
+            ['web-design', 'Custom Website', 'one_off', null, 0],
+            // SEO — 3 plans (monthly)
+            ['seo', 'SEO Essentials', 'recurring', Service::INTERVAL_MONTHLY, 75000],
+            ['seo', 'SEO Growth', 'recurring', Service::INTERVAL_MONTHLY, 150000],
             ['seo', 'Custom SEO', 'recurring', Service::INTERVAL_MONTHLY, 250000],
             // SMM — 1 plan
-            ['smm', 'Social Media Management', 'recurring', Service::INTERVAL_MONTHLY, 89000],
+            ['smm', 'Social Media Management', 'recurring', Service::INTERVAL_MONTHLY, 25000],
             // Web Hosting — 2 plans (unmanaged / managed)
-            ['hosting', 'Unmanaged Hosting', 'recurring', Service::INTERVAL_MONTHLY, 1900],
-            ['hosting', 'Managed Hosting', 'recurring', Service::INTERVAL_MONTHLY, 4900],
+            ['hosting', 'Unmanaged Hosting', 'recurring', Service::INTERVAL_MONTHLY, 2500],
+            ['hosting', 'Managed Hosting', 'recurring', Service::INTERVAL_MONTHLY, 5000],
         ];
 
         foreach ($catalogue as [$slug, $name, $billing, $interval, $price]) {
@@ -138,7 +138,7 @@ return new class {
             'label'             => 'Managed Hosting',
             'billing_type'      => 'recurring',
             'interval'          => Service::INTERVAL_MONTHLY,
-            'price_cents'       => 4900,
+            'price_cents'       => 5000,
             'currency'          => 'AUD',
             'status'            => 'active',
             'started_at'        => today(),
@@ -155,7 +155,7 @@ return new class {
             'due_date'   => date('Y-m-d', strtotime('+14 days')),
             'notes'      => 'Thanks for choosing OptiTide.',
         ], [
-            ['description' => 'Business Website — design & build', 'quantity' => 1, 'unit_price_cents' => 299900],
+            ['description' => 'Business Website — design & build', 'quantity' => 1, 'unit_price_cents' => 150000],
         ]);
 
         // A paid invoice with a recorded payment for history.
@@ -165,7 +165,7 @@ return new class {
             'issue_date' => date('Y-m-d', strtotime('-20 days')),
             'due_date'   => date('Y-m-d', strtotime('-6 days')),
         ], [
-            ['description' => 'Managed Hosting (setup)', 'quantity' => 1, 'unit_price_cents' => 4900],
+            ['description' => 'Managed Hosting (setup)', 'quantity' => 1, 'unit_price_cents' => 5000],
         ]);
         $invoices->recordPayment($paid['id'], (int) $paid['total_cents'], 'payid', 'DEMO-REF', date('Y-m-d', strtotime('-10 days')), null);
     }

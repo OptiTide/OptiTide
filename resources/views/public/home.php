@@ -204,7 +204,11 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
                             <div class="mk-plan <?= $isCustom ? 'mk-plan--custom' : '' ?>">
                                 <div class="mk-plan-name"><?= e($plan['name']) ?></div>
                                 <div class="mk-plan-price">
-                                    <?php if ($isCustom): ?><span class="mk-plan-from">from</span> <?php endif; ?><?= e(money((int) $plan['price_cents'], $plan['currency'])->format()) ?><?php if ($plan['billing_type'] === 'recurring'): ?><span class="mk-plan-per">/<?= e(substr($plan['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?>
+                                    <?php if ((int) $plan['price_cents'] === 0): ?>
+                                        <span style="font-size:1.2rem">Custom Quote</span>
+                                    <?php else: ?>
+                                        <?php if ($isCustom): ?><span class="mk-plan-from">from</span> <?php endif; ?><?= e(money((int) $plan['price_cents'], $plan['currency'])->format()) ?><?php if ($plan['billing_type'] === 'recurring'): ?><span class="mk-plan-per">/<?= e(substr($plan['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?>
+                                    <?php endif; ?>
                                 </div>
                                 <a href="#contact" class="btn btn-sm <?= $isCustom ? 'btn-outline-brand' : 'btn-brand' ?> w-100 mt-3"><?= $isCustom ? 'Get a Quote' : 'Get Started' ?></a>
                             </div>

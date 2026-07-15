@@ -14,7 +14,7 @@ class User extends Model
 
     public const ROLES = [
         self::ROLE_ADMIN  => 'Administrator',
-        self::ROLE_STAFF  => 'Staff / VA',
+        self::ROLE_STAFF  => 'Staff',
         self::ROLE_CLIENT => 'Client',
     ];
 

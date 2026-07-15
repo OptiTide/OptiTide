@@ -29,7 +29,16 @@ class HomeController extends Controller
                 $services,
                 fn ($s) => (string) $s['category_id'] === (string) $line['id']
             ));
-            usort($plans, fn ($a, $b) => (int) $a['price_cents'] <=> (int) $b['price_cents']);
+            usort($plans, function ($a, $b) {
+                $pa = (int) $a['price_cents'];
+                $pb = (int) $b['price_cents'];
+                // Quote-based plans (price 0) always sort last; otherwise by price.
+                if (($pa === 0) !== ($pb === 0)) {
+                    return $pa === 0 ? 1 : -1;
+                }
+
+                return $pa <=> $pb;
+            });
             if ($plans !== []) {
                 $groups[] = ['line' => $line, 'plans' => $plans];
             }
