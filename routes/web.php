@@ -15,6 +15,9 @@ use App\Controllers\PublicSite;
 $router->get('/', [PublicSite\HomeController::class, 'index'])->name('home');
 $router->post('/contact', [PublicSite\ContactController::class, 'submit'])->name('contact.submit')->middleware('csrf');
 $router->get('/health', [PublicSite\HealthController::class, 'index'])->name('health');
+
+// Inbound-email webhook (secret-gated, CSRF-exempt for external callers).
+$router->post('/webhooks/email', [PublicSite\EmailWebhookController::class, 'inbound'])->name('webhooks.email');
 $router->get('/robots.txt', [PublicSite\SeoController::class, 'robots'])->name('robots');
 $router->get('/sitemap.xml', [PublicSite\SeoController::class, 'sitemap'])->name('sitemap');
 

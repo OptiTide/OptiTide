@@ -77,6 +77,16 @@ try {
             $out("Suspended {$r['suspended']} client(s) for overdue invoices.");
             break;
 
+        case 'tickets:import-email':
+            // Pull inbound email into the helpdesk (IMAP; needs the imap extension).
+            $r = (new App\Services\Support\EmailImportService())->import();
+            if (! empty($r['error'])) {
+                $out('Email import: ' . $r['error']);
+            } else {
+                $out("Imported {$r['imported']} email(s) into the helpdesk.");
+            }
+            break;
+
         case 'make:admin':
             $email = isset($flags[0]) ? strtolower(trim($flags[0])) : null;
             $password = $flags[1] ?? null;
