@@ -21,8 +21,9 @@ class HostingController extends Controller
         $clientId = Auth::clientId();
 
         return $this->view('client.hosting.index', [
-            'title'     => 'Hosting',
+            'title'     => 'Hosting & Apps',
             'accounts'  => $clientId ? HostingAccount::forClient($clientId) : [],
+            'apps'      => $clientId ? \App\Models\ClientApp::forClient($clientId) : [],
             'connected' => WhmClientFactory::make()->available(),
         ]);
     }

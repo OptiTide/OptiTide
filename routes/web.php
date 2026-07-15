@@ -92,6 +92,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
 
     // Engagements (client_services) — managed from the client page
     $router->post('/clients/{id}/credit', [Admin\ClientController::class, 'addCredit'])->name('admin.clients.credit');
+    $router->post('/clients/{id}/apps', [Admin\ClientController::class, 'storeApp'])->name('admin.clients.apps.store');
+    $router->post('/apps/{id}/delete', [Admin\ClientController::class, 'destroyApp'])->name('admin.apps.destroy');
     $router->post('/clients/{id}/engagements', [Admin\EngagementController::class, 'store'])->name('admin.engagements.store');
     $router->put('/engagements/{id}', [Admin\EngagementController::class, 'update'])->name('admin.engagements.update');
     $router->delete('/engagements/{id}', [Admin\EngagementController::class, 'destroy'])->name('admin.engagements.destroy');

@@ -8,6 +8,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
 use App\Models\Client;
+use App\Models\ClientApp;
 use App\Models\ClientService;
 use App\Models\CreditTransaction;
 use App\Models\Invoice;
@@ -103,7 +104,38 @@ class ClientController extends Controller
             'services'    => Service::active(),
             'intakes'     => \App\Models\ProjectIntake::forClient($id),
             'credit_txns' => CreditTransaction::forClient($id),
+            'apps'        => ClientApp::forClient($id),
         ]);
+    }
+
+    public function storeApp(Request $request, string $id): Response
+    {
+        Client::findOrFail($id);
+        $data = $this->validate($request, [
+            'name'        => 'required|max:120',
+            'url'         => 'required|url|max:300',
+            'environment' => 'nullable|max:40',
+        ]);
+
+        ClientApp::create([
+            'client_id'   => $id,
+            'name'        => $data['name'],
+            'url'         => $data['url'],
+            'environment' => $data['environment'] ?: null,
+            'status'      => 'live',
+        ]);
+        Session::flash('success', 'App linked to client.');
+
+        return $this->redirect(route('admin.clients.show', ['id' => $id]) . '#apps');
+    }
+
+    public function destroyApp(Request $request, string $id): Response
+    {
+        $app = ClientApp::findOrFail($id);
+        ClientApp::deleteById($id);
+        Session::flash('status', 'App unlinked.');
+
+        return $this->redirect(route('admin.clients.show', ['id' => $app['client_id']]) . '#apps');
     }
 
     public function addCredit(Request $request, string $id): Response

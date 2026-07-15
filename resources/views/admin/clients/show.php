@@ -160,6 +160,29 @@ foreach ($services as $s) {
                 <?php endif; ?>
             </div>
         </div>
+        <div class="card mt-3" id="apps">
+            <div class="card-header"><i class="bi bi-window-stack"></i> Client Apps</div>
+            <div class="card-body">
+                <form method="post" action="<?= route('admin.clients.apps.store', ['id' => $client['id']]) ?>" class="row g-2 align-items-end mb-3">
+                    <?= csrf_field() ?>
+                    <div class="col-sm-4"><label class="form-label small">Name</label><input type="text" name="name" class="form-control form-control-sm" required placeholder="Client Dashboard"></div>
+                    <div class="col-sm-5"><label class="form-label small">URL</label><input type="url" name="url" class="form-control form-control-sm" placeholder="https://app.client.com" required></div>
+                    <div class="col-sm-3"><label class="form-label small">Environment</label><input type="text" name="environment" class="form-control form-control-sm" placeholder="Production"></div>
+                    <div class="col-12"><button class="btn btn-sm btn-brand">Link App</button> <span class="text-muted small">A Coolify-hosted app the client can open from their portal.</span></div>
+                </form>
+                <?php foreach ($apps as $app): ?>
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                        <div>
+                            <span class="fw-semibold"><?= e($app['name']) ?></span>
+                            <?php if ($app['environment']): ?><span class="badge badge-soft ms-1"><?= e($app['environment']) ?></span><?php endif; ?>
+                            <div class="text-muted small"><?= e($app['url']) ?></div>
+                        </div>
+                        <form method="post" action="<?= route('admin.apps.destroy', ['id' => $app['id']]) ?>" onsubmit="return confirm('Unlink this app?')"><?= csrf_field() ?><button class="btn btn-sm btn-link text-danger">Remove</button></form>
+                    </div>
+                <?php endforeach; ?>
+                <?php if ($apps === []): ?><div class="text-muted small">No apps linked yet.</div><?php endif; ?>
+            </div>
+        </div>
     </div>
 </div>
 

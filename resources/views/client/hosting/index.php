@@ -3,6 +3,26 @@
 
 <p class="text-muted mb-4">Your hosting accounts. Open cPanel to manage email, files, databases and more.</p>
 
+<?php if (! empty($apps)): ?>
+    <h2 class="h6 fw-bold mb-2">Your apps</h2>
+    <div class="row g-3 mb-4">
+        <?php foreach ($apps as $app): ?>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body d-flex justify-content-between align-items-center gap-2">
+                        <div>
+                            <div class="fw-bold"><?= e($app['name']) ?><?php if ($app['environment']): ?> <span class="badge badge-soft"><?= e($app['environment']) ?></span><?php endif; ?></div>
+                            <div class="text-muted small"><?= e($app['url']) ?></div>
+                        </div>
+                        <a href="<?= e($app['url']) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-brand"><i class="bi bi-box-arrow-up-right"></i> Open</a>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <h2 class="h6 fw-bold mb-2">Hosting</h2>
+<?php endif; ?>
+
 <?php if (! $accounts): ?>
     <div class="card"><div class="card-body text-center text-muted py-5">
         You don't have any hosting with us yet.
