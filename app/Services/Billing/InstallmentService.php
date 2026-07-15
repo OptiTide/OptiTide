@@ -22,6 +22,18 @@ final class InstallmentService
         return $plans;
     }
 
+    /**
+     * Whether a chosen plan needs admin approval. Only the first (default) plan
+     * for a line is auto — instalment / hardship options (50/50, fortnightly,
+     * monthly hosting) are approval-gated.
+     */
+    public function requiresApproval(?string $category, array $resolvedPlan): bool
+    {
+        $plans = $this->plansFor($category);
+
+        return count($plans) > 1 && ($plans[0]['key'] ?? null) !== ($resolvedPlan['key'] ?? null);
+    }
+
     /** The chosen plan, or the first (default) if the key is unknown. */
     public function resolvePlan(?string $category, ?string $key): array
     {

@@ -71,31 +71,57 @@ class OrderController extends Controller
         $yearly = $schedule['months'] >= 12;
         $recurring = $svc['billing_type'] === Service::BILLING_RECURRING;
 
-        $invoices = new InvoiceService();
+        // Engagement attributes (yearly hosting bills 12 months as one yearly cycle).
+        $interval = $svc['interval'];
+        $engPrice = (int) $svc['price_cents'];
+        $next = $recurring ? date('Y-m-d', strtotime('+' . Service::intervalMonths($svc['interval']) . ' months')) : null;
+        if ($recurring && $yearly) {
+            $interval = Service::INTERVAL_YEARLY;
+            $engPrice = (int) $svc['price_cents'] * 12;
+            $next = date('Y-m-d', strtotime('+12 months'));
+        }
+        $engAttrs = [
+            'client_id'         => $clientId,
+            'service_id'        => $svc['id'],
+            'label'             => $svc['name'],
+            'billing_type'      => $svc['billing_type'],
+            'interval'          => $interval,
+            'price_cents'       => $engPrice,
+            'currency'          => $svc['currency'],
+            'status'            => ClientService::STATUS_ACTIVE,
+            'started_at'        => today(),
+            'next_invoice_date' => $next,
+        ];
 
-        $result = Database::instance()->transaction(function () use ($svc, $clientId, $invoices, $recurring, $yearly, $schedule) {
-            // Engagement — yearly hosting bills 12 months as one yearly cycle.
-            $interval = $svc['interval'];
-            $engPrice = (int) $svc['price_cents'];
-            $next = $recurring ? date('Y-m-d', strtotime('+' . Service::intervalMonths($svc['interval']) . ' months')) : null;
-            if ($recurring && $yearly) {
-                $interval = Service::INTERVAL_YEARLY;
-                $engPrice = (int) $svc['price_cents'] * 12;
-                $next = date('Y-m-d', strtotime('+12 months'));
+        // Instalment / hardship plans are approval-gated: create the engagement and
+        // a pending request, but issue NO invoices until an admin approves.
+        if ($installments->requiresApproval($category, $plan)) {
+            $engagement = (new ProjectService())->createEngagement($engAttrs);
+            \App\Models\InstallmentRequest::create([
+                'client_id'     => $clientId,
+                'service_id'    => $svc['id'],
+                'engagement_id' => $engagement['id'],
+                'category'      => $category,
+                'plan_key'      => $plan['key'],
+                'price_cents'   => (int) $svc['price_cents'],
+                'status'        => \App\Models\InstallmentRequest::STATUS_PENDING,
+            ]);
+
+            if (\App\Models\ProjectIntake::questionsFor($category)) {
+                $this->flash('success', 'Order received! Tell us about your project — we\'ll review your payment plan and be in touch to confirm it.');
+
+                return $this->redirect(route('portal.intake.show', ['engagement' => $engagement['id']]));
             }
 
-            $engagement = (new ProjectService())->createEngagement([
-                'client_id'         => $clientId,
-                'service_id'        => $svc['id'],
-                'label'             => $svc['name'],
-                'billing_type'      => $svc['billing_type'],
-                'interval'          => $interval,
-                'price_cents'       => $engPrice,
-                'currency'          => $svc['currency'],
-                'status'            => ClientService::STATUS_ACTIVE,
-                'started_at'        => today(),
-                'next_invoice_date' => $next,
-            ]);
+            $this->flash('success', 'Thanks! Your payment plan request has been submitted for approval — we\'ll confirm it shortly.');
+
+            return $this->redirectRoute('portal.services');
+        }
+
+        $invoices = new InvoiceService();
+
+        $result = Database::instance()->transaction(function () use ($svc, $clientId, $invoices, $recurring, $yearly, $schedule, $engAttrs) {
+            $engagement = (new ProjectService())->createEngagement($engAttrs);
 
             // One invoice per scheduled installment.
             $created = [];

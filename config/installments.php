@@ -26,12 +26,14 @@ return [
             ['pct' => 50, 'due_days' => 14, 'label' => 'second fortnight'],
         ]],
     ],
+    // Hosting: yearly is the default (listed first); monthly is treated as an
+    // instalment option and needs approval (see InstallmentService).
     'hosting' => [
-        ['key' => 'monthly', 'label' => 'Pay monthly', 'installments' => [
-            ['pct' => 100, 'due_days' => 0, 'label' => '', 'months' => 1],
-        ]],
-        ['key' => 'yearly',  'label' => 'Pay yearly (12 months up front)', 'installments' => [
+        ['key' => 'yearly',  'label' => 'Pay yearly (12 months up front) — recommended', 'installments' => [
             ['pct' => 100, 'due_days' => 0, 'label' => '12 months', 'months' => 12],
+        ]],
+        ['key' => 'monthly', 'label' => 'Pay monthly (subject to approval)', 'installments' => [
+            ['pct' => 100, 'due_days' => 0, 'label' => '', 'months' => 1],
         ]],
     ],
 ];

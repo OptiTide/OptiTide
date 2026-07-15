@@ -106,6 +106,11 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->put('/services/{id}', [Admin\ServiceController::class, 'update'])->name('admin.services.update');
     $router->delete('/services/{id}', [Admin\ServiceController::class, 'destroy'])->name('admin.services.destroy');
 
+    // Payment-plan (instalment) requests
+    $router->get('/installments', [Admin\InstallmentRequestController::class, 'index'])->name('admin.installments.index');
+    $router->post('/installments/{id}/approve', [Admin\InstallmentRequestController::class, 'approve'])->name('admin.installments.approve');
+    $router->post('/installments/{id}/decline', [Admin\InstallmentRequestController::class, 'decline'])->name('admin.installments.decline');
+
     // Blog
     $router->get('/blogs', [Admin\BlogController::class, 'index'])->name('admin.blogs.index');
     $router->get('/blogs/create', [Admin\BlogController::class, 'create'])->name('admin.blogs.create');
