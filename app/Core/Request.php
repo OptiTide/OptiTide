@@ -80,6 +80,11 @@ final class Request
         return array_merge($this->query, $this->post);
     }
 
+    public function cookie(string $key, mixed $default = null): mixed
+    {
+        return $this->cookies[$key] ?? $default;
+    }
+
     public function only(array $keys): array
     {
         $result = [];

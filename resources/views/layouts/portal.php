@@ -18,6 +18,7 @@ $me = auth();
             <a class="nav-link <?= $active('/portal/services') ?>" href="<?= route('portal.services') ?>"><i class="bi bi-grid"></i> My Services</a>
             <a class="nav-link <?= $active('/portal/invoices') ?>" href="<?= route('portal.invoices.index') ?>"><i class="bi bi-receipt"></i> Invoices</a>
             <a class="nav-link <?= $active('/portal/support') ?>" href="<?= route('portal.support.index') ?>"><i class="bi bi-life-preserver"></i> Support</a>
+            <a class="nav-link <?= $active('/portal/refer') ?>" href="<?= route('portal.refer') ?>"><i class="bi bi-gift"></i> Refer &amp; Earn</a>
             <a class="nav-link <?= $active('/portal/profile') ?>" href="<?= route('portal.profile.edit') ?>"><i class="bi bi-person"></i> Profile</a>
         </nav>
     </aside>

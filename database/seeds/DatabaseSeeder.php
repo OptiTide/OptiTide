@@ -13,6 +13,7 @@ use App\Models\ServiceCategory;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Services\Invoices\InvoiceService;
+use App\Services\Referrals\ReferralService;
 use App\Services\Support\TicketService;
 
 return new class {
@@ -122,6 +123,7 @@ return new class {
             'role'          => $role,
             'client_id'     => $clientId,
             'status'        => 'active',
+            'referral_code' => ReferralService::generateUniqueCode(),
         ]);
     }
 

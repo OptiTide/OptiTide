@@ -11,6 +11,7 @@ use App\Core\Session;
 use App\Models\Client;
 use App\Models\User;
 use App\Services\Mail\Mail;
+use App\Services\Referrals\ReferralService;
 
 class RegisterController extends Controller
 {
@@ -45,10 +46,18 @@ class RegisterController extends Controller
                 'client_id'         => $client['id'],
                 'status'            => 'active',
                 'terms_accepted_at' => now(),
+                'referral_code'     => ReferralService::generateUniqueCode(),
             ]);
         });
 
         Auth::login($user);
+
+        // First-touch referral attribution (from the /r/{code} cookie or ?ref=).
+        $refCode = $request->cookie(config('affiliate.cookie_name', 'ot_ref')) ?? $request->query('ref');
+        (new ReferralService())->attach($user, is_string($refCode) ? $refCode : null);
+        if (! headers_sent()) {
+            setcookie(config('affiliate.cookie_name', 'ot_ref'), '', time() - 3600, '/');
+        }
 
         Mail::to($user['email'], $user['name'])
             ->subject('Welcome to OptiTide')

@@ -197,8 +197,9 @@ final class InvoiceService
      */
     public function recordPayment(int|string $invoiceId, int $amountCents, string $method, ?string $reference, ?string $paidAt, int|string|null $recordedBy): array
     {
-        return Database::instance()->transaction(function () use ($invoiceId, $amountCents, $method, $reference, $paidAt, $recordedBy) {
+        $result = Database::instance()->transaction(function () use ($invoiceId, $amountCents, $method, $reference, $paidAt, $recordedBy) {
             $invoice = Invoice::findOrFail($invoiceId);
+            $wasPaid = $invoice['status'] === Invoice::STATUS_PAID;
 
             $payment = Payment::create([
                 'invoice_id'   => $invoiceId,
@@ -224,8 +225,21 @@ final class InvoiceService
                 'paid_at'           => $status === Invoice::STATUS_PAID ? ($paidAt ?: now()) : $invoice['paid_at'],
             ]);
 
-            return $payment;
+            return ['payment' => $payment, 'becamePaid' => (! $wasPaid && $status === Invoice::STATUS_PAID)];
         });
+
+        // When an invoice first becomes fully paid, credit any referrer of the
+        // client. Best-effort + outside the payment transaction so a referral
+        // hiccup never blocks recording the payment.
+        if ($result['becamePaid']) {
+            try {
+                (new \App\Services\Referrals\CommissionService())->recordForPaidInvoice(Invoice::find($invoiceId));
+            } catch (\Throwable $e) {
+                // ignore
+            }
+        }
+
+        return $result['payment'];
     }
 
     public function void(int|string $invoiceId): void

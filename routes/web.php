@@ -25,6 +25,9 @@ $router->get('/blog', [PublicSite\BlogController::class, 'index'])->name('blog.i
 $router->get('/blog/rss.xml', [PublicSite\SeoController::class, 'rss'])->name('blog.rss');
 $router->get('/blog/{slug}', [PublicSite\BlogController::class, 'show'])->name('blog.show');
 
+// --- Referral capture -------------------------------------------------------
+$router->get('/r/{code}', [PublicSite\ReferralController::class, 'capture'])->name('referral.capture');
+
 // --- Legal ------------------------------------------------------------------
 $router->get('/terms', [PublicSite\LegalController::class, 'terms'])->name('legal.terms');
 $router->get('/privacy', [PublicSite\LegalController::class, 'privacy'])->name('legal.privacy');
@@ -109,6 +112,11 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->post('/tickets/{id}/reply', [Admin\TicketController::class, 'reply'])->name('admin.tickets.reply');
     $router->post('/tickets/{id}/status', [Admin\TicketController::class, 'status'])->name('admin.tickets.status');
 
+    // Commissions (referral payouts) — admin only (enforced in controller)
+    $router->get('/commissions', [Admin\CommissionController::class, 'index'])->name('admin.commissions.index');
+    $router->post('/commissions/{id}/approve', [Admin\CommissionController::class, 'approve'])->name('admin.commissions.approve');
+    $router->post('/commissions/{id}/pay', [Admin\CommissionController::class, 'markPaid'])->name('admin.commissions.pay');
+
     // Hosting (WHM reseller sync)
     $router->get('/hosting', [Admin\HostingController::class, 'index'])->name('admin.hosting.index');
     $router->post('/hosting/sync', [Admin\HostingController::class, 'sync'])->name('admin.hosting.sync');
@@ -155,6 +163,7 @@ $router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 't
     $router->get('/order/{service}', [Client\OrderController::class, 'show'])->name('portal.order.show');
     $router->post('/order/{service}', [Client\OrderController::class, 'place'])->name('portal.order.place');
     $router->get('/services', [Client\ServiceController::class, 'index'])->name('portal.services');
+    $router->get('/refer', [Client\ReferController::class, 'index'])->name('portal.refer');
     $router->get('/support', [Client\SupportController::class, 'index'])->name('portal.support.index');
     $router->get('/support/new', [Client\SupportController::class, 'create'])->name('portal.support.create');
     $router->post('/support', [Client\SupportController::class, 'store'])->name('portal.support.store');

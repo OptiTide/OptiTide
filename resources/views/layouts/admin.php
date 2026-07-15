@@ -24,6 +24,7 @@ $me = auth();
 
             <?php if (\App\Core\Auth::isAdmin()): ?>
                 <div class="nav-section">Admin</div>
+                <a class="nav-link <?= $active('/admin/commissions') ?>" href="<?= route('admin.commissions.index') ?>"><i class="bi bi-cash-stack"></i> Commissions</a>
                 <a class="nav-link <?= $active('/admin/users') ?>" href="<?= route('admin.users.index') ?>"><i class="bi bi-person-badge"></i> Users</a>
                 <a class="nav-link <?= $active('/admin/settings') ?>" href="<?= route('admin.settings.edit') ?>"><i class="bi bi-gear"></i> Settings</a>
             <?php endif; ?>
