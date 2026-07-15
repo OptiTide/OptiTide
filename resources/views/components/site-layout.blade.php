@@ -82,9 +82,9 @@
         </div>
     </div>
 
-    <nav class="navbar navbar-expand-lg sticky-top border-bottom py-3">
+    <nav class="navbar navbar-expand-lg sticky-top py-3 navbar-ocean" data-bs-theme="dark">
         <div class="container">
-            <a class="navbar-brand fs-4 fw-bold d-flex align-items-center" href="{{ route('home') }}"><span class="me-2" style="font-size:1.35rem;line-height:1">🌊</span>Opti<span class="text-primary">Tide</span></a>
+            <a class="navbar-brand fs-4 fw-bold d-flex align-items-center text-white" href="{{ route('home') }}"><span class="me-2" style="font-size:1.35rem;line-height:1">🌊</span>Opti<span class="text-info">Tide</span></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#siteNav" aria-controls="siteNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -107,7 +107,7 @@
                     <li class="nav-item"><a class="nav-link fw-medium px-3" href="{{ route('contact.show') }}">Contact</a></li>
                 </ul>
                 <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap py-2 py-lg-0">
-                    <a class="btn btn-outline-secondary position-relative" href="{{ route('cart.index') }}" aria-label="Cart">
+                    <a class="btn btn-outline-light position-relative" href="{{ route('cart.index') }}" aria-label="Cart">
                         <i class="bi bi-cart3"></i>
                         @if (($cartCount = app(\App\Services\Cart::class)->count()) > 0)
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-white" style="background-color:#ff7a59!important">{{ $cartCount }}</span>
@@ -115,9 +115,9 @@
                     </a>
                     <a class="btn btn-accent fw-semibold" href="{{ route('seo-audit.show') }}"><i class="bi bi-search me-1"></i>Free SEO audit</a>
                     @auth
-                        <a class="btn btn-outline-primary fw-semibold" href="{{ auth()->user()->isStaff() ? '/admin' : '/client' }}">{{ auth()->user()->isStaff() ? 'Admin' : 'Client Portal' }}</a>
+                        <a class="btn btn-outline-light fw-semibold" href="{{ auth()->user()->isStaff() ? '/admin' : '/client' }}">{{ auth()->user()->isStaff() ? 'Admin' : 'Client Portal' }}</a>
                     @else
-                        <a class="btn btn-outline-primary fw-semibold" href="/client/login">Client login</a>
+                        <a class="btn btn-outline-light fw-semibold" href="/client/login">Client login</a>
                     @endauth
                 </div>
             </div>

@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Enums\ThemeMode;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -27,10 +28,15 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('OptiTide Admin')
+            ->brandName('🌊 OptiTide Admin')
             ->colors([
-                'primary' => Color::Indigo,
+                'primary' => Color::hex('#0e7490'), // deep ocean teal
+                'gray' => Color::Slate,             // navy-tinted surfaces
+                'info' => Color::hex('#22d3ee'),    // aqua
+                'success' => Color::hex('#0d9488'), // seafoam
             ])
+            ->font('Instrument Sans')
+            ->defaultThemeMode(ThemeMode::Dark)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

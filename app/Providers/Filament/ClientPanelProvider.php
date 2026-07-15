@@ -13,6 +13,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Enums\ThemeMode;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -34,10 +35,15 @@ class ClientPanelProvider extends PanelProvider
             ->path('client')
             ->login()
             ->registration(\App\Filament\Client\Auth\Register::class)
-            ->brandName('OptiTide')
+            ->brandName('🌊 OptiTide')
             ->colors([
-                'primary' => Color::Sky,
+                'primary' => Color::hex('#0e7490'), // deep ocean teal
+                'gray' => Color::Slate,             // navy-tinted surfaces
+                'info' => Color::hex('#22d3ee'),    // aqua
+                'success' => Color::hex('#0d9488'), // seafoam
             ])
+            ->font('Instrument Sans')
+            ->defaultThemeMode(ThemeMode::Dark)
             ->discoverResources(in: app_path('Filament/Client/Resources'), for: 'App\Filament\Client\Resources')
             ->discoverPages(in: app_path('Filament/Client/Pages'), for: 'App\Filament\Client\Pages')
             ->pages([

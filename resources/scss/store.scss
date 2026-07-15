@@ -66,6 +66,17 @@ $enable-negative-margins: true;
 }
 .wave svg { display: block; width: 100%; height: auto; }
 
+// Deep-sea sticky navbar — SOLID background so scrolling content never shows
+// through it (a transparent sticky bar was the "broken on scroll" bug).
+.navbar.navbar-ocean {
+    background-color: #082f49;
+    transition: box-shadow .25s ease;
+}
+.navbar.navbar-ocean .navbar-brand,
+.navbar.navbar-ocean .nav-link { color: rgba(255, 255, 255, .82); }
+.navbar.navbar-ocean .nav-link:hover,
+.navbar.navbar-ocean .nav-link:focus { color: #fff; }
+
 // --- Cards / hover -----------------------------------------------------------
 .card-lift { transition: transform .2s ease, box-shadow .2s ease; }
 .card-lift:hover { transform: translateY(-6px); box-shadow: 0 1.75rem 3.25rem rgba(15, 23, 42, .14) !important; }
