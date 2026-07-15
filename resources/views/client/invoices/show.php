@@ -64,7 +64,7 @@ $balance = \App\Models\Invoice::balance($invoice);
 <?php if (\App\Models\Invoice::isPaid($invoice)): ?>
     <div class="alert alert-success"><i class="bi bi-check-circle"></i> This invoice has been paid in full. Thank you!</div>
 <?php else: ?>
-    <h3 class="h5 mb-3">How to pay</h3>
+    <h3 class="h5 mb-3">How to Pay</h3>
     <div class="row g-3">
         <?php foreach ($instructions as $instruction): ?>
             <div class="col-md-6">
@@ -84,7 +84,7 @@ $balance = \App\Models\Invoice::balance($invoice);
                             <?php endif; ?>
                         <?php else: ?>
                             <?php if ($instruction->available): ?>
-                                <a href="<?= e($instruction->actionUrl) ?>" target="_blank" rel="noopener" class="btn btn-brand w-100"><?= e($instruction->actionText ?? 'Pay now') ?></a>
+                                <a href="<?= e($instruction->actionUrl) ?>" target="_blank" rel="noopener" class="btn btn-brand w-100"><?= e($instruction->actionText ?? 'Pay Now') ?></a>
                                 <?php if ($instruction->note): ?><p class="text-muted small mb-0 mt-2"><?= e($instruction->note) ?></p><?php endif; ?>
                             <?php else: ?>
                                 <p class="text-muted small mb-0"><?= e($instruction->note) ?></p>

@@ -14,7 +14,7 @@ class LoginController extends Controller
 {
     public function show(Request $request): Response
     {
-        return $this->view('auth.login', ['title' => 'Sign in']);
+        return $this->view('auth.login', ['title' => 'Sign In']);
     }
 
     public function login(Request $request): Response

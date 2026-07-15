@@ -29,7 +29,7 @@ class UserController extends Controller
         $this->guard();
 
         return $this->view('admin.users.form', [
-            'title'   => 'New user',
+            'title'   => 'New User',
             'user'    => null,
             'clients' => Client::query()->orderBy('business_name')->get(),
         ]);
@@ -59,7 +59,7 @@ class UserController extends Controller
         $this->guard();
 
         return $this->view('admin.users.form', [
-            'title'   => 'Edit user',
+            'title'   => 'Edit User',
             'user'    => User::findOrFail($id),
             'clients' => Client::query()->orderBy('business_name')->get(),
         ]);

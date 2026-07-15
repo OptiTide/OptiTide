@@ -48,7 +48,7 @@ $role = old('role', $user['role'] ?? 'client');
                         <?php endif; ?>
                     </div>
                     <div class="mt-3" id="clientRow" style="display:<?= $role === 'client' ? '' : 'none' ?>">
-                        <label class="form-label">Linked client</label>
+                        <label class="form-label">Linked Client</label>
                         <select name="client_id" class="form-select <?= has_error('client_id') ? 'is-invalid' : '' ?>">
                             <option value="">Select a client…</option>
                             <?php $selC = old('client_id', $user['client_id'] ?? ''); ?>
@@ -60,7 +60,7 @@ $role = old('role', $user['role'] ?? 'client');
                     </div>
                 </div>
                 <div class="card-footer d-flex gap-2">
-                    <button class="btn btn-brand"><?= $isEdit ? 'Save changes' : 'Create user' ?></button>
+                    <button class="btn btn-brand"><?= $isEdit ? 'Save Changes' : 'Create User' ?></button>
                     <a href="<?= route('admin.users.index') ?>" class="btn btn-link">Cancel</a>
                 </div>
             </div>

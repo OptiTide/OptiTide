@@ -4,10 +4,10 @@
 <div class="row g-3 mb-4">
     <?php
     $cards = [
-        ['Active clients', $stats['clients'], 'bi-people', route('admin.clients.index')],
+        ['Active Clients', $stats['clients'], 'bi-people', route('admin.clients.index')],
         ['Outstanding', $stats['outstanding']->format(), 'bi-hourglass-split', route('admin.invoices.index')],
-        ['Overdue invoices', $stats['overdue'], 'bi-exclamation-triangle', route('admin.invoices.index')],
-        ['Paid this month', $stats['paid_month']->format(), 'bi-cash-coin', route('admin.invoices.index')],
+        ['Overdue Invoices', $stats['overdue'], 'bi-exclamation-triangle', route('admin.invoices.index')],
+        ['Paid This Month', $stats['paid_month']->format(), 'bi-cash-coin', route('admin.invoices.index')],
     ];
     foreach ($cards as [$label, $value, $icon, $href]):
         ?>
@@ -29,8 +29,8 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Recent invoices</span>
-        <a href="<?= route('admin.invoices.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> New invoice</a>
+        <span>Recent Invoices</span>
+        <a href="<?= route('admin.invoices.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> New Invoice</a>
     </div>
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">

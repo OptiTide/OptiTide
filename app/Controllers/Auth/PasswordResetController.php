@@ -14,7 +14,7 @@ class PasswordResetController extends Controller
 {
     public function request(Request $request): Response
     {
-        return $this->view('auth.forgot-password', ['title' => 'Reset password']);
+        return $this->view('auth.forgot-password', ['title' => 'Reset Password']);
     }
 
     public function sendLink(Request $request): Response
@@ -50,7 +50,7 @@ class PasswordResetController extends Controller
     public function reset(Request $request, string $token): Response
     {
         return $this->view('auth.reset-password', [
-            'title' => 'Choose a new password',
+            'title' => 'Choose a New Password',
             'token' => $token,
             'email' => (string) $request->query('email', ''),
         ]);

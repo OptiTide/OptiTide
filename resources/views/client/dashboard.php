@@ -8,7 +8,7 @@
                 <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
                 <div>
                     <div class="stat-value money"><?= e($outstanding->format()) ?></div>
-                    <div class="stat-label">Balance owing</div>
+                    <div class="stat-label">Balance Owing</div>
                 </div>
             </div>
         </div>
@@ -19,7 +19,7 @@
                 <div class="stat-icon"><i class="bi bi-grid"></i></div>
                 <div>
                     <div class="stat-value"><?= e($services) ?></div>
-                    <div class="stat-label">Active services</div>
+                    <div class="stat-label">Active Services</div>
                 </div>
             </div>
         </div>
@@ -27,7 +27,7 @@
 </div>
 
 <div class="card">
-    <div class="card-header">Recent invoices</div>
+    <div class="card-header">Recent Invoices</div>
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead>

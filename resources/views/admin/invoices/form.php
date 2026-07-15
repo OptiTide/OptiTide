@@ -30,11 +30,11 @@ foreach ($services as $s) {
                             <?php if (error('client_id')): ?><div class="invalid-feedback"><?= e(error('client_id')) ?></div><?php endif; ?>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Issue date</label>
+                            <label class="form-label">Issue Date</label>
                             <input type="date" name="issue_date" value="<?= e(old('issue_date', $invoice['issue_date'] ?? today())) ?>" class="form-control">
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Due date</label>
+                            <label class="form-label">Due Date</label>
                             <input type="date" name="due_date" value="<?= e(old('due_date', $invoice['due_date'] ?? date('Y-m-d', strtotime('+14 days')))) ?>" class="form-control">
                         </div>
                     </div>
@@ -43,13 +43,13 @@ foreach ($services as $s) {
 
             <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Line items</span>
-                    <button type="button" class="btn btn-sm btn-outline-brand" id="addRow"><i class="bi bi-plus-lg"></i> Add line</button>
+                    <span>Line Items</span>
+                    <button type="button" class="btn btn-sm btn-outline-brand" id="addRow"><i class="bi bi-plus-lg"></i> Add Line</button>
                 </div>
                 <div class="table-responsive">
                     <table class="table align-middle mb-0" id="itemsTable">
                         <thead>
-                            <tr><th style="width:22%">Service</th><th>Description</th><th style="width:90px">Qty</th><th style="width:130px">Unit price</th><th style="width:40px"></th></tr>
+                            <tr><th style="width:22%">Service</th><th>Description</th><th style="width:90px">Qty</th><th style="width:130px">Unit Price</th><th style="width:40px"></th></tr>
                         </thead>
                         <tbody id="itemsBody">
                             <?php
@@ -80,7 +80,7 @@ foreach ($services as $s) {
                 <div class="card-body">
                     <label class="form-label">Notes (shown on the invoice)</label>
                     <textarea name="notes" rows="2" class="form-control"><?= e(old('notes', $invoice['notes'] ?? '')) ?></textarea>
-                    <label class="form-label mt-3">Payoneer payment link (optional)</label>
+                    <label class="form-label mt-3">Payoneer Payment Link (optional)</label>
                     <input type="url" name="payoneer_link" value="<?= e(old('payoneer_link', $invoice['payoneer_link'] ?? '')) ?>" class="form-control <?= has_error('payoneer_link') ? 'is-invalid' : '' ?>" placeholder="https://payoneer.com/request/…">
                     <?php if (error('payoneer_link')): ?><div class="invalid-feedback"><?= e(error('payoneer_link')) ?></div><?php endif; ?>
                     <div class="form-text">Paste the Payoneer "request a payment" link so the client sees a Pay button.</div>
@@ -97,8 +97,8 @@ foreach ($services as $s) {
                         <tr><td class="text-muted">GST (<?= e(\App\Support\Gst::rateLabel()) ?>)</td><td class="text-end money" id="sumGst">$0.00</td></tr>
                         <tr class="fw-bold border-top"><td>Total (inc GST)</td><td class="text-end money" id="sumTotal">$0.00</td></tr>
                     </table>
-                    <button type="submit" name="action" value="save" class="btn btn-outline-brand w-100 mb-2">Save as draft</button>
-                    <button type="submit" name="action" value="save_send" class="btn btn-brand w-100">Save &amp; email invoice</button>
+                    <button type="submit" name="action" value="save" class="btn btn-outline-brand w-100 mb-2">Save as Draft</button>
+                    <button type="submit" name="action" value="save_send" class="btn btn-brand w-100">Save &amp; Email Invoice</button>
                     <a href="<?= route('admin.invoices.index') ?>" class="btn btn-link w-100 mt-1">Cancel</a>
                 </div>
             </div>

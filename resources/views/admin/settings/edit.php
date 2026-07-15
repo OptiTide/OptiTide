@@ -12,7 +12,7 @@ $yes = fn ($v) => $v ? '<span class="badge text-bg-success">Configured</span>' :
 <div class="row g-3">
     <div class="col-lg-6">
         <div class="card mb-3">
-            <div class="card-header">Company (tax invoice identity)</div>
+            <div class="card-header">Company (Tax Invoice Identity)</div>
             <div class="card-body">
                 <dl class="row mb-0 small">
                     <dt class="col-5 text-muted">Legal name</dt><dd class="col-7"><?= e($company['legal_name']) ?></dd>
@@ -39,7 +39,7 @@ $yes = fn ($v) => $v ? '<span class="badge text-bg-success">Configured</span>' :
     <div class="col-lg-6">
         <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span>PayID / Bank transfer</span>
+                <span>PayID / Bank Transfer</span>
                 <?= in_array('payid', $enabled, true) ? '<span class="badge text-bg-success">Enabled</span>' : '<span class="badge text-bg-secondary">Off</span>' ?>
             </div>
             <div class="card-body">
@@ -69,7 +69,7 @@ $yes = fn ($v) => $v ? '<span class="badge text-bg-success">Configured</span>' :
 
 <form method="post" action="<?= route('admin.settings.update') ?>" class="card mt-3">
     <?= csrf_field() ?><?= method_field('PUT') ?>
-    <div class="card-header">Invoice footer note</div>
+    <div class="card-header">Invoice Footer Note</div>
     <div class="card-body">
         <textarea name="invoice_footer" rows="2" class="form-control" placeholder="e.g. Thank you for your business."><?= e(\App\Models\Setting::get('invoice_footer', '')) ?></textarea>
     </div>

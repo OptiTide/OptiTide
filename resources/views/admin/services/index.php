@@ -8,8 +8,8 @@ $currency = config('company.currency', 'AUD');
     <div class="col-lg-8">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span>Service catalogue</span>
-                <a href="<?= route('admin.services.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> New service</a>
+                <span>Service Catalogue</span>
+                <a href="<?= route('admin.services.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> New Service</a>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -49,7 +49,7 @@ $currency = config('company.currency', 'AUD');
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span>Service lines</span>
+                <span>Service Lines</span>
                 <button class="btn btn-sm btn-outline-brand" data-bs-toggle="modal" data-bs-target="#catModal" onclick="catAdd()"><i class="bi bi-plus-lg"></i></button>
             </div>
             <ul class="list-group list-group-flush">
@@ -79,7 +79,7 @@ $currency = config('company.currency', 'AUD');
         <form method="post" id="catForm" class="modal-content">
             <?= csrf_field() ?>
             <input type="hidden" name="_method" id="catMethod" value="">
-            <div class="modal-header"><h5 class="modal-title" id="catTitle">Add service line</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header"><h5 class="modal-title" id="catTitle">Add Service Line</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label">Name</label>
@@ -99,14 +99,14 @@ $currency = config('company.currency', 'AUD');
 const CAT_STORE = "<?= route('admin.categories.store') ?>";
 const CAT_UPDATE = "<?= url('admin/categories') ?>/";
 function catAdd() {
-    document.getElementById('catTitle').textContent = 'Add service line';
+    document.getElementById('catTitle').textContent = 'Add Service Line';
     document.getElementById('catForm').action = CAT_STORE;
     document.getElementById('catMethod').value = '';
     document.getElementById('catName').value = '';
     document.getElementById('catDesc').value = '';
 }
 function catEdit(c) {
-    document.getElementById('catTitle').textContent = 'Edit service line';
+    document.getElementById('catTitle').textContent = 'Edit Service Line';
     document.getElementById('catForm').action = CAT_UPDATE + c.id;
     document.getElementById('catMethod').value = 'PUT';
     document.getElementById('catName').value = c.name;

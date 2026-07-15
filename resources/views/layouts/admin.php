@@ -45,7 +45,7 @@ $me = auth();
                     <li>
                         <form method="post" action="<?= route('logout') ?>" class="px-1">
                             <?= csrf_field() ?>
-                            <button class="dropdown-item text-danger" type="submit">Sign out</button>
+                            <button class="dropdown-item text-danger" type="submit">Sign Out</button>
                         </form>
                     </li>
                 </ul>

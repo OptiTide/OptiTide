@@ -44,7 +44,7 @@ class InvoiceController extends Controller
     public function create(Request $request): Response
     {
         return $this->view('admin.invoices.form', [
-            'title'      => 'New invoice',
+            'title'      => 'New Invoice',
             'invoice'    => null,
             'items'      => [],
             'clients'    => Client::query()->orderBy('business_name')->get(),

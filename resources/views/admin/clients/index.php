@@ -6,7 +6,7 @@
         <input type="search" name="q" value="<?= e($search) ?>" class="form-control form-control-sm" placeholder="Search clients…">
         <button class="btn btn-sm btn-outline-secondary">Search</button>
     </form>
-    <a href="<?= route('admin.clients.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> New client</a>
+    <a href="<?= route('admin.clients.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> New Client</a>
 </div>
 
 <div class="card">

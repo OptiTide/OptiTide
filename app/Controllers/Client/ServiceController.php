@@ -15,7 +15,7 @@ class ServiceController extends Controller
         $clientId = Auth::clientId();
 
         return $this->view('client.services', [
-            'title'       => 'My services',
+            'title'       => 'My Services',
             'engagements' => $clientId ? ClientService::forClient($clientId) : [],
         ]);
     }

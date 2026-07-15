@@ -5,16 +5,16 @@ $me = auth();
 ?>
 <!doctype html>
 <html lang="en">
-<head><?php $this->insert('partials.head', ['title' => ($title ?? 'My account') . ' — OptiTide']); ?></head>
+<head><?php $this->insert('partials.head', ['title' => ($title ?? 'My Account') . ' — OptiTide']); ?></head>
 <body>
 <div class="app">
     <aside class="sidebar" id="sidebar">
         <a href="<?= route('portal.dashboard') ?>" class="text-decoration-none brand-mark d-block mb-2"><img class="brand-icon" src="/assets/img/optitide-mark.svg" alt="">Opti<span>Tide</span></a>
-        <div class="text-secondary small mb-2" style="font-size:.72rem">Client portal</div>
+        <div class="text-secondary small mb-2" style="font-size:.72rem">Client Portal</div>
 
         <nav class="nav flex-column">
             <a class="nav-link <?= $active('/portal', true) ?>" href="<?= route('portal.dashboard') ?>"><i class="bi bi-house"></i> Dashboard</a>
-            <a class="nav-link <?= $active('/portal/services') ?>" href="<?= route('portal.services') ?>"><i class="bi bi-grid"></i> My services</a>
+            <a class="nav-link <?= $active('/portal/services') ?>" href="<?= route('portal.services') ?>"><i class="bi bi-grid"></i> My Services</a>
             <a class="nav-link <?= $active('/portal/invoices') ?>" href="<?= route('portal.invoices.index') ?>"><i class="bi bi-receipt"></i> Invoices</a>
             <a class="nav-link <?= $active('/portal/profile') ?>" href="<?= route('portal.profile.edit') ?>"><i class="bi bi-person"></i> Profile</a>
         </nav>
@@ -36,7 +36,7 @@ $me = auth();
                     <li>
                         <form method="post" action="<?= route('logout') ?>" class="px-1">
                             <?= csrf_field() ?>
-                            <button class="dropdown-item text-danger" type="submit">Sign out</button>
+                            <button class="dropdown-item text-danger" type="submit">Sign Out</button>
                         </form>
                     </li>
                 </ul>

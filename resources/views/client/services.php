@@ -1,7 +1,7 @@
 <?php $this->extends('layouts.portal'); ?>
 <?php $this->section('content'); ?>
 <div class="card">
-    <div class="card-header">Your services &amp; subscriptions</div>
+    <div class="card-header">Your Services &amp; Subscriptions</div>
     <div class="table-responsive">
         <table class="table align-middle mb-0">
             <thead><tr><th>Service</th><th>Billing</th><th class="text-end">Price</th><th>Status</th></tr></thead>

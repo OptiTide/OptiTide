@@ -22,7 +22,7 @@ $payUrl = url('pay/' . $invoice['public_token']);
             </form>
         <?php endif; ?>
         <?php if ($editable): ?>
-            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#payModal"><i class="bi bi-cash"></i> Record payment</button>
+            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#payModal"><i class="bi bi-cash"></i> Record Payment</button>
         <?php endif; ?>
     </div>
 </div>
@@ -100,12 +100,12 @@ $payUrl = url('pay/' . $invoice['public_token']);
             <div class="card-body">
                 <div class="fw-semibold"><?= e($client['business_name'] ?? '') ?></div>
                 <?php if (! empty($client['email'])): ?><div class="small"><?= e($client['email']) ?></div><?php endif; ?>
-                <a href="<?= route('admin.clients.show', ['id' => $invoice['client_id']]) ?>" class="btn btn-sm btn-light mt-2">Open client</a>
+                <a href="<?= route('admin.clients.show', ['id' => $invoice['client_id']]) ?>" class="btn btn-sm btn-light mt-2">Open Client</a>
             </div>
         </div>
 
         <div class="card mb-3">
-            <div class="card-header">Public pay link</div>
+            <div class="card-header">Public Pay Link</div>
             <div class="card-body">
                 <input type="text" class="form-control form-control-sm" value="<?= e($payUrl) ?>" readonly onclick="this.select()">
                 <div class="form-text">Share this so the client can pay without logging in.</div>
@@ -136,7 +136,7 @@ $payUrl = url('pay/' . $invoice['public_token']);
     <div class="modal-dialog">
         <form method="post" action="<?= route('admin.invoices.payments.store', ['id' => $invoice['id']]) ?>" class="modal-content">
             <?= csrf_field() ?>
-            <div class="modal-header"><h5 class="modal-title">Record payment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header"><h5 class="modal-title">Record Payment</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label">Amount (<?= e($invoice['currency']) ?>)</label>
@@ -163,7 +163,7 @@ $payUrl = url('pay/' . $invoice['public_token']);
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-brand">Record payment</button>
+                <button class="btn btn-brand">Record Payment</button>
             </div>
         </form>
     </div>

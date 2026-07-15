@@ -14,7 +14,7 @@ foreach ($services as $s) {
         <?php if ($client['email']): ?><span class="text-muted small ms-1"><?= e($client['email']) ?></span><?php endif; ?>
     </div>
     <div class="d-flex gap-2">
-        <a href="<?= route('admin.invoices.create') ?>?client_id=<?= $client['id'] ?>" class="btn btn-sm btn-brand"><i class="bi bi-receipt"></i> New invoice</a>
+        <a href="<?= route('admin.invoices.create') ?>?client_id=<?= $client['id'] ?>" class="btn btn-sm btn-brand"><i class="bi bi-receipt"></i> New Invoice</a>
         <a href="<?= route('admin.clients.edit', ['id' => $client['id']]) ?>" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i> Edit</a>
         <?php if ($client['status'] === 'active'): ?>
             <form method="post" action="<?= route('admin.clients.destroy', ['id' => $client['id']]) ?>" onsubmit="return confirm('Archive this client?')">
@@ -43,7 +43,7 @@ foreach ($services as $s) {
     <div class="col-lg-8">
         <div class="card mb-3" id="services">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span>Services &amp; subscriptions</span>
+                <span>Services &amp; Subscriptions</span>
                 <button class="btn btn-sm btn-outline-brand" data-bs-toggle="modal" data-bs-target="#engModal" onclick="engAdd()"><i class="bi bi-plus-lg"></i> Add</button>
             </div>
             <div class="table-responsive">
@@ -111,10 +111,10 @@ foreach ($services as $s) {
         <form method="post" id="engForm" class="modal-content">
             <?= csrf_field() ?>
             <input type="hidden" name="_method" id="engMethod" value="">
-            <div class="modal-header"><h5 class="modal-title" id="engTitle">Add service</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header"><h5 class="modal-title" id="engTitle">Add Service</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label class="form-label">From catalogue (optional)</label>
+                    <label class="form-label">From Catalogue (optional)</label>
                     <select class="form-select" id="engService" name="service_id">
                         <option value="">Custom…</option>
                         <?php foreach ($services as $s): ?><option value="<?= $s['id'] ?>"><?= e($s['name']) ?></option><?php endforeach; ?>
@@ -147,7 +147,7 @@ foreach ($services as $s) {
                         <input type="number" step="0.01" name="price" id="engPrice" class="form-control" required>
                     </div>
                     <div class="col">
-                        <label class="form-label">Next invoice</label>
+                        <label class="form-label">Next Invoice</label>
                         <input type="date" name="next_invoice_date" id="engNext" class="form-control">
                     </div>
                     <div class="col">
@@ -174,7 +174,7 @@ const STORE_URL = "<?= route('admin.engagements.store', ['id' => $client['id']])
 const UPDATE_URL = "<?= url('admin/engagements') ?>/";
 
 function engAdd() {
-    document.getElementById('engTitle').textContent = 'Add service';
+    document.getElementById('engTitle').textContent = 'Add Service';
     document.getElementById('engForm').action = STORE_URL;
     document.getElementById('engMethod').value = '';
     document.getElementById('engService').value = '';
@@ -187,7 +187,7 @@ function engAdd() {
 }
 
 function engEdit(e) {
-    document.getElementById('engTitle').textContent = 'Edit service';
+    document.getElementById('engTitle').textContent = 'Edit Service';
     document.getElementById('engForm').action = UPDATE_URL + e.id;
     document.getElementById('engMethod').value = 'PUT';
     document.getElementById('engService').value = e.service_id || '';

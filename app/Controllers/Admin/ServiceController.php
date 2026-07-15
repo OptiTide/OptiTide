@@ -25,7 +25,7 @@ class ServiceController extends Controller
     public function create(Request $request): Response
     {
         return $this->view('admin.services.form', [
-            'title'      => 'New service',
+            'title'      => 'New Service',
             'service'    => null,
             'categories' => ServiceCategory::ordered(),
         ]);
@@ -42,7 +42,7 @@ class ServiceController extends Controller
     public function edit(Request $request, string $id): Response
     {
         return $this->view('admin.services.form', [
-            'title'      => 'Edit service',
+            'title'      => 'Edit Service',
             'service'    => Service::findOrFail($id),
             'categories' => ServiceCategory::ordered(),
         ]);

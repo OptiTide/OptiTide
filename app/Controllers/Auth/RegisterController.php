@@ -15,7 +15,7 @@ class RegisterController extends Controller
 {
     public function show(Request $request): Response
     {
-        return $this->view('auth.register', ['title' => 'Create an account']);
+        return $this->view('auth.register', ['title' => 'Create an Account']);
     }
 
     public function register(Request $request): Response

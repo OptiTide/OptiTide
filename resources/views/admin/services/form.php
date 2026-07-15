@@ -19,7 +19,7 @@ $currency = config('company.currency', 'AUD');
                         <?php if (error('name')): ?><div class="invalid-feedback"><?= e(error('name')) ?></div><?php endif; ?>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Service line</label>
+                        <label class="form-label">Service Line</label>
                         <select name="category_id" class="form-select">
                             <option value="">Uncategorised</option>
                             <?php $selCat = old('category_id', $service['category_id'] ?? ''); ?>
@@ -63,7 +63,7 @@ $currency = config('company.currency', 'AUD');
                     </div>
                 </div>
                 <div class="card-footer d-flex gap-2">
-                    <button class="btn btn-brand"><?= $isEdit ? 'Save changes' : 'Create service' ?></button>
+                    <button class="btn btn-brand"><?= $isEdit ? 'Save Changes' : 'Create Service' ?></button>
                     <a href="<?= route('admin.services.index') ?>" class="btn btn-link">Cancel</a>
                 </div>
             </div>

@@ -2,7 +2,7 @@
 <?php $this->section('content'); ?>
 
 <div class="d-flex justify-content-end mb-3">
-    <a href="<?= route('admin.users.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> New user</a>
+    <a href="<?= route('admin.users.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> New User</a>
 </div>
 
 <div class="card">

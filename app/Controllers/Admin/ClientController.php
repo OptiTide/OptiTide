@@ -43,7 +43,7 @@ class ClientController extends Controller
 
     public function create(Request $request): Response
     {
-        return $this->view('admin.clients.form', ['title' => 'New client', 'client' => null]);
+        return $this->view('admin.clients.form', ['title' => 'New Client', 'client' => null]);
     }
 
     public function store(Request $request): Response
@@ -71,7 +71,7 @@ class ClientController extends Controller
     public function edit(Request $request, string $id): Response
     {
         return $this->view('admin.clients.form', [
-            'title'  => 'Edit client',
+            'title'  => 'Edit Client',
             'client' => Client::findOrFail($id),
         ]);
     }

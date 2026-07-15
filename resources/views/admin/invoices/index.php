@@ -8,7 +8,7 @@
             <a href="<?= route('admin.invoices.index') ?>?status=<?= $key ?>" class="btn <?= $status === $key ? 'btn-brand' : 'btn-outline-secondary' ?>"><?= e($label) ?></a>
         <?php endforeach; ?>
     </div>
-    <a href="<?= route('admin.invoices.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> New invoice</a>
+    <a href="<?= route('admin.invoices.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> New Invoice</a>
 </div>
 
 <div class="card">
