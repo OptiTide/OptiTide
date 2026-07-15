@@ -211,6 +211,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
     </div>
 </section>
 
+<?php if (! empty($packages)): ?>
 <section id="packages" class="mk-section mk-section--alt">
     <div class="mk-container">
         <div class="text-center mb-5">
@@ -243,6 +244,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
         <?php endforeach; ?>
     </div>
 </section>
+<?php endif; ?>
 
 <section id="process" class="mk-section">
     <div class="mk-container">
