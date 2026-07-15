@@ -61,7 +61,7 @@ $me = auth();
         </main>
         <footer class="app-footer">
             <span>&copy; <?= date('Y') ?> <?= e(config('company.legal_name')) ?><?= config('company.abn') ? ' · ABN ' . e(config('company.abn')) : '' ?></span>
-            <span><a href="<?= route('legal.terms') ?>">Terms</a> &middot; <a href="<?= route('legal.privacy') ?>">Privacy</a> &middot; <a href="<?= route('portal.support.index') ?>">Support</a> &middot; <span class="tag">Grow Online. Lead Always.</span></span>
+            <span><a href="<?= route('legal.terms') ?>" target="_blank" rel="noopener">Terms</a> &middot; <a href="<?= route('legal.privacy') ?>" target="_blank" rel="noopener">Privacy</a> &middot; <a href="<?= route('portal.support.index') ?>">Support</a> &middot; <span class="tag">Grow Online. Lead Always.</span></span>
         </footer>
     </div>
 </div>
