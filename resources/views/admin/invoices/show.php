@@ -63,6 +63,11 @@ $payUrl = url('pay/' . $invoice['public_token']);
                             <?php if ((int) $invoice['gst_cents'] > 0): ?>
                                 <tr><td class="text-muted">GST (<?= e(\App\Support\Gst::rateLabel()) ?>)</td><td class="text-end money"><?= e(money((int) $invoice['gst_cents'], $invoice['currency'])->format()) ?></td></tr>
                             <?php endif; ?>
+                            <?php if ((int) ($invoice['late_fee_cents'] ?? 0) > 0): ?>
+                                <tr><td class="text-danger">Late fee</td><td class="text-end money text-danger">+<?= e(money((int) $invoice['late_fee_cents'], $invoice['currency'])->format()) ?></td></tr>
+                            <?php elseif (($invoice['late_fee_waiver_status'] ?? 'none') === 'waived'): ?>
+                                <tr><td class="text-muted"><s>Late fee</s> <span class="badge text-bg-success">waived</span></td><td class="text-end text-muted">—</td></tr>
+                            <?php endif; ?>
                             <tr class="fw-bold border-top"><td>Total (inc GST)</td><td class="text-end money"><?= e(\App\Models\Invoice::total($invoice)->format()) ?></td></tr>
                             <tr><td class="text-muted">Paid</td><td class="text-end money"><?= e(\App\Models\Invoice::amountPaid($invoice)->format()) ?></td></tr>
                         </table>
@@ -70,6 +75,36 @@ $payUrl = url('pay/' . $invoice['public_token']);
                 </div>
             </div>
         </div>
+
+        <?php $lfStatus = $invoice['late_fee_waiver_status'] ?? 'none'; ?>
+        <?php if ((int) ($invoice['late_fee_cents'] ?? 0) > 0): ?>
+            <div class="card border-warning">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <div class="fw-bold"><i class="bi bi-exclamation-triangle text-warning"></i> Late fee applied: <?= e(money((int) $invoice['late_fee_cents'], $invoice['currency'])->format()) ?></div>
+                            <div class="small text-muted">Charged automatically when this invoice became overdue.<?= $lfStatus === 'requested' ? ' A staff member has requested this be waived.' : '' ?></div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <?php if (\App\Core\Auth::isAdmin()): ?>
+                                <form method="post" action="<?= route('admin.invoices.latefee.waive', ['id' => $invoice['id']]) ?>" onsubmit="return confirm('Waive and remove this late fee?')" class="d-flex gap-2">
+                                    <?= csrf_field() ?>
+                                    <input type="text" name="reason" class="form-control form-control-sm" placeholder="Reason (optional)" style="max-width:220px">
+                                    <button class="btn btn-sm btn-warning"><i class="bi bi-check2"></i> <?= $lfStatus === 'requested' ? 'Approve waiver' : 'Waive late fee' ?></button>
+                                </form>
+                            <?php elseif ($lfStatus === 'none'): ?>
+                                <form method="post" action="<?= route('admin.invoices.latefee.request', ['id' => $invoice['id']]) ?>">
+                                    <?= csrf_field() ?>
+                                    <button class="btn btn-sm btn-outline-secondary">Request waiver</button>
+                                </form>
+                            <?php elseif ($lfStatus === 'requested'): ?>
+                                <span class="badge text-bg-info align-self-center">Waiver requested — awaiting admin approval</span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <div class="card">
             <div class="card-header">Payments</div>

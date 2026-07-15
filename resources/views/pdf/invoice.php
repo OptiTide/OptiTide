@@ -92,6 +92,9 @@ $fmt = fn (int $cents) => money($cents, $invoice['currency'])->format();
                 <?php if ((int) $invoice['gst_cents'] > 0): ?>
                     <tr><td class="muted">GST (<?= e(\App\Support\Gst::rateLabel()) ?>)</td><td class="right"><?= e($fmt((int) $invoice['gst_cents'])) ?></td></tr>
                 <?php endif; ?>
+                <?php if ((int) ($invoice['late_fee_cents'] ?? 0) > 0): ?>
+                    <tr><td class="muted">Late payment fee</td><td class="right">+<?= e($fmt((int) $invoice['late_fee_cents'])) ?></td></tr>
+                <?php endif; ?>
                 <tr class="grand"><td>Total (inc GST)</td><td class="right"><?= e($fmt((int) $invoice['total_cents'])) ?></td></tr>
                 <?php if ((int) $invoice['amount_paid_cents'] > 0): ?>
                     <tr><td class="muted">Paid</td><td class="right">− <?= e($fmt((int) $invoice['amount_paid_cents'])) ?></td></tr>

@@ -143,10 +143,14 @@ final class InvoiceService
         $gst = Gst::component($total);
         $subtotal = $total->subtract($gst);
 
+        // Any active late fee (GST-free) rides on top of the line-item total, so
+        // re-editing an overdue invoice never silently drops the penalty.
+        $lateFee = (int) ($invoice['late_fee_cents'] ?? 0);
+
         Invoice::updateById($invoiceId, [
             'subtotal_cents' => $subtotal->minorUnits,
             'gst_cents'      => $gst->minorUnits,
-            'total_cents'    => $total->minorUnits,
+            'total_cents'    => $total->minorUnits + $lateFee,
         ]);
 
         return Invoice::find($invoiceId);

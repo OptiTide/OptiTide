@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\ClientService;
 use App\Models\Invoice;
 use App\Models\Service;
+use App\Services\Billing\LateFeeService;
 use App\Services\Mail\Mail;
 
 /**
@@ -115,8 +116,13 @@ final class RecurringBiller
             ->get();
 
         $count = 0;
+        $lateFees = new LateFeeService();
         foreach ($due as $invoice) {
             Invoice::updateById($invoice['id'], ['status' => Invoice::STATUS_OVERDUE, 'updated_at' => now()]);
+
+            // Apply the one-off late fee before notifying, so the reminder and the
+            // balance the client sees already include it.
+            $lateFees->applyOnOverdue(Invoice::find($invoice['id']));
             $count++;
 
             if (! $notify) {

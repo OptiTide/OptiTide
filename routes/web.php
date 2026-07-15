@@ -191,6 +191,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->post('/invoices/{id}/send', [Admin\InvoiceController::class, 'send'])->name('admin.invoices.send');
     $router->post('/invoices/{id}/payments', [Admin\InvoiceController::class, 'recordPayment'])->name('admin.invoices.payments.store');
     $router->post('/invoices/{id}/void', [Admin\InvoiceController::class, 'void'])->name('admin.invoices.void');
+    $router->post('/invoices/{id}/late-fee/request-waiver', [Admin\InvoiceController::class, 'requestLateFeeWaiver'])->name('admin.invoices.latefee.request');
+    $router->post('/invoices/{id}/late-fee/waive', [Admin\InvoiceController::class, 'waiveLateFee'])->name('admin.invoices.latefee.waive');
     $router->delete('/invoices/{id}', [Admin\InvoiceController::class, 'destroy'])->name('admin.invoices.destroy');
 
     // Users (admin only — enforced in the controller)

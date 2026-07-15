@@ -264,6 +264,27 @@ class InvoiceController extends Controller
         return $this->redirect(route('admin.invoices.show', ['id' => $id]));
     }
 
+    /** Staff (non-admin) can ask for a late fee to be waived; an admin approves. */
+    public function requestLateFeeWaiver(Request $request, string $id): Response
+    {
+        Invoice::findOrFail($id);
+        (new \App\Services\Billing\LateFeeService())->requestWaiver($id, Auth::id());
+        Session::flash('status', 'Waiver requested — an administrator will review it.');
+
+        return $this->redirect(route('admin.invoices.show', ['id' => $id]));
+    }
+
+    /** Admin approval that removes the late fee (the "admin will approve" step). */
+    public function waiveLateFee(Request $request, string $id): Response
+    {
+        $this->authorize(Auth::isAdmin(), 'Only an administrator can waive a late fee.');
+        Invoice::findOrFail($id);
+        (new \App\Services\Billing\LateFeeService())->waive($id, trim((string) $request->input('reason')) ?: null);
+        Session::flash('success', 'Late fee waived and removed from the invoice.');
+
+        return $this->redirect(route('admin.invoices.show', ['id' => $id]));
+    }
+
     public function pdf(Request $request, string $id): Response
     {
         $invoice = Invoice::findOrFail($id);

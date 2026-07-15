@@ -50,6 +50,9 @@ $balance = \App\Models\Invoice::balance($invoice);
                     <?php if ((int) $invoice['gst_cents'] > 0): ?>
                         <tr><td class="text-muted">GST (<?= e(\App\Support\Gst::rateLabel()) ?>)</td><td class="text-end money"><?= e(money((int) $invoice['gst_cents'], $invoice['currency'])->format()) ?></td></tr>
                     <?php endif; ?>
+                    <?php if ((int) ($invoice['late_fee_cents'] ?? 0) > 0): ?>
+                        <tr><td class="text-muted">Late payment fee</td><td class="text-end money">+<?= e(money((int) $invoice['late_fee_cents'], $invoice['currency'])->format()) ?></td></tr>
+                    <?php endif; ?>
                     <tr class="fw-bold border-top"><td>Total (inc GST)</td><td class="text-end money"><?= e(\App\Models\Invoice::total($invoice)->format()) ?></td></tr>
                     <?php if ((int) $invoice['amount_paid_cents'] > 0): ?>
                         <tr><td class="text-muted">Paid</td><td class="text-end money">− <?= e(\App\Models\Invoice::amountPaid($invoice)->format()) ?></td></tr>
