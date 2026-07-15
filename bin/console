@@ -70,6 +70,13 @@ try {
             $out("Created {$made} SEO report card(s) for " . ($month ?: date('F Y')) . '.');
             break;
 
+        case 'clients:suspend-overdue':
+            // Suspend clients whose invoices are overdue past the grace period.
+            $days = isset($flags[0]) ? (int) $flags[0] : null;
+            $r = (new App\Services\Billing\SuspensionService())->run($days);
+            $out("Suspended {$r['suspended']} client(s) for overdue invoices.");
+            break;
+
         case 'make:admin':
             $email = isset($flags[0]) ? strtolower(trim($flags[0])) : null;
             $password = $flags[1] ?? null;

@@ -37,4 +37,25 @@ class ServiceController extends Controller
             'monthly'      => new Money($monthly, $currency),
         ]);
     }
+
+    /** A client cancels one of their own services (stops future billing). */
+    public function cancel(Request $request, string $id): Response
+    {
+        $engagement = ClientService::findOrFail($id);
+
+        // IDOR guard — must belong to the signed-in client.
+        if ((string) $engagement['client_id'] !== (string) Auth::clientId()) {
+            $this->abort(404, 'Service not found.');
+        }
+
+        if ($engagement['status'] === ClientService::STATUS_ACTIVE) {
+            ClientService::updateById($id, [
+                'status'            => ClientService::STATUS_CANCELLED,
+                'next_invoice_date' => null,
+            ]);
+            $this->flash('success', 'Your "' . ($engagement['label'] ?? 'service') . '" has been cancelled. You won\'t be billed again for it.');
+        }
+
+        return $this->redirect(route('portal.services'));
+    }
 }

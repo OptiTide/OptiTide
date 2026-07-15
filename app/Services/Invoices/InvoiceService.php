@@ -239,6 +239,17 @@ final class InvoiceService
             }
         }
 
+        // A payment may clear a suspended client's balance — lift the hold and
+        // resume their services. Best-effort.
+        try {
+            $inv = Invoice::find($invoiceId);
+            if ($inv && ! empty($inv['client_id'])) {
+                (new \App\Services\Billing\SuspensionService())->reactivateIfCleared($inv['client_id']);
+            }
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
         return $result['payment'];
     }
 

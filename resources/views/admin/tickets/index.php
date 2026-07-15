@@ -38,4 +38,9 @@ $filters = ['' => 'All'] + \App\Models\Ticket::STATUSES;
         </table>
     </div>
 </div>
+<p class="text-muted small mt-2"><i class="bi bi-arrow-clockwise"></i> This page refreshes automatically every couple of minutes.</p>
+<script>
+// Auto-refresh the helpdesk queue so new tickets/replies appear without a manual reload.
+setTimeout(function () { location.reload(); }, 150000);
+</script>
 <?php $this->endSection(); ?>

@@ -20,7 +20,7 @@ class ClientController extends Controller
         $search = trim((string) $request->query('q', ''));
 
         $status = (string) $request->query('status', '');
-        if (! in_array($status, [Client::STATUS_ACTIVE, Client::STATUS_ARCHIVED], true)) {
+        if (! in_array($status, [Client::STATUS_ACTIVE, Client::STATUS_SUSPENDED, Client::STATUS_ARCHIVED], true)) {
             $status = '';
         }
 
@@ -49,6 +49,12 @@ class ClientController extends Controller
                 + (int) $payment['amount_cents'];
         }
 
+        // Clients with at least one OVERDUE invoice (for the red flag).
+        $overdue = [];
+        foreach (Invoice::query()->where('status', Invoice::STATUS_OVERDUE)->get() as $invoice) {
+            $overdue[$invoice['client_id']] = true;
+        }
+
         // One-line summary reflecting the current filter.
         $outstandingTotal = 0;
         foreach ($clients as $client) {
@@ -63,6 +69,7 @@ class ClientController extends Controller
             'currency'         => $currency,
             'search'           => $search,
             'status'           => $status,
+            'overdue'          => $overdue,
             'outstandingTotal' => $outstandingTotal,
         ]);
     }

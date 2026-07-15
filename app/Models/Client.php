@@ -9,7 +9,14 @@ class Client extends Model
     protected static string $table = 'clients';
 
     public const STATUS_ACTIVE = 'active';
+    public const STATUS_SUSPENDED = 'suspended';
     public const STATUS_ARCHIVED = 'archived';
+
+    public const STATUSES = [
+        self::STATUS_ACTIVE    => 'Active',
+        self::STATUS_SUSPENDED => 'Suspended',
+        self::STATUS_ARCHIVED  => 'Archived',
+    ];
 
     public static function active(): array
     {

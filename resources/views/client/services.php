@@ -36,11 +36,11 @@ $companyEmail = config('company.email');
     <div class="table-responsive">
         <table class="table align-middle mb-0">
             <thead>
-                <tr><th>Service</th><th>Billing</th><th class="text-end">Price</th><th>Next Invoice</th><th>Started</th><th>Status</th></tr>
+                <tr><th>Service</th><th>Billing</th><th class="text-end">Price</th><th>Next Invoice</th><th>Started</th><th>Status</th><th></th></tr>
             </thead>
             <tbody>
                 <?php if (! $engagements): ?>
-                    <tr><td colspan="6" class="text-center text-muted py-4">No active services yet.</td></tr>
+                    <tr><td colspan="7" class="text-center text-muted py-4">No active services yet.</td></tr>
                 <?php endif; ?>
                 <?php foreach ($engagements as $e): ?>
                     <tr>
@@ -56,6 +56,14 @@ $companyEmail = config('company.email');
                         <td><?= $e['billing_type'] === 'recurring' && $e['next_invoice_date'] ? e($e['next_invoice_date']) : '<span class="text-muted">—</span>' ?></td>
                         <td><?= e($e['started_at'] ?: '—') ?></td>
                         <td><span class="badge <?= $e['status'] === 'active' ? 'text-bg-success' : 'badge-soft' ?>"><?= e(ucfirst($e['status'])) ?></span></td>
+                        <td class="text-end">
+                            <?php if ($e['status'] === 'active'): ?>
+                                <form method="post" action="<?= route('portal.services.cancel', ['id' => $e['id']]) ?>" onsubmit="return confirm('Cancel this service? You won\'t be billed again for it.')">
+                                    <?= csrf_field() ?>
+                                    <button class="btn btn-sm btn-outline-danger">Cancel</button>
+                                </form>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

@@ -7,6 +7,7 @@
         <select name="status" class="form-select form-select-sm" style="max-width:150px" onchange="this.form.submit()">
             <option value="" <?= $status === '' ? 'selected' : '' ?>>All Statuses</option>
             <option value="active" <?= $status === 'active' ? 'selected' : '' ?>>Active</option>
+            <option value="suspended" <?= $status === 'suspended' ? 'selected' : '' ?>>Suspended</option>
             <option value="archived" <?= $status === 'archived' ? 'selected' : '' ?>>Archived</option>
         </select>
         <button class="btn btn-sm btn-outline-secondary">Search</button>
@@ -57,7 +58,9 @@
                         <td><?= e($client['contact_name'] ?: '—') ?></td>
                         <td><?= e($client['email'] ?: '—') ?></td>
                         <td>
-                            <span class="badge <?= $client['status'] === 'active' ? 'text-bg-success' : 'badge-soft' ?>"><?= e(ucfirst($client['status'])) ?></span>
+                            <?php $stBadge = ['active' => 'text-bg-success', 'suspended' => 'text-bg-danger', 'archived' => 'text-bg-secondary']; ?>
+                            <span class="badge <?= $stBadge[$client['status']] ?? 'badge-soft' ?>"><?= e(ucfirst($client['status'])) ?></span>
+                            <?php if (! empty($overdue[$client['id']])): ?><span class="badge text-bg-danger ms-1"><i class="bi bi-exclamation-triangle"></i> Overdue</span><?php endif; ?>
                         </td>
                         <td class="text-end money"><?= e(money((int) ($balances[$client['id']] ?? 0), $currency)->format()) ?></td>
                         <td class="text-end money text-muted"><?= e(money((int) ($paid[$client['id']] ?? 0), $currency)->format()) ?></td>
