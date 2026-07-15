@@ -11,6 +11,7 @@ use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Service;
+use App\Services\Audit\AuditLog;
 use App\Services\Invoices\InvoicePdf;
 use App\Services\Invoices\InvoiceService;
 use App\Services\Payments\PaymentManager;
@@ -130,6 +131,8 @@ class InvoiceController extends Controller
             'status'        => Invoice::STATUS_DRAFT,
         ], $items);
 
+        AuditLog::record('invoice.created', 'invoice', $invoice['id'], ['number' => $invoice['number'] ?? null]);
+
         if ($request->input('action') === 'save_send') {
             $this->invoices->send($invoice['id']);
             Session::flash('success', "Invoice {$invoice['number']} created and emailed.");
@@ -206,6 +209,7 @@ class InvoiceController extends Controller
     {
         $invoice = Invoice::findOrFail($id);
         $this->invoices->send($id);
+        AuditLog::record('invoice.sent', 'invoice', $invoice['id'] ?? $id, ['number' => $invoice['number'] ?? null]);
         Session::flash('success', "Invoice {$invoice['number']} emailed to the client.");
 
         return $this->redirect(route('admin.invoices.show', ['id' => $id]));
@@ -244,6 +248,7 @@ class InvoiceController extends Controller
                 ->send();
         }
 
+        AuditLog::record('invoice.payment_recorded', 'invoice', $id, []);
         Session::flash('success', 'Payment recorded and receipt e-mailed.');
 
         return $this->redirect(route('admin.invoices.show', ['id' => $id]));
@@ -253,6 +258,7 @@ class InvoiceController extends Controller
     {
         Invoice::findOrFail($id);
         $this->invoices->void($id);
+        AuditLog::record('invoice.voided', 'invoice', $id);
         Session::flash('status', 'Invoice voided.');
 
         return $this->redirect(route('admin.invoices.show', ['id' => $id]));
@@ -270,6 +276,7 @@ class InvoiceController extends Controller
         $this->authorize(Auth::isAdmin(), 'Only an administrator can delete invoices.');
         Invoice::findOrFail($id);
         Invoice::deleteById($id);
+        AuditLog::record('invoice.deleted', 'invoice', $id);
         Session::flash('status', 'Invoice deleted.');
 
         return $this->redirect(route('admin.invoices.index'));

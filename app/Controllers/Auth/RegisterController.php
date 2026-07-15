@@ -10,6 +10,7 @@ use App\Core\Response;
 use App\Core\Session;
 use App\Models\Client;
 use App\Models\User;
+use App\Services\Audit\AuditLog;
 use App\Services\Mail\Mail;
 use App\Services\Referrals\ReferralService;
 
@@ -74,6 +75,7 @@ class RegisterController extends Controller
             // never block sign-up on the verification mail
         }
 
+        AuditLog::record('user.registered', 'user', $user['id'], ['email' => $user['email']]);
         Session::flash('success', 'Welcome to OptiTide! We\'ve emailed you a link to confirm your email address.');
 
         return $this->redirect(route('portal.dashboard'));

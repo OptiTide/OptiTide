@@ -8,6 +8,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Models\Client;
 use App\Models\Meeting;
+use App\Services\Audit\AuditLog;
 use App\Services\Mail\Mail;
 
 class MeetingController extends Controller
@@ -41,7 +42,7 @@ class MeetingController extends Controller
             $at .= ':00';
         }
 
-        Meeting::create([
+        $meeting = Meeting::create([
             'client_id'   => $clientId,
             'created_by'  => Auth::id(),
             'title'       => $data['title'],
@@ -61,6 +62,7 @@ class MeetingController extends Controller
             // ignore
         }
 
+        AuditLog::record('meeting.requested', 'meeting', $meeting['id'] ?? null, ['title' => $data['title']]);
         $this->flash('success', 'Thanks! We\'ve received your meeting request and will confirm a time with you shortly.');
 
         return $this->redirectRoute('portal.meetings');

@@ -8,6 +8,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
 use App\Models\User;
+use App\Services\Audit\AuditLog;
 
 /**
  * Admin "log in as" a client, to see exactly what they see. The original admin
@@ -27,6 +28,7 @@ class ImpersonationController extends Controller
         }
 
         Session::put('_impersonator', Auth::id());
+        AuditLog::record('user.impersonate_start', 'user', $target['id'], ['target_email' => $target['email']]);
         Auth::login($target);
         Session::flash('status', 'You are now viewing the portal as ' . $target['name'] . '.');
 
@@ -38,6 +40,7 @@ class ImpersonationController extends Controller
         $adminId = Session::pull('_impersonator');
         if ($adminId && ($admin = User::find($adminId))) {
             Auth::login($admin);
+            AuditLog::record('user.impersonate_stop', 'user', $adminId, [], $admin);
             Session::flash('success', 'Welcome back — you have returned to your admin account.');
 
             return $this->redirect(route('admin.users.index'));

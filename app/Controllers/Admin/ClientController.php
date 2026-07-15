@@ -14,6 +14,7 @@ use App\Models\CreditTransaction;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Service;
+use App\Services\Audit\AuditLog;
 use App\Services\Billing\CreditService;
 use App\Support\Money;
 
@@ -124,6 +125,7 @@ class ClientController extends Controller
             'environment' => $data['environment'] ?: null,
             'status'      => 'live',
         ]);
+        AuditLog::record('client.app_linked', 'client', $id);
         Session::flash('success', 'App linked to client.');
 
         return $this->redirect(route('admin.clients.show', ['id' => $id]) . '#apps');
@@ -133,6 +135,7 @@ class ClientController extends Controller
     {
         $app = ClientApp::findOrFail($id);
         ClientApp::deleteById($id);
+        AuditLog::record('client.app_unlinked', 'client', $app['client_id'], ['app_id' => $id]);
         Session::flash('status', 'App unlinked.');
 
         return $this->redirect(route('admin.clients.show', ['id' => $app['client_id']]) . '#apps');
@@ -152,6 +155,7 @@ class ClientController extends Controller
         }
 
         (new CreditService())->add($id, $cents, $cents >= 0 ? 'add' : 'adjust', $data['reason'] ?? null, Auth::id());
+        AuditLog::record('credit.adjusted', 'client', $id, ['amount_cents' => $cents, 'reason' => $data['reason'] ?? null]);
         Session::flash('success', 'Account credit updated.');
 
         return $this->redirect(route('admin.clients.show', ['id' => $id]) . '#credit');
@@ -179,6 +183,7 @@ class ClientController extends Controller
         Client::findOrFail($id);
         // Archive rather than hard-delete so invoice history is never lost.
         Client::updateById($id, ['status' => Client::STATUS_ARCHIVED]);
+        AuditLog::record('client.archived', 'client', $id);
         Session::flash('status', 'Client archived.');
 
         return $this->redirect(route('admin.clients.index'));

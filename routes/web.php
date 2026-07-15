@@ -149,6 +149,9 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     // Visitor analytics (first-party)
     $router->get('/visitors', [Admin\VisitorController::class, 'index'])->name('admin.visitors.index');
 
+    // Audit log (admin-only — see the middleware guard on sensitive routes below)
+    $router->get('/audit-log', [Admin\AuditLogController::class, 'index'])->name('admin.audit.index');
+
     // Live chat (staff)
     $router->get('/chat', [Admin\ChatController::class, 'index'])->name('admin.chat.index');
     $router->get('/chat/{id}', [Admin\ChatController::class, 'show'])->name('admin.chat.show');

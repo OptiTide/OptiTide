@@ -9,6 +9,7 @@ use App\Core\Response;
 use App\Core\Session;
 use App\Models\Client;
 use App\Models\Meeting;
+use App\Services\Audit\AuditLog;
 use App\Services\Mail\Mail;
 
 class MeetingController extends Controller
@@ -103,6 +104,7 @@ class MeetingController extends Controller
             }
         }
 
+        AuditLog::record('meeting.confirmed', 'meeting', $id);
         Session::flash('success', 'Meeting confirmed and the client has been notified.');
 
         return $this->redirect(route('admin.meetings.index'));
@@ -112,6 +114,7 @@ class MeetingController extends Controller
     {
         Meeting::findOrFail($id);
         Meeting::updateById($id, ['status' => Meeting::STATUS_CANCELLED]);
+        AuditLog::record('meeting.cancelled', 'meeting', $id);
         Session::flash('status', 'Meeting cancelled.');
 
         return $this->redirect(route('admin.meetings.index'));

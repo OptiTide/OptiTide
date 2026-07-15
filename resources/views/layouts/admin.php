@@ -42,6 +42,7 @@ $me = auth();
                 <a class="nav-link <?= $active('/admin/visitors') ?>" href="<?= route('admin.visitors.index') ?>"><i class="bi bi-people-fill"></i> Visitors</a>
                 <a class="nav-link <?= $active('/admin/commissions') ?>" href="<?= route('admin.commissions.index') ?>"><i class="bi bi-cash-stack"></i> Commissions</a>
                 <a class="nav-link <?= $active('/admin/users') ?>" href="<?= route('admin.users.index') ?>"><i class="bi bi-person-badge"></i> Users</a>
+                <a class="nav-link <?= $active('/admin/audit-log') ?>" href="<?= route('admin.audit.index') ?>"><i class="bi bi-journal-text"></i> Audit Log</a>
                 <a class="nav-link <?= $active('/admin/settings') ?>" href="<?= route('admin.settings.edit') ?>"><i class="bi bi-gear"></i> Settings</a>
             <?php endif; ?>
         </nav>

@@ -8,6 +8,7 @@ use App\Core\Response;
 use App\Core\Session;
 use App\Models\Client;
 use App\Models\HostingAccount;
+use App\Services\Audit\AuditLog;
 use App\Services\Whm\HostingService;
 use App\Services\Whm\WhmClientFactory;
 
@@ -61,6 +62,7 @@ class HostingController extends Controller
             $whm->suspendAccount((string) $account['username'], trim((string) $request->input('reason', 'Suspended by administrator')));
         }
         HostingAccount::updateById($id, ['status' => 'suspended']);
+        AuditLog::record('hosting.suspended', 'hosting_account', $id, ['domain' => $account['domain'] ?? null]);
         Session::flash('success', $account['domain'] . ' suspended' . ($whm->available() ? ' on the server.' : ' (recorded locally — WHM not connected).'));
 
         return $this->redirect(route('admin.hosting.index'));
@@ -74,6 +76,7 @@ class HostingController extends Controller
             $whm->unsuspendAccount((string) $account['username']);
         }
         HostingAccount::updateById($id, ['status' => 'active']);
+        AuditLog::record('hosting.reactivated', 'hosting_account', $id, ['domain' => $account['domain'] ?? null]);
         Session::flash('success', $account['domain'] . ' reactivated.');
 
         return $this->redirect(route('admin.hosting.index'));

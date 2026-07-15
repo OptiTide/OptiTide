@@ -9,6 +9,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
 use App\Models\User;
+use App\Services\Audit\AuditLog;
 use App\Services\TwoFactor\TwoFactorService;
 
 class LoginController extends Controller
@@ -60,6 +61,7 @@ class LoginController extends Controller
 
         Auth::login($user);
         User::updateById(Auth::id(), ['last_login_at' => now()]);
+        AuditLog::record('auth.login', 'user', $user['id'], ['role' => $user['role']], $user);
 
         $intended = Session::pull('_intended');
         if ($intended && Auth::isClient() && ! str_starts_with($intended, '/admin')) {

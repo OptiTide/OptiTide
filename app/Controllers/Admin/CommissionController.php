@@ -10,6 +10,7 @@ use App\Core\Session;
 use App\Models\Client;
 use App\Models\Commission;
 use App\Models\User;
+use App\Services\Audit\AuditLog;
 use App\Services\Referrals\CommissionService;
 
 class CommissionController extends Controller
@@ -41,6 +42,7 @@ class CommissionController extends Controller
     {
         $this->authorize(Auth::isAdmin(), 'Only administrators can action commissions.');
         (new CommissionService())->approve($id);
+        AuditLog::record('commission.approved', 'commission', $id);
         Session::flash('success', 'Commission approved.');
 
         return $this->redirect(route('admin.commissions.index'));
@@ -50,6 +52,7 @@ class CommissionController extends Controller
     {
         $this->authorize(Auth::isAdmin(), 'Only administrators can action commissions.');
         (new CommissionService())->markPaid($id);
+        AuditLog::record('commission.paid', 'commission', $id);
         Session::flash('success', 'Commission marked as paid.');
 
         return $this->redirect(route('admin.commissions.index'));

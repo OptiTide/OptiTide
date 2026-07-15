@@ -9,6 +9,7 @@ use App\Core\Response;
 use App\Core\Session;
 use App\Models\Client;
 use App\Models\User;
+use App\Services\Audit\AuditLog;
 
 /** Admin-only. Every action re-checks isAdmin (the route group also allows staff). */
 class UserController extends Controller
@@ -55,7 +56,7 @@ class UserController extends Controller
         $this->guard();
         $data = $this->validated($request);
 
-        User::create([
+        $newUser = User::create([
             'name'          => $data['name'],
             'email'         => strtolower($data['email']),
             'password_hash' => password_hash($data['password'], PASSWORD_DEFAULT),
@@ -64,6 +65,7 @@ class UserController extends Controller
             'status'        => 'active',
         ]);
 
+        AuditLog::record('user.created', 'user', $newUser['id'] ?? null, ['role' => $data['role'] ?? null, 'email' => strtolower($data['email'])]);
         Session::flash('success', 'User created.');
 
         return $this->redirect(route('admin.users.index'));
@@ -114,6 +116,7 @@ class UserController extends Controller
         }
 
         User::updateById($id, $update);
+        AuditLog::record('user.updated', 'user', $id);
         Session::flash('success', 'User updated.');
 
         return $this->redirect(route('admin.users.index'));
@@ -131,6 +134,7 @@ class UserController extends Controller
         }
 
         User::deleteById($id);
+        AuditLog::record('user.deleted', 'user', $id);
         Session::flash('status', 'User deleted.');
 
         return $this->redirect(route('admin.users.index'));

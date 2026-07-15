@@ -8,6 +8,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
 use App\Models\Client;
+use App\Services\Audit\AuditLog;
 use App\Services\Mail\Mail;
 
 /**
@@ -76,6 +77,7 @@ class BroadcastController extends Controller
             }
         }
 
+        AuditLog::record('broadcast.sent', null, null, ['sent' => $sent, 'failed' => $failed]);
         Session::flash('success', "Broadcast sent to {$sent} client(s)" . ($failed ? " ({$failed} failed)" : '') . '.');
 
         return $this->redirect(route('admin.broadcast.index'));

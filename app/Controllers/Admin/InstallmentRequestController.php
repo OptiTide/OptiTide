@@ -10,6 +10,7 @@ use App\Models\Client;
 use App\Models\InstallmentRequest;
 use App\Models\Invoice;
 use App\Models\Service;
+use App\Services\Audit\AuditLog;
 use App\Services\Billing\InstallmentService;
 use App\Services\Invoices\InvoiceService;
 
@@ -72,6 +73,7 @@ class InstallmentRequestController extends Controller
         }
 
         InstallmentRequest::updateById($id, ['status' => InstallmentRequest::STATUS_APPROVED]);
+        AuditLog::record('installment.approved', 'installment_request', $id, ['invoices' => $count]);
         Session::flash('success', 'Payment plan approved — ' . $count . ' invoice(s) issued.');
 
         return $this->redirectRoute('admin.installments.index');
@@ -95,6 +97,7 @@ class InstallmentRequestController extends Controller
         ]);
 
         InstallmentRequest::updateById($id, ['status' => InstallmentRequest::STATUS_DECLINED]);
+        AuditLog::record('installment.declined', 'installment_request', $id);
         Session::flash('success', 'Plan declined — a pay-in-full invoice was issued.');
 
         return $this->redirectRoute('admin.installments.index');
