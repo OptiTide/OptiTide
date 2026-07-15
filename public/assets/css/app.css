@@ -41,7 +41,8 @@ a:hover { color: var(--brand); }
     color: var(--ink);
     display: inline-flex;
     align-items: center;
-    gap: .4rem;
+    /* No flex gap here — "Opti" and "Tide" are separate flex items and must
+       sit flush so the name reads "OptiTide", not "Opti Tide". */
 }
 .brand-mark span {
     background: var(--brand-gradient);
@@ -50,7 +51,7 @@ a:hover { color: var(--brand); }
     -webkit-text-fill-color: transparent;
     color: transparent;
 }
-.brand-icon { height: 1.35em; width: auto; display: inline-block; }
+.brand-icon { height: 1.35em; width: auto; display: inline-block; margin-right: .4rem; }
 
 .btn-brand,
 .btn-primary {

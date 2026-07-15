@@ -33,12 +33,12 @@ services:
 
       MAIL_DRIVER: ${MAIL_DRIVER:-resend}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
-      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-accounts@optitide.io}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-Hello@OptiTide.io}
       MAIL_FROM_NAME: ${MAIL_FROM_NAME:-OptiTide}
 
       COMPANY_LEGAL_NAME: ${COMPANY_LEGAL_NAME:-OptiTide Pty Ltd}
       COMPANY_ABN: ${COMPANY_ABN:-}
-      COMPANY_EMAIL: ${COMPANY_EMAIL:-accounts@optitide.io}
+      COMPANY_EMAIL: ${COMPANY_EMAIL:-Hello@OptiTide.io}
       COMPANY_GST_REGISTERED: ${COMPANY_GST_REGISTERED:-true}
 
       PAYID_ENABLED: ${PAYID_ENABLED:-true}

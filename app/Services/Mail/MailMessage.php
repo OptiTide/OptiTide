@@ -17,7 +17,7 @@ final class MailMessage
     public function fromHeader(): string
     {
         $name = config('mail.from.name', 'OptiTide');
-        $address = config('mail.from.address', 'accounts@optitide.io');
+        $address = config('mail.from.address', 'Hello@OptiTide.io');
 
         return $name ? sprintf('%s <%s>', $name, $address) : $address;
     }

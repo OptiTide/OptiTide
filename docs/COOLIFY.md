@@ -44,7 +44,7 @@ CACHE_DRIVER=redis
 # Email (Resend) — verify your sending domain in Resend first
 MAIL_DRIVER=resend
 RESEND_API_KEY=re_...
-MAIL_FROM_ADDRESS=accounts@yourdomain.com
+MAIL_FROM_ADDRESS=Hello@OptiTide.io
 
 # AU tax identity (required for valid tax invoices)
 COMPANY_LEGAL_NAME=OptiTide Pty Ltd

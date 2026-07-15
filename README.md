@@ -46,7 +46,7 @@ Open http://127.0.0.1:8000. Seeded logins (password `password`):
 
 | Email                | Role   |
 |----------------------|--------|
-| admin@optitide.io    | admin  |
+| Hello@OptiTide.io    | admin  |
 | va@optitide.io       | staff  |
 | client@example.com   | client |
 

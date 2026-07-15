@@ -18,7 +18,7 @@ return new class {
         $this->services($categories);
 
         $out('Seeding users…');
-        $this->user('OptiTide Admin', 'admin@optitide.io', User::ROLE_ADMIN);
+        $this->user('OptiTide Admin', 'Hello@OptiTide.io', User::ROLE_ADMIN);
         $this->user('Support VA', 'va@optitide.io', User::ROLE_STAFF);
 
         $out('Seeding demo client + portal login…');
@@ -29,7 +29,7 @@ return new class {
 
         $out('');
         $out('Done. Local logins (password: "password"):');
-        $out('  admin@optitide.io    (admin)');
+        $out('  Hello@OptiTide.io    (admin)');
         $out('  va@optitide.io       (staff)');
         $out('  client@example.com   (client portal)');
     }

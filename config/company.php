@@ -15,7 +15,7 @@
 return [
     'legal_name' => env('COMPANY_LEGAL_NAME', 'OptiTide Pty Ltd'),
     'abn'        => env('COMPANY_ABN'),
-    'email'      => env('COMPANY_EMAIL', env('MAIL_FROM_ADDRESS', 'accounts@optitide.io')),
+    'email'      => env('COMPANY_EMAIL', env('MAIL_FROM_ADDRESS', 'Hello@OptiTide.io')),
     'phone'      => env('COMPANY_PHONE'),
 
     'address' => [
