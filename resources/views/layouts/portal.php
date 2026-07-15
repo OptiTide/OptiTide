@@ -7,30 +7,44 @@ $me = auth();
 <html lang="en">
 <head><?php $this->insert('partials.head', ['title' => ($title ?? 'My Account') . ' — OptiTide']); ?></head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div class="app">
     <aside class="sidebar" id="sidebar">
-        <a href="<?= route('portal.dashboard') ?>" class="d-block mb-2"><img class="brand-logo brand-logo--chip" src="/assets/img/logo.png" alt="OptiTide"></a>
+        <button type="button" class="sidebar-close btn btn-sm btn-outline-light float-end" onclick="otToggleSidebar(false)" aria-label="Close menu"><i class="bi bi-x-lg"></i></button>
+        <a href="<?= route('portal.dashboard') ?>" class="sidebar-brand" aria-label="OptiTide home">
+            <span class="sidebar-brand-mark"><img src="/assets/img/mark-wave.png" alt="OptiTide"></span>
+            <span class="sidebar-brand-name">Opti<span style="color:var(--brand)">Tide</span></span>
+        </a>
         <div class="text-secondary small mb-2" style="font-size:.72rem">Client Portal</div>
 
         <nav class="nav flex-column">
             <a class="nav-link <?= $active('/portal', true) ?>" href="<?= route('portal.dashboard') ?>"><i class="bi bi-house"></i> Dashboard</a>
+
+            <div class="nav-section">Services</div>
             <a class="nav-link <?= $active('/portal/order') ?>" href="<?= route('portal.order.index') ?>"><i class="bi bi-bag-plus"></i> Order a Service</a>
             <a class="nav-link <?= $active('/portal/services') ?>" href="<?= route('portal.services') ?>"><i class="bi bi-grid"></i> My Services</a>
             <a class="nav-link <?= $active('/portal/project') ?>" href="<?= route('portal.project') ?>"><i class="bi bi-kanban"></i> My Project</a>
             <a class="nav-link <?= $active('/portal/hosting') ?>" href="<?= route('portal.hosting') ?>"><i class="bi bi-hdd-network"></i> Hosting</a>
+
+            <div class="nav-section">Billing</div>
             <a class="nav-link <?= $active('/portal/invoices') ?>" href="<?= route('portal.invoices.index') ?>"><i class="bi bi-receipt"></i> Invoices</a>
             <a class="nav-link <?= $active('/portal/api-credits') ?>" href="<?= route('portal.api.index') ?>"><i class="bi bi-cpu"></i> API Credits</a>
+
+            <div class="nav-section">Support</div>
             <a class="nav-link <?= $active('/portal/meetings') ?>" href="<?= route('portal.meetings') ?>"><i class="bi bi-calendar-event"></i> Meetings</a>
             <a class="nav-link <?= $active('/portal/support') ?>" href="<?= route('portal.support.index') ?>"><i class="bi bi-life-preserver"></i> Support</a>
+
+            <div class="nav-section">Account</div>
             <a class="nav-link <?= $active('/portal/refer') ?>" href="<?= route('portal.refer') ?>"><i class="bi bi-gift"></i> Refer &amp; Earn</a>
             <a class="nav-link <?= $active('/portal/profile') ?>" href="<?= route('portal.profile.edit') ?>"><i class="bi bi-person"></i> Profile</a>
         </nav>
     </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="otToggleSidebar(false)"></div>
 
     <div class="content">
         <header class="topbar">
             <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-sm btn-light d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list"></i></button>
+                <button class="btn btn-sm btn-light d-lg-none" id="sidebarToggle" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false" onclick="otToggleSidebar()"><i class="bi bi-list"></i></button>
                 <h1 class="page-title"><?= e($title ?? 'Dashboard') ?></h1>
             </div>
             <div class="dropdown">
@@ -51,7 +65,7 @@ $me = auth();
             </div>
         </header>
 
-        <main class="main">
+        <main class="main" id="main">
             <?php if (\App\Core\Session::has('_impersonator')): ?>
                 <div class="alert alert-warning d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <span><i class="bi bi-eye"></i> You are previewing this portal as a client (admin view).</span>
@@ -74,6 +88,7 @@ $me = auth();
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php $this->insert('partials.sidebar-js'); ?>
 <?php $this->insert('partials.chat-widget'); ?>
 </body>
 </html>

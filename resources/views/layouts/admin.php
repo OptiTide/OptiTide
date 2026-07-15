@@ -4,42 +4,45 @@ $active = fn (string $prefix, bool $exact = false): string => ($exact ? $path ==
 $me = auth();
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="en-AU">
 <head><?php $this->insert('partials.head', ['title' => ($title ?? 'Dashboard') . ' — OptiTide']); ?></head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div class="app">
     <aside class="sidebar" id="sidebar">
-        <a href="<?= route('admin.dashboard') ?>" class="d-block mb-2"><img class="brand-logo brand-logo--chip" src="/assets/img/logo.png" alt="OptiTide"></a>
+        <button type="button" class="sidebar-close btn btn-sm btn-outline-light float-end" onclick="otToggleSidebar(false)" aria-label="Close menu"><i class="bi bi-x-lg"></i></button>
+        <a href="<?= route('admin.dashboard') ?>" class="sidebar-brand" aria-label="OptiTide admin">
+            <span class="sidebar-brand-mark"><img src="/assets/img/mark-wave.png" alt="OptiTide"></span>
+            <span class="sidebar-brand-name">Opti<span style="color:var(--brand)">Tide</span></span>
+        </a>
         <div class="text-secondary small mb-2" style="font-size:.72rem">Billing &amp; CRM</div>
 
         <nav class="nav flex-column">
             <div class="nav-section">General</div>
             <a class="nav-link <?= $active('/admin', true) ?>" href="<?= route('admin.dashboard') ?>"><i class="bi bi-speedometer2"></i> Dashboard</a>
             <a class="nav-link <?= $active('/admin/clients') ?>" href="<?= route('admin.clients.index') ?>"><i class="bi bi-people"></i> Clients</a>
+
+            <div class="nav-section">Billing</div>
             <a class="nav-link <?= $active('/admin/invoices') ?>" href="<?= route('admin.invoices.index') ?>"><i class="bi bi-receipt"></i> Invoices</a>
             <a class="nav-link <?= $active('/admin/installments') ?>" href="<?= route('admin.installments.index') ?>"><i class="bi bi-hourglass-split"></i> Payment Plans</a>
             <a class="nav-link <?= $active('/admin/services') ?>" href="<?= route('admin.services.index') ?>"><i class="bi bi-grid"></i> Services</a>
+
+            <div class="nav-section">Support &amp; Sales</div>
             <a class="nav-link <?= $active('/admin/tickets') ?>" href="<?= route('admin.tickets.index') ?>"><i class="bi bi-life-preserver"></i> Helpdesk</a>
             <a class="nav-link <?= $active('/admin/chat') ?>" href="<?= route('admin.chat.index') ?>"><i class="bi bi-chat-dots"></i> Live Chat</a>
             <a class="nav-link <?= $active('/admin/meetings') ?>" href="<?= route('admin.meetings.index') ?>"><i class="bi bi-calendar-event"></i> Meetings</a>
             <a class="nav-link <?= $active('/admin/blogs') ?>" href="<?= route('admin.blogs.index') ?>"><i class="bi bi-newspaper"></i> Blog</a>
 
-            <div class="nav-section">Web Design</div>
-            <a class="nav-link <?= $active('/admin/boards/web-design') ?>" href="<?= route('admin.boards.show', ['key' => 'web-design']) ?>"><i class="bi bi-palette"></i> Web Design Board</a>
-
-            <div class="nav-section">SEO</div>
-            <a class="nav-link <?= $active('/admin/boards/seo') ?>" href="<?= route('admin.boards.show', ['key' => 'seo']) ?>"><i class="bi bi-graph-up-arrow"></i> SEO Board</a>
-
-            <div class="nav-section">Social Media</div>
-            <a class="nav-link <?= $active('/admin/boards/smm') ?>" href="<?= route('admin.boards.show', ['key' => 'smm']) ?>"><i class="bi bi-megaphone"></i> Social Board</a>
-
-            <div class="nav-section">Web Hosting</div>
+            <div class="nav-section">Delivery Boards</div>
+            <a class="nav-link <?= $active('/admin/boards/web-design') ?>" href="<?= route('admin.boards.show', ['key' => 'web-design']) ?>"><i class="bi bi-palette"></i> Web Design</a>
+            <a class="nav-link <?= $active('/admin/boards/seo') ?>" href="<?= route('admin.boards.show', ['key' => 'seo']) ?>"><i class="bi bi-graph-up-arrow"></i> SEO</a>
+            <a class="nav-link <?= $active('/admin/boards/smm') ?>" href="<?= route('admin.boards.show', ['key' => 'smm']) ?>"><i class="bi bi-instagram"></i> Social Media</a>
             <a class="nav-link <?= $active('/admin/hosting') ?>" href="<?= route('admin.hosting.index') ?>"><i class="bi bi-hdd-network"></i> Hosting Accounts</a>
 
             <?php if (\App\Core\Auth::isAdmin()): ?>
                 <div class="nav-section">Admin</div>
                 <a class="nav-link <?= $active('/admin/assistant') ?>" href="<?= route('admin.assistant.index') ?>"><i class="bi bi-stars"></i> AI Assistant</a>
-                <a class="nav-link <?= $active('/admin/broadcast') ?>" href="<?= route('admin.broadcast.index') ?>"><i class="bi bi-megaphone"></i> Mass Email</a>
+                <a class="nav-link <?= $active('/admin/broadcast') ?>" href="<?= route('admin.broadcast.index') ?>"><i class="bi bi-envelope-paper"></i> Mass Email</a>
                 <a class="nav-link <?= $active('/admin/visitors') ?>" href="<?= route('admin.visitors.index') ?>"><i class="bi bi-people-fill"></i> Visitors</a>
                 <a class="nav-link <?= $active('/admin/commissions') ?>" href="<?= route('admin.commissions.index') ?>"><i class="bi bi-cash-stack"></i> Commissions</a>
                 <a class="nav-link <?= $active('/admin/users') ?>" href="<?= route('admin.users.index') ?>"><i class="bi bi-person-badge"></i> Users</a>
@@ -48,11 +51,12 @@ $me = auth();
             <?php endif; ?>
         </nav>
     </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="otToggleSidebar(false)"></div>
 
     <div class="content">
         <header class="topbar">
             <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-sm btn-light d-md-none" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list"></i></button>
+                <button class="btn btn-sm btn-light d-lg-none" id="sidebarToggle" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false" onclick="otToggleSidebar()"><i class="bi bi-list"></i></button>
                 <h1 class="page-title"><?= e($title ?? 'Dashboard') ?></h1>
             </div>
             <div class="dropdown">
@@ -76,12 +80,17 @@ $me = auth();
             </div>
         </header>
 
-        <main class="main">
+        <main class="main" id="main">
             <?php $this->insert('partials.flash'); ?>
             <?= $this->yield('content') ?>
         </main>
+        <footer class="app-footer">
+            <span>&copy; <?= date('Y') ?> <?= e(config('company.legal_name')) ?><?= config('company.abn') ? ' · ABN ' . e(config('company.abn')) : '' ?></span>
+            <span class="tag">Grow Online. Lead Always.</span>
+        </footer>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php $this->insert('partials.sidebar-js'); ?>
 </body>
 </html>

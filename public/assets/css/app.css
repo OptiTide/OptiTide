@@ -6,9 +6,10 @@
 :root {
     --navy: #0D1530;           /* Deep Navy — sidebar / dark surfaces / text */
     --navy-2: #1A223F;         /* Navy Surface */
-    --brand: #FF6A00;          /* Action Orange — primary accent */
+    --brand: #FF6A00;          /* Action Orange — primary accent (fills/icons/large text) */
     --brand-dark: #E85F00;     /* darker orange for hover/active */
-    --brand-bright: #FF8C3A;   /* Bright Orange */
+    --brand-bright: #FF8C3A;   /* Bright Orange (on dark backgrounds) */
+    --brand-ink: #C2410C;      /* AA-contrast orange (~5:1 on white) for small text/links */
     --brand-gradient: linear-gradient(120deg, #FF6A00 0%, #FF8C3A 100%);
     --brand-soft: #FFE7D3;     /* light orange tint */
     --cream: #F5E6D3;
@@ -27,11 +28,14 @@ body {
     font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-a { color: var(--brand-dark); }
+a { color: var(--brand-ink); }
 a:hover { color: var(--brand); }
+/* Skip-to-content link: visually hidden until focused (keyboard users). */
+.skip-link { position: absolute; left: 8px; top: -48px; z-index: 2000; background: var(--navy, #0D1530); color: #fff; padding: .55rem 1rem; border-radius: 8px; transition: top .15s; }
+.skip-link:focus { top: 8px; color: #fff; }
 
 /* --- Brand mark + wordmark ------------------------------------------------- */
-.text-brand { color: var(--brand) !important; }
+.text-brand { color: var(--brand-ink) !important; }
 .bg-brand { background: var(--brand) !important; }
 .brand-mark {
     font-weight: 800;
@@ -97,6 +101,10 @@ a:hover { color: var(--brand); }
     border-right: 1px solid rgba(255, 255, 255, .06);
 }
 .sidebar .brand-mark { color: #fff; font-size: 1.35rem; }
+.sidebar-brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; margin-bottom: .3rem; }
+.sidebar-brand-mark { background: #fff; border-radius: 10px; padding: 5px; display: inline-flex; flex: 0 0 auto; }
+.sidebar-brand-mark img { height: 34px; width: 34px; object-fit: contain; display: block; }
+.sidebar-brand-name { color: #fff; font-weight: 800; font-size: 1.5rem; letter-spacing: -.02em; line-height: 1; }
 .sidebar .nav-section { color: #6f7690; font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; margin: 1.1rem .6rem .35rem; }
 .sidebar .nav-link {
     color: #c5cbd8;
@@ -157,7 +165,7 @@ a:hover { color: var(--brand); }
 .mk-container { max-width: 1140px; margin: 0 auto; padding-left: 1.25rem; padding-right: 1.25rem; }
 .mk-section { padding: 4.5rem 0; }
 .mk-section--alt { background: #f2f0ee; }
-.mk-eyebrow { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--brand); margin-bottom: .5rem; }
+.mk-eyebrow { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--brand-ink); margin-bottom: .5rem; }
 .mk-h2 { font-weight: 800; letter-spacing: -.02em; font-size: clamp(1.8rem, 4vw, 2.5rem); margin: 0 0 .6rem; }
 .mk-lead { color: var(--muted); font-size: 1.08rem; line-height: 1.6; max-width: 640px; }
 .mk-gradient-text { color: var(--brand); }
@@ -196,7 +204,7 @@ a:hover { color: var(--brand); }
 .mk-nav-links a { color: #475569; text-decoration: none; font-weight: 600; font-size: .93rem; }
 .mk-nav-links a:hover { color: var(--brand); }
 .mk-nav-toggle { display: none; background: none; border: 0; font-size: 1.6rem; color: var(--navy); line-height: 1; padding: .1rem .3rem; cursor: pointer; }
-@media (max-width: 860px) {
+@media (max-width: 991.98px) {
     .mk-nav .mk-container { position: relative; }
     .mk-nav-toggle { display: inline-flex; }
     .mk-nav-links { position: absolute; top: 100%; left: 0; right: 0; background: #fff; flex-direction: column;
@@ -283,9 +291,16 @@ a:hover { color: var(--brand); }
 
 .money { font-variant-numeric: tabular-nums; }
 
-@media (max-width: 768px) {
-    .sidebar { position: fixed; z-index: 1050; transform: translateX(-100%); transition: transform .2s; }
+/* Off-canvas sidebar at the lg boundary (<=991.98px) so the app fits at higher
+   browser zoom (≈150% collapses the effective width into this band) — the
+   content then gets the full width instead of being squeezed beside a 250px rail. */
+.sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(13,21,48,.55); z-index: 1049; }
+.sidebar-close { display: none; }
+@media (max-width: 991.98px) {
+    .sidebar { position: fixed; top: 0; left: 0; z-index: 1050; transform: translateX(-100%); transition: transform .2s; box-shadow: 0 0 40px rgba(0,0,0,.35); }
     .sidebar.open { transform: none; }
+    .sidebar-backdrop.show { display: block; }
+    .sidebar-close { display: inline-flex; }
     .content { width: 100%; }
 }
 
