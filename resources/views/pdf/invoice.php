@@ -1,6 +1,6 @@
 <?php
 /** @var array $invoice @var array $client @var array $items @var array $company @var array $instructions */
-$accent = config('app.brand.accent', '#0d9488');
+$accent = config('app.brand.accent', '#FF6A00');
 $balance = \App\Models\Invoice::balance($invoice);
 $fmt = fn (int $cents) => money($cents, $invoice['currency'])->format();
 ?>

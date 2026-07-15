@@ -1,4 +1,4 @@
-<?php $accent = config('app.brand.accent', '#0d9488'); ?>
+<?php $accent = config('app.brand.accent', '#FF6A00'); ?>
 <!doctype html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
@@ -14,7 +14,8 @@
             </td></tr>
             <tr><td style="padding:18px 28px;border-top:1px solid #e2e8f0;color:#64748b;font-size:12px;">
                 <?= e(config('company.legal_name')) ?><?= config('company.abn') ? ' · ABN ' . e(config('company.abn')) : '' ?><br>
-                <?= e(config('company.email')) ?>
+                <?= e(config('company.email')) ?><br>
+                <span style="color:<?= e($accent) ?>;font-weight:700;font-style:italic;">Grow Online. Lead Always.</span>
             </td></tr>
         </table>
     </td></tr>
