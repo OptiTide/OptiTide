@@ -4,6 +4,33 @@ $companyEmail = config('company.email');
 ?>
 <?php $this->section('content'); ?>
 
+<div class="card border-0 mb-4" style="background:linear-gradient(120deg,var(--navy-2),var(--navy));color:#fff">
+    <div class="card-body">
+        <div class="h5 fw-bold mb-1">👋 Welcome to your client portal</div>
+        <p class="mb-3" style="color:#cbd2e0">Everything for your project lives here. Not sure where to start? Pick one:</p>
+        <div class="row g-2">
+            <?php
+            $guide = [
+                ['bi-bag-plus', 'Order a service', 'Web, SEO, social or hosting', route('portal.order.index')],
+                ['bi-kanban', 'Track your project', 'See progress live', route('portal.project')],
+                ['bi-receipt', 'View & pay invoices', 'PayID, PayPal, Skrill & more', route('portal.invoices.index')],
+                ['bi-calendar-event', 'Meetings', 'Book or join a call', route('portal.meetings')],
+                ['bi-gift', 'Refer & earn', 'Get a % on every referral', route('portal.refer')],
+                ['bi-life-preserver', 'Get help', 'Support or live chat', route('portal.support.index')],
+            ];
+            foreach ($guide as [$icon, $t, $d, $href]):
+            ?>
+                <div class="col-sm-6 col-lg-4">
+                    <a href="<?= $href ?>" class="d-flex align-items-start gap-2 p-2 rounded text-decoration-none h-100" style="background:rgba(255,255,255,.07);color:#fff">
+                        <i class="bi <?= $icon ?>" style="color:var(--brand);font-size:1.1rem"></i>
+                        <span><strong><?= e($t) ?></strong><span class="d-block small" style="color:#b9c0d4"><?= e($d) ?></span></span>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
 <div class="row g-3 mb-4">
     <?php
     $cards = [
