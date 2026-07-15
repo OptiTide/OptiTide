@@ -118,6 +118,9 @@ $router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 't
     $router->get('/', [Client\DashboardController::class, 'index'])->name('portal.dashboard');
     $router->get('/accept-terms', [Client\TermsController::class, 'show'])->name('portal.terms.show');
     $router->post('/accept-terms', [Client\TermsController::class, 'accept'])->name('portal.terms.accept');
+    $router->get('/order', [Client\OrderController::class, 'index'])->name('portal.order.index');
+    $router->get('/order/{service}', [Client\OrderController::class, 'show'])->name('portal.order.show');
+    $router->post('/order/{service}', [Client\OrderController::class, 'place'])->name('portal.order.place');
     $router->get('/services', [Client\ServiceController::class, 'index'])->name('portal.services');
     $router->get('/invoices', [Client\InvoiceController::class, 'index'])->name('portal.invoices.index');
     $router->get('/invoices/{id}', [Client\InvoiceController::class, 'show'])->name('portal.invoices.show');

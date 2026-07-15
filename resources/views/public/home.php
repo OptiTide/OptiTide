@@ -77,6 +77,7 @@ $jsonLd = [
 
 $isAuthed = \App\Core\Auth::check();
 $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : route('portal.dashboard')) : route('login');
+$canOrder = $isAuthed && \App\Core\Auth::isClient();
 ?>
 <!doctype html>
 <html lang="en-AU">
@@ -236,7 +237,13 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
                                         <?php if ($isCustom): ?><span class="mk-plan-from">from</span> <?php endif; ?><?= e(money((int) $plan['price_cents'], $plan['currency'])->format()) ?><?php if ($plan['billing_type'] === 'recurring'): ?><span class="mk-plan-per">/<?= e(substr($plan['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?>
                                     <?php endif; ?>
                                 </div>
-                                <a href="#contact" class="btn btn-sm <?= $isCustom ? 'btn-outline-brand' : 'btn-brand' ?> w-100 mt-3"><?= $isCustom ? 'Get a Quote' : 'Get Started' ?></a>
+                                <?php if ($isCustom): ?>
+                                    <a href="#contact" class="btn btn-sm btn-outline-brand w-100 mt-3">Get a Quote</a>
+                                <?php elseif ($canOrder): ?>
+                                    <a href="<?= route('portal.order.show', ['service' => $plan['id']]) ?>" class="btn btn-sm btn-brand w-100 mt-3">Order Now</a>
+                                <?php else: ?>
+                                    <a href="<?= route('register') ?>" class="btn btn-sm btn-brand w-100 mt-3">Get Started</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>

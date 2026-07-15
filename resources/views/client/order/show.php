@@ -1,0 +1,51 @@
+<?php
+$this->extends('layouts.portal');
+?>
+<?php $this->section('content'); ?>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <a href="<?= route('portal.order.index') ?>" class="btn btn-sm btn-link px-0 mb-2"><i class="bi bi-arrow-left"></i> Back to all services</a>
+
+        <div class="card">
+            <div class="card-header"><?= $line ? e($line['name']) : 'Order' ?></div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <div class="h4 fw-bold mb-0"><?= e($service['name']) ?></div>
+                        <div class="text-muted">
+                            <?php if ($recurring): ?>
+                                Recurring — billed <?= e(strtolower(\App\Models\Service::INTERVALS[$service['interval']] ?? 'monthly')) ?>
+                            <?php else: ?>
+                                One-off project
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="h3 fw-bold money mb-0"><?= e($total->format()) ?><?php if ($recurring): ?><span class="text-muted fs-6">/<?= e(substr($service['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?></div>
+                        <div class="text-muted small">includes GST of <?= e($gst->format()) ?></div>
+                    </div>
+                </div>
+
+                <div class="border rounded p-3 mb-3" style="background:var(--brand-soft)">
+                    <div class="fw-semibold mb-2"><i class="bi bi-info-circle"></i> What happens next</div>
+                    <ol class="mb-0 ps-3 small">
+                        <li>We create your order and a tax invoice for <strong><?= e($total->format()) ?></strong><?= $recurring ? ' (your first ' . e(strtolower(\App\Models\Service::INTERVALS[$service['interval']] ?? 'monthly')) . ' payment)' : '' ?>.</li>
+                        <li>You pay securely by PayID or Payoneer from the invoice page.</li>
+                        <li>Once payment lands, our team gets started<?= $recurring ? ' and your subscription renews automatically each period.' : ' on your project.' ?></li>
+                    </ol>
+                </div>
+
+                <form method="post" action="<?= route('portal.order.place', ['service' => $service['id']]) ?>">
+                    <?= csrf_field() ?>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-brand"><i class="bi bi-bag-check"></i> Confirm Order &amp; Continue to Payment</button>
+                        <a href="<?= route('portal.order.index') ?>" class="btn btn-light">Cancel</a>
+                    </div>
+                    <div class="text-muted small mt-2">By confirming you agree to our <a href="<?= route('legal.terms') ?>" target="_blank">Terms of Service</a>.</div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<?php $this->endSection(); ?>
