@@ -5,7 +5,7 @@
 <div class="auth-wrap">
     <div class="auth-card">
         <div class="text-center mb-4">
-            <a href="/" class="text-decoration-none brand-mark fs-3">Opti<span>Tide</span></a>
+            <a href="/" class="text-decoration-none brand-mark fs-3"><img class="brand-icon" src="/assets/img/optitide-mark.svg" alt="">Opti<span>Tide</span></a>
         </div>
         <?php $this->insert('partials.flash'); ?>
         <?= $this->yield('content') ?>

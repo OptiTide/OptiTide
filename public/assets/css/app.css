@@ -1,16 +1,25 @@
-/* OptiTide — clean light theme with a single brand accent.
-   The accent is injected as --brand by the layout (env: BRAND_ACCENT), so the
-   whole UI re-themes from one setting. */
+/* OptiTide brand theme — swirl-gradient identity.
+   Palette pulled from the OptiTide logo: magenta → purple → indigo → blue →
+   cyan gradient on deep indigo. Content stays light for a legible CRM; the
+   sidebar, auth screen and brand accents carry the gradient identity. */
 
 :root {
-    --brand: #0d9488;
-    --brand-dark: #0f766e;
-    --brand-soft: #ccfbf1;
+    --brand: #7c3aed;          /* primary purple */
+    --brand-dark: #6d28d9;
+    --brand-indigo: #4f46e5;
+    --brand-blue: #3b82f6;
+    --brand-cyan: #22d3ee;
+    --brand-magenta: #d946ef;
+    --brand-gradient: linear-gradient(120deg, #d946ef 0%, #8b5cf6 28%, #6366f1 55%, #3b82f6 78%, #22d3ee 100%);
+    --brand-soft: #ede9fe;     /* light purple tint */
+
     --ink: #0f172a;
     --muted: #64748b;
     --line: #e2e8f0;
     --surface: #ffffff;
     --canvas: #f6f8fa;
+    --navy: #0c0a33;           /* deep indigo — sidebar / dark surfaces */
+    --navy-2: #141043;
     --sidebar-w: 250px;
 }
 
@@ -23,34 +32,53 @@ body {
 a { color: var(--brand-dark); }
 a:hover { color: var(--brand); }
 
-/* --- Brand helpers --------------------------------------------------------- */
+/* --- Brand mark + wordmark ------------------------------------------------- */
 .text-brand { color: var(--brand) !important; }
 .bg-brand { background: var(--brand) !important; }
-.brand-mark { font-weight: 800; letter-spacing: -.02em; color: var(--ink); }
-.brand-mark span { color: var(--brand); }
+.brand-mark {
+    font-weight: 800;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+}
+.brand-mark span {
+    background: var(--brand-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.brand-icon { height: 1.35em; width: auto; display: inline-block; }
 
 .btn-brand,
 .btn-primary {
+    --bs-btn-color: #fff;
     --bs-btn-bg: var(--brand);
     --bs-btn-border-color: var(--brand);
+    --bs-btn-hover-color: #fff;
     --bs-btn-hover-bg: var(--brand-dark);
     --bs-btn-hover-border-color: var(--brand-dark);
     --bs-btn-active-bg: var(--brand-dark);
     --bs-btn-active-border-color: var(--brand-dark);
     --bs-btn-disabled-bg: var(--brand);
     --bs-btn-disabled-border-color: var(--brand);
+    background-image: var(--brand-gradient);
+    border: none;
     color: #fff;
 }
+.btn-brand:hover, .btn-primary:hover { filter: brightness(1.07); color: #fff; }
 .btn-outline-brand {
     --bs-btn-color: var(--brand-dark);
-    --bs-btn-border-color: var(--brand);
+    --bs-btn-border-color: #c4b5fd;
     --bs-btn-hover-bg: var(--brand);
     --bs-btn-hover-border-color: var(--brand);
     --bs-btn-hover-color: #fff;
 }
 .form-control:focus, .form-select:focus {
     border-color: var(--brand);
-    box-shadow: 0 0 0 .2rem rgba(13, 148, 136, .15);
+    box-shadow: 0 0 0 .2rem rgba(124, 58, 237, .18);
 }
 .form-check-input:checked { background-color: var(--brand); border-color: var(--brand); }
 
@@ -59,18 +87,19 @@ a:hover { color: var(--brand); }
 .sidebar {
     width: var(--sidebar-w);
     flex: 0 0 var(--sidebar-w);
-    background: #0b1220;
+    background: linear-gradient(180deg, var(--navy-2), var(--navy));
     color: #cbd5e1;
     position: sticky;
     top: 0;
     height: 100vh;
     padding: 1.1rem .85rem;
     overflow-y: auto;
+    border-right: 1px solid rgba(148, 163, 184, .08);
 }
 .sidebar .brand-mark { color: #fff; font-size: 1.35rem; }
-.sidebar .nav-section { color: #64748b; font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; margin: 1.1rem .6rem .35rem; }
+.sidebar .nav-section { color: #7c76b8; font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; margin: 1.1rem .6rem .35rem; }
 .sidebar .nav-link {
-    color: #cbd5e1;
+    color: #c7c3e8;
     border-radius: 8px;
     padding: .5rem .65rem;
     display: flex;
@@ -80,7 +109,7 @@ a:hover { color: var(--brand); }
     margin-bottom: 1px;
 }
 .sidebar .nav-link:hover { background: rgba(255,255,255,.06); color: #fff; }
-.sidebar .nav-link.active { background: var(--brand); color: #fff; }
+.sidebar .nav-link.active { background-image: var(--brand-gradient); color: #fff; }
 .sidebar .nav-link i { width: 18px; text-align: center; }
 
 .content { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
@@ -110,14 +139,28 @@ a:hover { color: var(--brand); }
 .badge-soft { background: #f1f5f9; color: #475569; font-weight: 600; }
 
 /* --- Auth / public --------------------------------------------------------- */
-.auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: 1.5rem; background:
-    radial-gradient(1200px 500px at 100% -10%, rgba(13,148,136,.12), transparent),
-    var(--canvas); }
+.auth-wrap {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background:
+        radial-gradient(900px 500px at 15% 0%, rgba(217, 70, 239, .28), transparent 60%),
+        radial-gradient(900px 600px at 100% 100%, rgba(34, 211, 238, .22), transparent 55%),
+        linear-gradient(160deg, var(--navy-2), var(--navy));
+}
+.auth-wrap .brand-mark { color: #fff; }
 .auth-card { width: 100%; max-width: 420px; }
 
 .public-nav { background: var(--surface); border-bottom: 1px solid var(--line); }
 .hero { padding: 4rem 0; }
 .hero h1 { font-weight: 800; letter-spacing: -.02em; }
+.hero-gradient {
+    background:
+        radial-gradient(800px 400px at 20% 0%, rgba(124, 58, 237, .18), transparent 60%),
+        radial-gradient(700px 400px at 100% 20%, rgba(34, 211, 238, .14), transparent 55%);
+    border-radius: 20px;
+}
 
 .money { font-variant-numeric: tabular-nums; }
 

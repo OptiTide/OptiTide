@@ -4,7 +4,7 @@
 <body>
 <nav class="public-nav">
     <div class="container d-flex align-items-center justify-content-between py-3">
-        <a href="/" class="text-decoration-none brand-mark fs-4">Opti<span>Tide</span></a>
+        <a href="/" class="text-decoration-none brand-mark fs-4"><img class="brand-icon" src="/assets/img/optitide-mark.svg" alt="">Opti<span>Tide</span></a>
         <div class="d-flex gap-2">
             <?php if (\App\Core\Auth::check()): ?>
                 <a class="btn btn-sm btn-brand" href="<?= \App\Core\Auth::isStaff() ? route('admin.dashboard') : route('portal.dashboard') ?>">Go to dashboard</a>
