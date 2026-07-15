@@ -42,12 +42,10 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
     </div>
 </nav>
 
-<!-- Moving announcement banner -->
-<div class="mk-marquee" aria-hidden="true">
-    <div class="mk-marquee-track">
-        <?php $msgs = ['Australian-owned & operated', 'Websites that win you customers', 'Get found on Google', 'Fixed pricing — no surprise bills', 'One team for web, SEO, social & hosting', 'Free, no-obligation quotes']; ?>
-        <?php for ($i = 0; $i < 2; $i++): foreach ($msgs as $m): ?>
-            <span class="mk-marquee-item"><i class="bi bi-stars"></i> <?= e($m) ?></span>
-        <?php endforeach; endfor; ?>
+<!-- Static announcement strip (accessible, no infinite motion) -->
+<div class="mk-announce">
+    <div class="mk-container">
+        <span><i class="bi bi-stars"></i> One Australian team for web design, SEO, social media &amp; hosting — fixed pricing, no surprise bills.</span>
+        <a href="/#contact">Get a free quote →</a>
     </div>
 </div>

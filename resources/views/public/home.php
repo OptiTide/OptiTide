@@ -105,7 +105,6 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
 <meta name="twitter:image" content="<?= e($ogImage) ?>">
 
 <link rel="icon" href="/assets/img/favicon.png" sizes="any">
-<link rel="icon" href="/assets/img/favicon.png" sizes="any">
 <link rel="apple-touch-icon" href="/assets/img/favicon.png">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -130,7 +129,7 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
         <p>We build websites that win you customers, get your business found on Google, and keep you looking professional online — web design, SEO, social media and hosting, all handled by one Australian team. No jargon, no surprise bills.</p>
         <div class="mk-hero-cta">
             <a href="#contact" class="btn btn-brand btn-lg">Get a Free Quote</a>
-            <a href="#packages" class="btn btn-ghost btn-lg">See Pricing</a>
+            <a href="<?= ! empty($packages) ? '#packages' : '#contact' ?>" class="btn btn-ghost btn-lg">See Pricing</a>
         </div>
         <div class="mk-hero-stats">
             <div><div class="n mk-gradient-text">One Team</div><div class="l">Web, SEO, social &amp; hosting in one place</div></div>
@@ -146,6 +145,17 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
         </div>
     </div>
 </header>
+
+<!-- Trust strip (honest signals, no fabricated reviews) -->
+<div class="mk-trustbar">
+    <div class="mk-container">
+        <span class="mk-trust-item"><i class="bi bi-geo-alt-fill"></i> Australian owned &amp; operated</span>
+        <span class="mk-trust-item"><i class="bi bi-receipt"></i> GST-registered · ABN <?= e(config('company.abn')) ?></span>
+        <span class="mk-trust-item"><i class="bi bi-cash-coin"></i> Fixed pricing — no surprise bills</span>
+        <span class="mk-trust-item"><i class="bi bi-headset"></i> Real support from a local team</span>
+        <span class="mk-trust-item"><i class="bi bi-shield-check"></i> Free, no-obligation quotes</span>
+    </div>
+</div>
 
 <section id="services" class="mk-section">
     <div class="mk-container">
