@@ -32,6 +32,7 @@ $me = auth();
             <a class="nav-link <?= $active('/admin/chat') ?>" href="<?= route('admin.chat.index') ?>"><i class="bi bi-chat-dots"></i> Live Chat</a>
             <a class="nav-link <?= $active('/admin/meetings') ?>" href="<?= route('admin.meetings.index') ?>"><i class="bi bi-calendar-event"></i> Meetings</a>
             <a class="nav-link <?= $active('/admin/blogs') ?>" href="<?= route('admin.blogs.index') ?>"><i class="bi bi-newspaper"></i> Blog</a>
+            <a class="nav-link <?= $active('/admin/backlinks') ?>" href="<?= route('admin.backlinks.index') ?>"><i class="bi bi-link-45deg"></i> Backlinks</a>
 
             <div class="nav-section">Delivery Boards</div>
             <a class="nav-link <?= $active('/admin/boards/web-design') ?>" href="<?= route('admin.boards.show', ['key' => 'web-design']) ?>"><i class="bi bi-palette"></i> Web Design</a>

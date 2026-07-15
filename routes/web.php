@@ -158,6 +158,13 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     // Visitor analytics (first-party)
     $router->get('/visitors', [Admin\VisitorController::class, 'index'])->name('admin.visitors.index');
 
+    // Backlinks & citations (SEO off-page toolkit)
+    $router->get('/backlinks', [Admin\BacklinkController::class, 'index'])->name('admin.backlinks.index');
+    $router->post('/backlinks/seed', [Admin\BacklinkController::class, 'seed'])->name('admin.backlinks.seed');
+    $router->post('/backlinks', [Admin\BacklinkController::class, 'store'])->name('admin.backlinks.store');
+    $router->post('/backlinks/{id}', [Admin\BacklinkController::class, 'update'])->name('admin.backlinks.update');
+    $router->post('/backlinks/{id}/delete', [Admin\BacklinkController::class, 'destroy'])->name('admin.backlinks.destroy');
+
     // Audit log (admin-only — see the middleware guard on sensitive routes below)
     $router->get('/audit-log', [Admin\AuditLogController::class, 'index'])->name('admin.audit.index');
 

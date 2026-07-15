@@ -46,6 +46,9 @@ return new class {
         $this->support($client);
         $this->hosting($client);
 
+        $out('Seeding backlink directory starter list…');
+        (new \App\Services\Seo\BacklinkService())->seedStarter();
+
         $out('');
         $out('Done. Local logins (password: "password"):');
         $out('  Hello@OptiTide.io    (admin)');
