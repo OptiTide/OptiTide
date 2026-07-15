@@ -17,6 +17,11 @@ $router->post('/contact', [PublicSite\ContactController::class, 'submit'])->name
 $router->get('/health', [PublicSite\HealthController::class, 'index'])->name('health');
 $router->get('/robots.txt', [PublicSite\SeoController::class, 'robots'])->name('robots');
 $router->get('/sitemap.xml', [PublicSite\SeoController::class, 'sitemap'])->name('sitemap');
+
+// --- PWA (manifest + service worker + offline shell) ------------------------
+$router->get('/manifest.webmanifest', [PublicSite\PwaController::class, 'manifest'])->name('pwa.manifest');
+$router->get('/sw.js', [PublicSite\PwaController::class, 'serviceWorker'])->name('pwa.sw');
+$router->get('/offline', [PublicSite\PwaController::class, 'offline'])->name('pwa.offline');
 $router->get('/pay/{token}', [PublicSite\PayController::class, 'show'])->name('pay.show');
 $router->get('/pay/{token}/pdf', [PublicSite\PayController::class, 'pdf'])->name('pay.pdf');
 

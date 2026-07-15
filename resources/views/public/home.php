@@ -113,6 +113,7 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
 <style>:root{--brand: <?= e($brand) ?>; --brand-dark: <?= e(config('app.brand.accent_dark', '#6d28d9')) ?>;}</style>
 <script type="application/ld+json"><?= json_encode($jsonLd, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?></script>
 <?php $this->insert('partials.analytics'); ?>
+<?php $this->insert('partials.pwa'); ?>
 </head>
 <body class="mk">
 
@@ -133,7 +134,8 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
 <nav class="mk-nav">
     <div class="mk-container">
         <a href="/" aria-label="OptiTide home"><img class="brand-logo" src="/assets/img/logo.png" alt="OptiTide"></a>
-        <div class="mk-nav-links">
+        <button class="mk-nav-toggle" type="button" aria-label="Menu" aria-expanded="false" onclick="var m=document.getElementById('mkNav');m.classList.toggle('open');this.setAttribute('aria-expanded',m.classList.contains('open'))"><i class="bi bi-list"></i></button>
+        <div class="mk-nav-links" id="mkNav">
             <a href="/" class="mk-nav-link">Home</a>
             <a href="#services" class="mk-nav-link">Services</a>
             <a href="#packages" class="mk-nav-link">Packages</a>

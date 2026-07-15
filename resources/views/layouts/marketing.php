@@ -55,13 +55,15 @@ $company  = config('company');
 <script type="application/ld+json"><?= json_encode($jsonLd, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?></script>
 <?php endif; ?>
 <?php $this->insert('partials.analytics'); ?>
+<?php $this->insert('partials.pwa'); ?>
 </head>
 <body class="mk">
 
 <nav class="mk-nav">
     <div class="mk-container">
         <a href="/" aria-label="OptiTide home"><img class="brand-logo" src="/assets/img/logo.png" alt="OptiTide"></a>
-        <div class="mk-nav-links">
+        <button class="mk-nav-toggle" type="button" aria-label="Menu" aria-expanded="false" onclick="var m=document.getElementById('mkNav');m.classList.toggle('open');this.setAttribute('aria-expanded',m.classList.contains('open'))"><i class="bi bi-list"></i></button>
+        <div class="mk-nav-links" id="mkNav">
             <a href="/" class="mk-nav-link">Home</a>
             <a href="/#services" class="mk-nav-link">Services</a>
             <a href="/#packages" class="mk-nav-link">Packages</a>
