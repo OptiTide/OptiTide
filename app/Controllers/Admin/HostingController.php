@@ -52,4 +52,30 @@ class HostingController extends Controller
 
         return $this->redirect(route('admin.hosting.index'));
     }
+
+    public function suspend(Request $request, string $id): Response
+    {
+        $account = HostingAccount::findOrFail($id);
+        $whm = WhmClientFactory::make();
+        if ($whm->available()) {
+            $whm->suspendAccount((string) $account['username'], trim((string) $request->input('reason', 'Suspended by administrator')));
+        }
+        HostingAccount::updateById($id, ['status' => 'suspended']);
+        Session::flash('success', $account['domain'] . ' suspended' . ($whm->available() ? ' on the server.' : ' (recorded locally — WHM not connected).'));
+
+        return $this->redirect(route('admin.hosting.index'));
+    }
+
+    public function unsuspend(Request $request, string $id): Response
+    {
+        $account = HostingAccount::findOrFail($id);
+        $whm = WhmClientFactory::make();
+        if ($whm->available()) {
+            $whm->unsuspendAccount((string) $account['username']);
+        }
+        HostingAccount::updateById($id, ['status' => 'active']);
+        Session::flash('success', $account['domain'] . ' reactivated.');
+
+        return $this->redirect(route('admin.hosting.index'));
+    }
 }

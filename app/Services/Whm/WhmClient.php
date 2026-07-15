@@ -16,4 +16,10 @@ interface WhmClient
 
     /** A one-time cPanel login URL for a hosting account, or null if unavailable. */
     public function createCpanelSession(string $username): ?string;
+
+    /** Suspend a hosting account (returns true on success / when a real call was made). */
+    public function suspendAccount(string $username, string $reason = ''): bool;
+
+    /** Unsuspend a hosting account. */
+    public function unsuspendAccount(string $username): bool;
 }

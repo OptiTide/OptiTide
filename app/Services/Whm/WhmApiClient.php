@@ -111,6 +111,40 @@ final class WhmApiClient implements WhmClient
         return is_string($sessionUrl) && $sessionUrl !== '' ? $sessionUrl : null;
     }
 
+    public function suspendAccount(string $username, string $reason = ''): bool
+    {
+        return $this->simpleCall('suspendacct', ['user' => $username, 'reason' => $reason]);
+    }
+
+    public function unsuspendAccount(string $username): bool
+    {
+        return $this->simpleCall('unsuspendacct', ['user' => $username]);
+    }
+
+    /** Fire a WHM function and return whether it reported success. */
+    private function simpleCall(string $fn, array $params): bool
+    {
+        $url = sprintf('https://%s:%d/json-api/%s?%s', $this->host, $this->port, $fn, http_build_query(['api.version' => 1] + $params));
+
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => ['Authorization: whm ' . $this->username . ':' . $this->token],
+            CURLOPT_TIMEOUT        => 20,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+        ]);
+        $body = curl_exec($ch);
+        curl_close($ch);
+        if ($body === false) {
+            return false;
+        }
+
+        $data = json_decode((string) $body, true);
+
+        return (int) ($data['metadata']['result'] ?? 0) === 1;
+    }
+
     /** Parse WHM disk figures like "512M", "2.5G", "unlimited" into MB. */
     private function toMb(mixed $value): ?int
     {

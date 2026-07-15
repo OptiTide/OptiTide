@@ -35,7 +35,14 @@
                                 <?= number_format((int) $a['disk_used_mb']) ?><?= $a['disk_limit_mb'] !== null ? ' / ' . number_format((int) $a['disk_limit_mb']) : '' ?> MB
                             <?php else: ?><span class="text-muted">—</span><?php endif; ?>
                         </td>
-                        <td><span class="badge <?= $a['status'] === 'active' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= e(ucfirst($a['status'])) ?></span></td>
+                        <td class="text-nowrap">
+                            <span class="badge <?= $a['status'] === 'active' ? 'text-bg-success' : ($a['status'] === 'suspended' ? 'text-bg-danger' : 'text-bg-secondary') ?>"><?= e(ucfirst($a['status'])) ?></span>
+                            <?php if ($a['status'] === 'suspended'): ?>
+                                <form method="post" action="<?= route('admin.hosting.unsuspend', ['id' => $a['id']]) ?>" class="d-inline"><?= csrf_field() ?><button class="btn btn-sm btn-link text-success p-0 ms-1">Reactivate</button></form>
+                            <?php else: ?>
+                                <form method="post" action="<?= route('admin.hosting.suspend', ['id' => $a['id']]) ?>" class="d-inline" onsubmit="return confirm('Suspend hosting for <?= e($a['domain']) ?>?')"><?= csrf_field() ?><button class="btn btn-sm btn-link text-danger p-0 ms-1">Suspend</button></form>
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <form method="post" action="<?= route('admin.hosting.assign', ['id' => $a['id']]) ?>" class="d-flex gap-1">
                                 <?= csrf_field() ?>

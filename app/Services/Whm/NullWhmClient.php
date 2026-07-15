@@ -19,4 +19,14 @@ final class NullWhmClient implements WhmClient
     {
         return null;
     }
+
+    public function suspendAccount(string $username, string $reason = ''): bool
+    {
+        return false;
+    }
+
+    public function unsuspendAccount(string $username): bool
+    {
+        return false;
+    }
 }

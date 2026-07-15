@@ -146,6 +146,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->get('/hosting', [Admin\HostingController::class, 'index'])->name('admin.hosting.index');
     $router->post('/hosting/sync', [Admin\HostingController::class, 'sync'])->name('admin.hosting.sync');
     $router->post('/hosting/{id}/assign', [Admin\HostingController::class, 'assign'])->name('admin.hosting.assign');
+    $router->post('/hosting/{id}/suspend', [Admin\HostingController::class, 'suspend'])->name('admin.hosting.suspend');
+    $router->post('/hosting/{id}/unsuspend', [Admin\HostingController::class, 'unsuspend'])->name('admin.hosting.unsuspend');
 
     // Service categories (service lines)
     $router->post('/categories', [Admin\ServiceCategoryController::class, 'store'])->name('admin.categories.store');
