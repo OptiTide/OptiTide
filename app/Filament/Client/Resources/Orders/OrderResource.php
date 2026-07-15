@@ -22,6 +22,8 @@ class OrderResource extends Resource
 
     protected static ?string $navigationLabel = 'My Orders';
 
+    protected static string | \UnitEnum | null $navigationGroup = 'Services';
+
     /** Clients only ever see their own orders. */
     public static function getEloquentQuery(): Builder
     {

@@ -26,6 +26,8 @@ class HelpdeskTicketResource extends Resource
 
     protected static ?string $navigationLabel = 'Support';
 
+    protected static string | \UnitEnum | null $navigationGroup = 'Support';
+
     protected static ?string $modelLabel = 'support ticket';
 
     /** Clients only ever see their own tickets. */

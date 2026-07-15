@@ -23,6 +23,8 @@ class Chat extends Page
 
     protected static ?string $navigationLabel = 'Support chat';
 
+    protected static string | \UnitEnum | null $navigationGroup = 'Support';
+
     protected static ?string $title = 'Support chat';
 
     protected string $view = 'filament.client.pages.chat';

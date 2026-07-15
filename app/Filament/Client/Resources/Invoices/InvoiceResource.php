@@ -22,6 +22,8 @@ class InvoiceResource extends Resource
 
     protected static ?string $navigationLabel = 'My Invoices';
 
+    protected static string | \UnitEnum | null $navigationGroup = 'Billing';
+
     /** Clients only ever see their own invoices, and never drafts. */
     public static function getEloquentQuery(): Builder
     {

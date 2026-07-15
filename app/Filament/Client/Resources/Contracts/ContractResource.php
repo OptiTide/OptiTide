@@ -20,6 +20,8 @@ class ContractResource extends Resource
 
     protected static ?string $navigationLabel = 'Agreements';
 
+    protected static string | \UnitEnum | null $navigationGroup = 'Services';
+
     protected static ?string $modelLabel = 'agreement';
 
     /** Clients only ever see their own agreements. */

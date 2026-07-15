@@ -22,6 +22,8 @@ class Affiliate extends Page
 
     protected static ?string $navigationLabel = 'Refer & earn';
 
+    protected static string | \UnitEnum | null $navigationGroup = 'Billing';
+
     protected static ?string $title = 'Refer & earn';
 
     protected string $view = 'filament.client.pages.affiliate';

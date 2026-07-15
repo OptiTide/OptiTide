@@ -21,6 +21,8 @@ class CommissionResource extends Resource
 
     protected static ?string $navigationLabel = 'Referral earnings';
 
+    protected static string | \UnitEnum | null $navigationGroup = 'Billing';
+
     protected static ?string $modelLabel = 'commission';
 
     /** A client only ever sees the commissions they earned as referrer. */
