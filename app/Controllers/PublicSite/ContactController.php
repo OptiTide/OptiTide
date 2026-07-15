@@ -35,7 +35,16 @@ class ContactController extends Controller
             'phone'   => 'nullable|max:40',
             'service' => 'nullable|max:60',
             'message' => 'required|max:4000',
+            'captcha' => 'required',
         ]);
+
+        // In-house captcha — verified after field validation so a field error
+        // never silently consumes the challenge.
+        if (! \App\Support\Captcha::verify($request->input('captcha'))) {
+            Session::flash('error', 'The quick-check answer was incorrect — please try again.');
+
+            return $backToContact();
+        }
 
         RateLimiter::hit($key, 3600);
 

@@ -15,6 +15,7 @@ class HomeController extends Controller
         // The marketing site is public. The nav adapts (Login vs Dashboard).
         return $this->view('public.home', [
             'packages' => $this->packages(),
+            'captcha'  => \App\Support\Captcha::question(),
         ]);
     }
 

@@ -344,6 +344,11 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
                                 <label class="form-label">How Can We Help?</label>
                                 <textarea name="message" rows="4" class="form-control <?= has_error('message') ? 'is-invalid' : '' ?>" required><?= e(old('message')) ?></textarea>
                             </div>
+                            <div class="col-12">
+                                <label class="form-label">Quick check: <?= e($captcha ?? 'What is 3 + 4?') ?> <span class="text-danger">*</span></label>
+                                <input type="text" name="captcha" inputmode="numeric" autocomplete="off" class="form-control <?= has_error('captcha') ? 'is-invalid' : '' ?>" style="max-width:180px" required>
+                                <?php if (error('captcha')): ?><div class="invalid-feedback"><?= e(error('captcha')) ?></div><?php endif; ?>
+                            </div>
                         </div>
                         <button class="btn btn-brand btn-lg mt-3">Send Enquiry</button>
                     </form>
