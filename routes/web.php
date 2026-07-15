@@ -103,6 +103,17 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->delete('/cards/{id}', [Admin\BoardController::class, 'destroyCard'])->name('admin.cards.destroy');
     $router->post('/cards/{id}/move', [Admin\BoardController::class, 'moveCard'])->name('admin.cards.move');
 
+    // Helpdesk
+    $router->get('/tickets', [Admin\TicketController::class, 'index'])->name('admin.tickets.index');
+    $router->get('/tickets/{id}', [Admin\TicketController::class, 'show'])->name('admin.tickets.show');
+    $router->post('/tickets/{id}/reply', [Admin\TicketController::class, 'reply'])->name('admin.tickets.reply');
+    $router->post('/tickets/{id}/status', [Admin\TicketController::class, 'status'])->name('admin.tickets.status');
+
+    // Hosting (WHM reseller sync)
+    $router->get('/hosting', [Admin\HostingController::class, 'index'])->name('admin.hosting.index');
+    $router->post('/hosting/sync', [Admin\HostingController::class, 'sync'])->name('admin.hosting.sync');
+    $router->post('/hosting/{id}/assign', [Admin\HostingController::class, 'assign'])->name('admin.hosting.assign');
+
     // Service categories (service lines)
     $router->post('/categories', [Admin\ServiceCategoryController::class, 'store'])->name('admin.categories.store');
     $router->put('/categories/{id}', [Admin\ServiceCategoryController::class, 'update'])->name('admin.categories.update');
@@ -144,6 +155,11 @@ $router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 't
     $router->get('/order/{service}', [Client\OrderController::class, 'show'])->name('portal.order.show');
     $router->post('/order/{service}', [Client\OrderController::class, 'place'])->name('portal.order.place');
     $router->get('/services', [Client\ServiceController::class, 'index'])->name('portal.services');
+    $router->get('/support', [Client\SupportController::class, 'index'])->name('portal.support.index');
+    $router->get('/support/new', [Client\SupportController::class, 'create'])->name('portal.support.create');
+    $router->post('/support', [Client\SupportController::class, 'store'])->name('portal.support.store');
+    $router->get('/support/{id}', [Client\SupportController::class, 'show'])->name('portal.support.show');
+    $router->post('/support/{id}/reply', [Client\SupportController::class, 'reply'])->name('portal.support.reply');
     $router->get('/invoices', [Client\InvoiceController::class, 'index'])->name('portal.invoices.index');
     $router->get('/invoices/{id}', [Client\InvoiceController::class, 'show'])->name('portal.invoices.show');
     $router->get('/invoices/{id}/pdf', [Client\InvoiceController::class, 'pdf'])->name('portal.invoices.pdf');

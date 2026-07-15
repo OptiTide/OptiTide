@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Services\Whm;
+
+interface WhmClient
+{
+    /** Whether a real connection is configured (creds present). */
+    public function available(): bool;
+
+    /**
+     * List reseller accounts.
+     *
+     * @return array<int,array{domain:string,user:string,plan:?string,status:string,ip:?string,disk_used_mb:?int,disk_limit_mb:?int,server:?string}>
+     */
+    public function listAccounts(): array;
+}

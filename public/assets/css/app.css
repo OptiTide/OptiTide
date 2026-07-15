@@ -333,3 +333,12 @@ a:hover { color: var(--brand); }
 .kb-add input, .kb-add-col input { width: 100%; border: 1px dashed #c4cbdd; background: rgba(255,255,255,.6); border-radius: 8px; padding: .45rem .6rem; font-size: .85rem; color: #1f2637; }
 .kb-add input:focus, .kb-add-col input:focus { outline: none; border-color: var(--brand, #FF6A00); background: #fff; }
 .kb-col--add { background: transparent; flex: 0 0 260px; }
+
+/* --- Helpdesk ticket thread --------------------------------------------- */
+.tk-thread { display: flex; flex-direction: column; gap: .75rem; }
+.tk-msg { border: 1px solid #e7eaf3; border-radius: 12px; padding: .8rem 1rem; background: #fff; }
+.tk-msg--staff { border-left: 3px solid var(--brand, #FF6A00); }
+.tk-msg--client { border-left: 3px solid #94a3b8; background: #f8fafc; }
+.tk-msg--internal { border-left: 3px solid #f59e0b; background: #fffbeb; }
+.tk-msg-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin-bottom: .35rem; }
+.tk-msg-body { color: #2c3348; line-height: 1.6; white-space: normal; }

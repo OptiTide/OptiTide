@@ -7,10 +7,13 @@ use App\Models\BoardColumn;
 use App\Models\Client;
 use App\Models\ClientService;
 use App\Models\Invoice;
+use App\Models\HostingAccount;
 use App\Models\Service;
 use App\Models\ServiceCategory;
+use App\Models\Ticket;
 use App\Models\User;
 use App\Services\Invoices\InvoiceService;
+use App\Services\Support\TicketService;
 
 return new class {
     public function run(callable $out): void
@@ -37,6 +40,10 @@ return new class {
 
         $out('Seeding project boards…');
         $this->boards($client);
+
+        $out('Seeding helpdesk + hosting demo data…');
+        $this->support($client);
+        $this->hosting($client);
 
         $out('');
         $out('Done. Local logins (password: "password"):');
@@ -116,6 +123,60 @@ return new class {
             'client_id'     => $clientId,
             'status'        => 'active',
         ]);
+    }
+
+    private function support(array $client): void
+    {
+        if (Ticket::firstWhere('client_id', $client['id'])) {
+            return;
+        }
+
+        $clientUser = User::findByEmail('client@example.com');
+        $staffUser = User::findByEmail('staff@optitide.io');
+        $tickets = new TicketService();
+
+        $ticket = $tickets->open(
+            $client['id'],
+            $clientUser['id'] ?? null,
+            'Can we add online bookings to the website?',
+            'Web Design',
+            'normal',
+            "Hi team,\n\nWe'd love to let customers book a table directly from the site. Is that something you can add to our current plan?\n\nThanks!",
+        );
+
+        $tickets->reply(
+            $ticket['id'],
+            $staffUser['id'] ?? null,
+            "Absolutely — we can add a booking widget that emails you each reservation. I'll put together a quick quote and send it through today.",
+            true,
+        );
+    }
+
+    private function hosting(array $client): void
+    {
+        if (HostingAccount::firstWhere('username', 'coastca')) {
+            return;
+        }
+
+        $demo = [
+            ['coastlinecafe.com.au', 'coastca', 'Managed - 10GB', 'active', '203.0.113.24', 2450, 10240],
+            ['coastlinecatering.com.au', 'coastcat', 'Managed - 10GB', 'active', '203.0.113.24', 880, 10240],
+        ];
+
+        foreach ($demo as [$domain, $user, $plan, $status, $ip, $used, $limit]) {
+            HostingAccount::create([
+                'client_id'     => $client['id'],
+                'domain'        => $domain,
+                'username'      => $user,
+                'plan'          => $plan,
+                'status'        => $status,
+                'ip_address'    => $ip,
+                'disk_used_mb'  => $used,
+                'disk_limit_mb' => $limit,
+                'server'        => 'Primary Server',
+                'synced_at'     => now(),
+            ]);
+        }
     }
 
     private function boards(array $client): void
