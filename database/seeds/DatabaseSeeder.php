@@ -1,6 +1,9 @@
 <?php
 
 use App\Models\Blog;
+use App\Models\Board;
+use App\Models\BoardCard;
+use App\Models\BoardColumn;
 use App\Models\Client;
 use App\Models\ClientService;
 use App\Models\Invoice;
@@ -31,6 +34,9 @@ return new class {
 
         $out('Seeding starter blog articles…');
         $this->blogs();
+
+        $out('Seeding project boards…');
+        $this->boards($client);
 
         $out('');
         $out('Done. Local logins (password: "password"):');
@@ -110,6 +116,56 @@ return new class {
             'client_id'     => $clientId,
             'status'        => 'active',
         ]);
+    }
+
+    private function boards(array $client): void
+    {
+        $blueprint = [
+            ['web-design', 'Web Design', ['Backlog', 'In Design', 'In Development', 'Review', 'Launched'], [
+                ['Backlog', 'New brochure site — Coastline Cafe', true],
+                ['In Design', 'Homepage mockups', true],
+                ['In Development', 'Booking form integration', false],
+            ]],
+            ['seo', 'SEO', ['Backlog', 'In Progress', 'On-Page', 'Reporting', 'Done'], [
+                ['Backlog', 'Keyword research — local terms', true],
+                ['In Progress', 'Fix crawl errors', false],
+                ['Reporting', 'July ranking report', true],
+            ]],
+            ['smm', 'Social Media', ['Ideas', 'Scheduled', 'Published', 'Reporting'], [
+                ['Ideas', 'Winter promo campaign concept', false],
+                ['Scheduled', 'Weekly tips carousel', true],
+                ['Published', 'Customer spotlight post', true],
+            ]],
+        ];
+
+        foreach ($blueprint as $i => [$key, $name, $columnNames, $cards]) {
+            if (Board::byKey($key)) {
+                continue;
+            }
+
+            $board = Board::create(['key' => $key, 'name' => $name, 'position' => $i]);
+
+            $columnIds = [];
+            foreach ($columnNames as $ci => $colName) {
+                $col = BoardColumn::create(['board_id' => $board['id'], 'name' => $colName, 'position' => $ci]);
+                $columnIds[$colName] = $col['id'];
+            }
+
+            $pos = [];
+            foreach ($cards as [$colName, $title, $linkClient]) {
+                $columnId = $columnIds[$colName];
+                $pos[$columnId] = ($pos[$columnId] ?? -1) + 1;
+                BoardCard::create([
+                    'board_id'  => $board['id'],
+                    'column_id' => $columnId,
+                    'client_id' => $linkClient ? $client['id'] : null,
+                    'title'     => $title,
+                    'notes'     => null,
+                    'due_date'  => null,
+                    'position'  => $pos[$columnId],
+                ]);
+            }
+        }
     }
 
     private function blogs(): void

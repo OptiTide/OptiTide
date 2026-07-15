@@ -94,6 +94,15 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->put('/blogs/{id}', [Admin\BlogController::class, 'update'])->name('admin.blogs.update');
     $router->delete('/blogs/{id}', [Admin\BlogController::class, 'destroy'])->name('admin.blogs.destroy');
 
+    // Project boards (Trello-style, per service line)
+    $router->get('/boards', [Admin\BoardController::class, 'index'])->name('admin.boards.index');
+    $router->get('/boards/{key}', [Admin\BoardController::class, 'show'])->name('admin.boards.show');
+    $router->post('/boards/{key}/cards', [Admin\BoardController::class, 'storeCard'])->name('admin.boards.cards.store');
+    $router->post('/boards/{key}/columns', [Admin\BoardController::class, 'storeColumn'])->name('admin.boards.columns.store');
+    $router->put('/cards/{id}', [Admin\BoardController::class, 'updateCard'])->name('admin.cards.update');
+    $router->delete('/cards/{id}', [Admin\BoardController::class, 'destroyCard'])->name('admin.cards.destroy');
+    $router->post('/cards/{id}/move', [Admin\BoardController::class, 'moveCard'])->name('admin.cards.move');
+
     // Service categories (service lines)
     $router->post('/categories', [Admin\ServiceCategoryController::class, 'store'])->name('admin.categories.store');
     $router->put('/categories/{id}', [Admin\ServiceCategoryController::class, 'update'])->name('admin.categories.update');

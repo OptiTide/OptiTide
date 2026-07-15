@@ -310,3 +310,26 @@ a:hover { color: var(--brand); }
 .mk-blog-body blockquote { border-left: 4px solid var(--brand); padding: .5rem 0 .5rem 1.2rem; margin: 1.4rem 0; color: #4a5266; font-style: italic; }
 .mk-blog-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;
     background: var(--brand-soft, #fff2e8); border-radius: 16px; padding: 1.5rem 1.75rem; }
+
+/* --- Project boards (kanban) -------------------------------------------- */
+.board-tile:hover { box-shadow: 0 10px 26px rgba(13,21,48,.12); transform: translateY(-2px); transition: .15s; }
+.kb-board { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 1rem; align-items: flex-start; }
+.kb-col { flex: 0 0 300px; max-width: 300px; background: #eceff5; border-radius: 14px; padding: .75rem; display: flex; flex-direction: column; }
+.kb-col-head { display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--navy, #0D1530); padding: .25rem .5rem .6rem; font-size: .92rem; }
+.kb-count { background: #fff; color: #6b7280; border-radius: 999px; padding: .05rem .5rem; font-size: .75rem; font-weight: 600; }
+.kb-list { min-height: 12px; display: flex; flex-direction: column; gap: .5rem; }
+.kb-card { position: relative; background: #fff; border-radius: 10px; padding: .65rem .75rem; box-shadow: 0 1px 3px rgba(13,21,48,.12); cursor: grab; border: 1px solid #e7eaf3; }
+.kb-card:active { cursor: grabbing; }
+.kb-card.dragging { opacity: .45; }
+.kb-card-title { font-size: .88rem; font-weight: 600; color: #1f2637; padding-right: 1.1rem; line-height: 1.35; }
+.kb-card-meta { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .45rem; }
+.kb-card-meta:empty { display: none; }
+.kb-tag { font-size: .72rem; background: #eef1f7; color: #5b6479; border-radius: 6px; padding: .1rem .4rem; display: inline-flex; align-items: center; gap: .25rem; }
+.kb-tag--due { background: #fff2e8; color: var(--brand, #FF6A00); }
+.kb-card-edit { position: absolute; top: .35rem; right: .35rem; border: 0; background: transparent; color: #b3bacb; padding: .1rem .25rem; border-radius: 6px; font-size: .8rem; opacity: 0; transition: .12s; }
+.kb-card:hover .kb-card-edit { opacity: 1; }
+.kb-card-edit:hover { background: #eef1f7; color: var(--brand, #FF6A00); }
+.kb-add { margin-top: .5rem; }
+.kb-add input, .kb-add-col input { width: 100%; border: 1px dashed #c4cbdd; background: rgba(255,255,255,.6); border-radius: 8px; padding: .45rem .6rem; font-size: .85rem; color: #1f2637; }
+.kb-add input:focus, .kb-add-col input:focus { outline: none; border-color: var(--brand, #FF6A00); background: #fff; }
+.kb-col--add { background: transparent; flex: 0 0 260px; }
