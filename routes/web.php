@@ -161,6 +161,11 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     // Audit log (admin-only — see the middleware guard on sensitive routes below)
     $router->get('/audit-log', [Admin\AuditLogController::class, 'index'])->name('admin.audit.index');
 
+    // AI assistant (admin-only, enforced in the controller)
+    $router->get('/assistant', [Admin\AssistantController::class, 'index'])->name('admin.assistant.index');
+    $router->post('/assistant/message', [Admin\AssistantController::class, 'message'])->name('admin.assistant.message');
+    $router->post('/assistant/execute', [Admin\AssistantController::class, 'execute'])->name('admin.assistant.execute');
+
     // Live chat (staff)
     $router->get('/chat', [Admin\ChatController::class, 'index'])->name('admin.chat.index');
     $router->get('/chat/{id}', [Admin\ChatController::class, 'show'])->name('admin.chat.show');

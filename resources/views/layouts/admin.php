@@ -38,6 +38,7 @@ $me = auth();
 
             <?php if (\App\Core\Auth::isAdmin()): ?>
                 <div class="nav-section">Admin</div>
+                <a class="nav-link <?= $active('/admin/assistant') ?>" href="<?= route('admin.assistant.index') ?>"><i class="bi bi-stars"></i> AI Assistant</a>
                 <a class="nav-link <?= $active('/admin/broadcast') ?>" href="<?= route('admin.broadcast.index') ?>"><i class="bi bi-megaphone"></i> Mass Email</a>
                 <a class="nav-link <?= $active('/admin/visitors') ?>" href="<?= route('admin.visitors.index') ?>"><i class="bi bi-people-fill"></i> Visitors</a>
                 <a class="nav-link <?= $active('/admin/commissions') ?>" href="<?= route('admin.commissions.index') ?>"><i class="bi bi-cash-stack"></i> Commissions</a>

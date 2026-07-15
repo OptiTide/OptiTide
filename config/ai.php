@@ -9,4 +9,9 @@ return [
     'anthropic_key' => env('ANTHROPIC_API_KEY', ''),
     'model'         => env('CHAT_AI_MODEL', 'claude-haiku-4-5-20251001'),
     'enabled'       => env('CHAT_AI_ENABLED', true),
+
+    // Admin AI assistant — reasons over the platform's data via read tools and can
+    // propose edits (which an admin confirms). Uses a more capable model.
+    'assistant_model'   => env('ASSISTANT_AI_MODEL', 'claude-sonnet-5'),
+    'assistant_enabled' => env('ASSISTANT_AI_ENABLED', true),
 ];
