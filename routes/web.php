@@ -14,6 +14,7 @@ use App\Controllers\PublicSite;
 // --- Public -----------------------------------------------------------------
 $router->get('/', [PublicSite\HomeController::class, 'index'])->name('home');
 $router->post('/contact', [PublicSite\ContactController::class, 'submit'])->name('contact.submit')->middleware('csrf');
+$router->post('/proposal', [PublicSite\ContactController::class, 'proposal'])->name('proposal.submit')->middleware('csrf');
 $router->get('/health', [PublicSite\HealthController::class, 'index'])->name('health');
 $router->get('/t', [PublicSite\VisitController::class, 'track'])->name('track');
 

@@ -1,43 +1,73 @@
 <?php
 $company = config('company');
 $appUrl = rtrim(config('app.url'), '/');
-$brand = config('app.brand.accent', '#7c3aed');
+$brand = config('app.brand.accent', '#FF6A00');
 $title = 'OptiTide — Web Design, SEO, Social Media & Hosting in Australia';
-$description = 'OptiTide is an Australian digital agency delivering web design, SEO, social media marketing and managed hosting for small business — all under one roof, with fixed upfront pricing and no surprise bills.';
+$description = 'OptiTide is an Australian digital agency delivering web design, SEO, social media marketing and managed hosting for small business — high-performance websites, higher Google rankings and more leads, with fixed pricing and no lock-in contracts.';
 $ogImage = $appUrl . '/assets/img/favicon.png';
 
+// ---------------------------------------------------------------------------
+// Marketing content. Edit these arrays to change the homepage copy.
+// NOTE: the testimonials, case-study figures and partner badges below are
+// STARTER content — replace them with your own real reviews/results, and only
+// display partner badges your business is genuinely entitled to use.
+// ---------------------------------------------------------------------------
 $services = [
-    ['bi-palette', 'Web Design & Development', 'Fast, modern, mobile-first websites built to convert visitors into customers and to rank well from day one. We design around your brand and your goals — not a template.', ['Custom responsive design', 'SEO-friendly, fast-loading build', 'Easy-to-edit content management', 'E-commerce & bookings ready', 'Ongoing care & updates']],
-    ['bi-graph-up-arrow', 'Search Engine Optimisation (SEO)', 'Get found by the people already searching for what you do. We combine technical SEO, on-page optimisation, local search and content to grow qualified organic traffic over time.', ['Full technical SEO audit', 'On-page & content optimisation', 'Local SEO & Google Business Profile', 'Keyword & content strategy', 'Transparent monthly reporting']],
-    ['bi-megaphone', 'Social Media Marketing', 'Show up consistently where your audience already is. We plan, create and manage on-brand content that builds awareness, engagement and trust across your channels.', ['Monthly content calendar', 'On-brand graphics & copy', 'Scheduling & publishing', 'Community management', 'Performance reporting']],
-    ['bi-hdd-network', 'Managed Web Hosting', 'Reliable, secure, fully managed hosting so your website is always fast, safe and online. We handle the servers, security and backups — you focus on your business.', ['Fast, secure managed hosting', 'Free SSL & security hardening', 'Automated daily backups', 'Uptime & SSL monitoring', 'Priority Australian support']],
+    ['bi-window-desktop', 'Web Design & Development', 'Beautiful, responsive websites built to convert visitors into customers.', ['Custom Website Design', 'E-commerce Solutions', 'Mobile-First & Fast Loading', 'Ongoing Support & Updates']],
+    ['bi-search', 'Search Engine Optimisation', 'Rank higher on Google and get found by more of your ideal customers.', ['On-Page SEO', 'Technical SEO Audits', 'Keyword Research', 'Local SEO & Reporting']],
+    ['bi-megaphone', 'Social Media Marketing', 'Grow your brand and engage your audience across social platforms.', ['Content Creation', 'Paid Social Advertising', 'Community Management', 'Performance Reporting']],
+    ['bi-hdd-network', 'Managed Hosting', 'Secure, fast and reliable hosting with expert Australian support.', ['Australian Servers', 'Daily Backups', '24/7 Monitoring', 'Free SSL & Security']],
 ];
-// Drop PNGs named service-<slug>.png in public/assets/img to use your own icons.
-$serviceSlugs = ['web-design', 'seo', 'social-media', 'hosting'];
+
+$partners = ['Afterpay', 'Google Partner', 'Meta Business Partner', 'WordPress', 'SEMrush', 'Shopify Partner'];
+
+$caseStudy = [
+    'label'  => 'Tradie Business — Sunshine Coast',
+    'detail' => 'New website + local SEO campaign',
+    'stats'  => [['+210%', 'Leads Increase'], ['+165%', 'Organic Traffic'], ['+87%', 'Revenue Growth']],
+    'quote'  => 'OptiTide built us a new website and helped us rank #1 in Google. Our enquiries have never been better!',
+    'author' => 'Jake T.',
+    'role'   => 'Director, Coastal Roofing QLD',
+];
+
+// Pricing packages. `mo` = monthly retainer, `once` = one-off project price.
+// Adjust prices/features to your real packages; set `once` to '' to hide it.
+$plans = [
+    ['name' => 'Starter', 'blurb' => 'Perfect for small businesses getting online.', 'mo' => 149, 'once' => 1499, 'features' => ['5 Page Website', 'Mobile Responsive', 'Basic SEO Setup', 'Contact Form'], 'cta' => 'Get Started', 'popular' => false],
+    ['name' => 'Growth', 'blurb' => 'Great for growing businesses seeking more leads.', 'mo' => 299, 'once' => 2999, 'features' => ['Up to 10 Pages', 'Technical SEO', 'Google Business Profile', 'Monthly Performance Report'], 'cta' => 'Get Started', 'popular' => false],
+    ['name' => 'Pro', 'blurb' => 'Our best value for established businesses.', 'mo' => 599, 'once' => 5999, 'features' => ['Up to 20 Pages', 'Advanced SEO & Content', 'Social Media Management', 'Monthly Strategy Call'], 'cta' => 'Get Started', 'popular' => true],
+    ['name' => 'Business', 'blurb' => 'Custom solutions for larger businesses.', 'mo' => 0, 'once' => 0, 'features' => ['Custom Website', 'Full SEO Campaign', 'Paid Advertising', 'Dedicated Account Manager'], 'cta' => 'Contact Us', 'popular' => false],
+];
 
 $process = [
-    ['Discover', 'We start by understanding your business, your customers and your goals — so everything we build has a purpose.'],
-    ['Plan', 'You get a clear strategy and a fixed, transparent proposal. No jargon, no surprises — just a plan that makes sense.'],
-    ['Build', 'We design, develop and launch — whether that\'s a new website, an SEO campaign or your social presence.'],
-    ['Grow', 'We measure, optimise and report, and we\'re here for ongoing support, hosting and improvements as you grow.'],
+    ['Discover', 'We learn about your business, goals and target audience.'],
+    ['Plan', 'We create a tailored strategy and roadmap for success.'],
+    ['Build', 'We design, develop and optimise your digital assets.'],
+    ['Grow', 'We launch, promote and continuously improve results.'],
 ];
 
 $benefits = [
-    ['bi-geo-alt', 'Australian-Owned', 'A local team who understand the Australian market, with support in your timezone.'],
-    ['bi-stack', 'All-in-One', 'Web, SEO, social and hosting managed together — one partner instead of five.'],
-    ['bi-cash-coin', 'No Surprise Bills', 'You get a clear, fixed quote before we start — the price we quote is the price you pay. Every invoice is a proper Australian tax invoice with GST already included.'],
-    ['bi-people', 'Dedicated Support', 'A real person to talk to, not a ticket queue. We treat your business like our own.'],
-    ['bi-speedometer2', 'Results-Focused', 'Everything we do is aimed at real outcomes — more traffic, more leads, more customers.'],
-    ['bi-shield-check', 'Secure & Reliable', 'Best-practice security, backups and monitoring baked into everything we host and build.'],
+    ['bi-award', 'Australian Experts', 'Local team, local support.'],
+    ['bi-graph-up-arrow', 'Proven Results', 'Data-driven strategies that deliver.'],
+    ['bi-unlock', 'No Lock-in Contracts', 'Stay because you want to, not because you have to.'],
+    ['bi-tag', 'Transparent Pricing', 'No hidden fees, just honest pricing.'],
+    ['bi-headset', 'Ongoing Support', 'We\'re here when you need us most.'],
+    ['bi-heart', 'Passionate Team', 'We care about your success.'],
+];
+
+$testimonials = [
+    ['Sarah M.', 'Boutique Owner, Melbourne', 'OptiTide are professional, responsive and deliver real results. Our website looks fantastic and we\'re ranking higher than ever.'],
+    ['Daniel R.', 'Plumbing Services, Perth', 'The team is amazing! They explained everything and got us more leads within weeks.'],
+    ['Melissa K.', 'E-commerce Store, Brisbane', 'Our social media and SEO results have been outstanding. Highly recommend OptiTide.'],
+    ['Chris L.', 'Manufacturing, Sydney', 'Reliable, honest and great value. Exactly what Australian businesses need.'],
 ];
 
 $faqs = [
-    ['How much does a website cost?', 'Every project is quoted individually based on what you need — from a clean starter website through to a fully custom, e-commerce build. Get in touch for a free, no-obligation quote and a clear fixed price.'],
-    ['How long does SEO take to work?', 'SEO is a long-term investment rather than an overnight fix. Most businesses start to see meaningful movement within three to six months, with results compounding the longer you invest.'],
-    ['Do you offer ongoing hosting and support?', 'Yes. We offer fully managed hosting with SSL, daily backups, uptime monitoring and priority support, plus ongoing website care so you\'re never left on your own after launch.'],
-    ['Do you work with businesses outside your local area?', 'Absolutely. We work with businesses right across Australia and communicate remotely, so distance is never a barrier to working together.'],
-    ['What\'s included in social media management?', 'Content planning, on-brand graphics and copy, scheduling and publishing, community management and regular performance reporting across the platforms that matter for your business.'],
-    ['Is GST included in the price?', 'Yes. We\'re a registered Australian business, so every price you see already includes GST (10%) — there\'s nothing added on top. You\'ll always get a proper tax invoice in Australian dollars.'],
+    ['How long does it take to build a website?', 'Most websites are completed within 2–4 weeks depending on the size and complexity. We\'ll provide a clear timeline during our discovery call.'],
+    ['Will my website be mobile friendly?', 'Absolutely — every website we build is fully responsive and optimised for mobile, tablet and desktop out of the box.'],
+    ['Do you offer ongoing SEO services?', 'Yes. We offer monthly SEO retainers that grow your organic traffic and rankings over time, with transparent reporting.'],
+    ['Do you lock clients into long-term contracts?', 'No lock-in contracts. We earn your business every month with real results and genuine service.'],
+    ['Where are you based?', 'We\'re an Australian-owned business serving clients right across the country, with local support in your timezone.'],
 ];
 
 // --- Structured data (schema.org) -----------------------------------------
@@ -77,7 +107,8 @@ $jsonLd = [
 
 $isAuthed = \App\Core\Auth::check();
 $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : route('portal.dashboard')) : route('login');
-$canOrder = $isAuthed && \App\Core\Auth::isClient();
+$startUrl = $isAuthed ? $dashUrl : route('register');
+$hasMascot = is_file(public_path('assets/img/mascot.png'));
 ?>
 <!doctype html>
 <html lang="en-AU">
@@ -87,7 +118,7 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
 <title><?= e($title) ?></title>
 <meta name="description" content="<?= e($description) ?>">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="<?= e($brand) ?>">
+<meta name="theme-color" content="#0D1530">
 <link rel="canonical" href="<?= e($appUrl) ?>/">
 <meta name="geo.region" content="AU">
 <meta name="geo.placename" content="Australia">
@@ -109,7 +140,7 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <link href="/assets/css/app.css" rel="stylesheet">
-<style>:root{--brand: <?= e($brand) ?>; --brand-dark: <?= e(config('app.brand.accent_dark', '#6d28d9')) ?>;}</style>
+<style>:root{--brand: <?= e($brand) ?>; --brand-dark: <?= e(config('app.brand.accent_dark', '#E85F00')) ?>;}</style>
 <script type="application/ld+json"><?= json_encode($jsonLd, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?></script>
 <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
 <?php $this->insert('partials.analytics'); ?>
@@ -119,68 +150,107 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
 
 <?php $this->insert('partials.site-nav'); ?>
 
-<header class="mk-hero">
+<!-- ================= HERO ================= -->
+<header class="mk-hero" id="proposal">
     <div class="mk-container">
-        <?php $hasMascot = is_file(public_path('assets/img/mascot.png')); ?>
-        <div class="row align-items-center g-4">
-            <div class="col-lg-<?= $hasMascot ? '7' : '12' ?>">
-        <span class="mk-badge"><i class="bi bi-stars"></i> Australian Digital Agency</span>
-        <h1>Web Design, SEO &amp; Digital Marketing<br class="d-none d-md-inline"> for <span class="mk-gradient-text">Australian Business</span></h1>
-        <p>We build websites that win you customers, get your business found on Google, and keep you looking professional online — web design, SEO, social media and hosting, all handled by one Australian team. No jargon, no surprise bills.</p>
-        <div class="mk-hero-cta">
-            <a href="#contact" class="btn btn-brand btn-lg">Get a Free Quote</a>
-            <a href="<?= ! empty($packages) ? '#packages' : '#contact' ?>" class="btn btn-ghost btn-lg">See Pricing</a>
-        </div>
-        <div class="mk-hero-stats">
-            <div><div class="n mk-gradient-text">One Team</div><div class="l">Web, SEO, social &amp; hosting in one place</div></div>
-            <div><div class="n mk-gradient-text">Australian</div><div class="l">Local team, real people, real support</div></div>
-            <div><div class="n mk-gradient-text">Fixed Pricing</div><div class="l">Clear quotes upfront — no surprise bills</div></div>
-        </div>
-            </div>
-            <?php if ($hasMascot): ?>
-                <div class="col-lg-5 text-center">
-                    <img src="/assets/img/mascot.png" alt="OptiTide mascot" class="mk-hero-mascot" style="max-height:440px">
+        <div class="row g-4 g-xl-5 align-items-center">
+            <div class="col-lg-7">
+                <div class="mk-hero-inner">
+                    <div class="mk-hero-copy">
+                        <h1>Web Design, SEO &amp; Digital Marketing That Drives Real Results for <span class="mk-orange">Australian Businesses</span>.</h1>
+                        <p>We build high-performance websites, rank you on Google, and grow your brand online — so you get more leads, more customers, and more revenue.</p>
+                        <ul class="mk-hero-checks">
+                            <li><i class="bi bi-check-circle-fill"></i> More Traffic &amp; Leads</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Higher Rankings on Google</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Professional Websites That Convert</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Clear Pricing, No Lock-in Contracts</li>
+                        </ul>
+                        <div class="mk-hero-cta">
+                            <a href="#proposal" class="btn btn-brand btn-lg">Get Your Free Proposal</a>
+                            <a href="#packages" class="btn btn-ghost btn-lg">View Our Packages</a>
+                        </div>
+                    </div>
+                    <?php if ($hasMascot): ?>
+                        <img src="/assets/img/mascot.png" alt="OptiTide mascot" class="mk-hero-mascot">
+                    <?php endif; ?>
                 </div>
-            <?php endif; ?>
+            </div>
+            <div class="col-lg-5">
+                <div class="mk-hero-form" id="get-proposal">
+                    <h2>Get Your Free Proposal</h2>
+                    <p class="mk-hero-form-sub">Tell us about your business and we'll send a custom proposal within 24 hours.</p>
+                    <?php if (session('success')): ?>
+                        <div class="alert alert-success py-2"><i class="bi bi-check-circle"></i> <?= e(session('success')) ?></div>
+                    <?php endif; ?>
+                    <form method="post" action="<?= route('proposal.submit') ?>" novalidate>
+                        <?= csrf_field() ?>
+                        <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+                        <div class="row g-2">
+                            <div class="col-sm-6"><input type="text" name="name" class="form-control" placeholder="Your Name" required></div>
+                            <div class="col-sm-6"><input type="email" name="email" class="form-control" placeholder="Email Address" required></div>
+                            <div class="col-sm-6"><input type="text" name="phone" class="form-control" placeholder="Phone Number"></div>
+                            <div class="col-sm-6">
+                                <select name="business_type" class="form-select">
+                                    <option value="">Business Type</option>
+                                    <?php foreach (['Trades & Services', 'Retail / E-commerce', 'Hospitality', 'Professional Services', 'Health & Fitness', 'Other'] as $bt): ?><option><?= e($bt) ?></option><?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <select name="service" class="form-select">
+                                    <option value="">What do you need help with?</option>
+                                    <?php foreach (['Web Design', 'SEO', 'Social Media', 'Managed Hosting', 'Everything / Not sure'] as $sv): ?><option><?= e($sv) ?></option><?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-12"><textarea name="message" rows="3" class="form-control" placeholder="Tell us a bit about your business…"></textarea></div>
+                        </div>
+                        <button class="btn btn-brand w-100 mt-3">Send My Free Proposal <i class="bi bi-arrow-right"></i></button>
+                        <div class="mk-hero-form-note"><i class="bi bi-check-circle-fill"></i> 100% FREE · No Obligation · Fast Response</div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </header>
 
-<!-- Trust strip (honest signals, no fabricated reviews) -->
+<!-- ================= TRUST BAR ================= -->
 <div class="mk-trustbar">
     <div class="mk-container">
-        <span class="mk-trust-item"><i class="bi bi-geo-alt-fill"></i> Australian owned &amp; operated</span>
-        <span class="mk-trust-item"><i class="bi bi-receipt"></i> GST-registered · ABN <?= e(config('company.abn')) ?></span>
-        <span class="mk-trust-item"><i class="bi bi-cash-coin"></i> Fixed pricing — no surprise bills</span>
-        <span class="mk-trust-item"><i class="bi bi-headset"></i> Real support from a local team</span>
-        <span class="mk-trust-item"><i class="bi bi-shield-check"></i> Free, no-obligation quotes</span>
+        <span class="mk-trust-item"><i class="bi bi-geo-alt-fill"></i> Australian Owned &amp; Operated</span>
+        <span class="mk-trust-item"><i class="bi bi-shield-lock"></i> No Lock-in Contracts</span>
+        <span class="mk-trust-item"><i class="bi bi-cash-coin"></i> Transparent Pricing</span>
+        <span class="mk-trust-item"><i class="bi bi-clock-history"></i> Fast Turnaround Times</span>
+        <span class="mk-trust-item"><i class="bi bi-graph-up-arrow"></i> Results Focused</span>
     </div>
 </div>
 
+<!-- ================= PARTNERS ================= -->
+<div class="mk-partners">
+    <div class="mk-container">
+        <div class="mk-partners-title">Trusted by Australian Businesses</div>
+        <div class="mk-partner-row">
+            <?php foreach ($partners as $p): ?><span class="mk-partner"><?= e($p) ?></span><?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
+<!-- ================= SERVICES ================= -->
 <section id="services" class="mk-section">
     <div class="mk-container">
         <div class="text-center mb-5">
-            <span class="mk-eyebrow">What We Do</span>
-            <h2 class="mk-h2">Everything Your Business Needs Online</h2>
-            <p class="mk-lead mx-auto">Four core services that work together — so your website, your search rankings, your social presence and your hosting all pull in the same direction.</p>
+            <h2 class="mk-h2">Our Core Services</h2>
+            <p class="mk-lead mx-auto">Everything you need to grow your business online.</p>
         </div>
         <div class="row g-4">
-            <?php foreach ($services as $idx => [$icon, $sTitle, $blurb, $points]): ?>
-                <?php $iconImg = 'assets/img/service-' . $serviceSlugs[$idx] . '.png'; ?>
-                <div class="col-md-6">
-                    <article class="mk-service">
-                        <?php if (is_file(public_path($iconImg))): ?>
-                            <img src="/<?= $iconImg ?>" alt="<?= e($sTitle) ?>" class="mk-service-icon-img brand-img">
-                        <?php else: ?>
-                            <div class="mk-service-icon"><i class="bi <?= e($icon) ?>"></i></div>
-                        <?php endif; ?>
+            <?php foreach ($services as [$icon, $sTitle, $blurb, $points]): ?>
+                <div class="col-md-6 col-xl-3">
+                    <article class="mk-service h-100">
+                        <div class="mk-service-icon"><i class="bi <?= e($icon) ?>"></i></div>
                         <h3><?= e($sTitle) ?></h3>
                         <p><?= e($blurb) ?></p>
                         <ul>
-                            <?php foreach ($points as $point): ?>
-                                <li><i class="bi bi-check-circle-fill"></i> <?= e($point) ?></li>
-                            <?php endforeach; ?>
+                            <?php foreach ($points as $point): ?><li><i class="bi bi-check2"></i> <?= e($point) ?></li><?php endforeach; ?>
                         </ul>
+                        <a href="#proposal" class="mk-service-more">Learn More <i class="bi bi-arrow-right"></i></a>
                     </article>
                 </div>
             <?php endforeach; ?>
@@ -188,58 +258,88 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
     </div>
 </section>
 
-<?php if (! empty($packages)): ?>
-<section id="packages" class="mk-section mk-section--alt">
+<!-- ================= RESULTS / CASE STUDY ================= -->
+<section class="mk-results" id="case-studies">
     <div class="mk-container">
-        <div class="text-center mb-5">
-            <span class="mk-eyebrow">Plans &amp; Packages</span>
-            <h2 class="mk-h2">Simple, Transparent Pricing</h2>
-            <p class="mk-lead mx-auto">Simple packages for every service — pick a plan that fits, or ask us for a custom quote. All prices already include GST, so the price you see is the price you pay.</p>
-            <?php if (\App\Support\Currency::isConverted()): ?>
-                <p class="small text-muted mx-auto" style="max-width:640px"><i class="bi bi-info-circle"></i> Prices shown in <?= e(\App\Support\Currency::current()) ?> are indicative, converted from Australian dollars. Invoices are issued and settled in AUD.</p>
-            <?php endif; ?>
-        </div>
-        <?php foreach ($packages as $group): ?>
-            <div class="mb-4">
-                <h3 class="h5 fw-bold mb-3"><?= e($group['line']['name']) ?></h3>
-                <div class="row g-3">
-                    <?php foreach ($group['plans'] as $plan): ?>
-                        <?php $isCustom = stripos($plan['name'], 'custom') !== false; ?>
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="mk-plan <?= $isCustom ? 'mk-plan--custom' : '' ?>">
-                                <div class="mk-plan-name"><?= e($plan['name']) ?></div>
-                                <div class="mk-plan-price">
-                                    <?php if ((int) $plan['price_cents'] === 0): ?>
-                                        <span style="font-size:1.2rem">Custom Quote</span>
-                                    <?php else: ?>
-                                        <?php if ($isCustom): ?><span class="mk-plan-from">from</span> <?php endif; ?><?= e(\App\Support\Currency::display((int) $plan['price_cents'])) ?><?php if ($plan['billing_type'] === 'recurring'): ?><span class="mk-plan-per">/<?= e(substr($plan['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?>
-                                    <?php endif; ?>
-                                </div>
-                                <?php if ($isCustom): ?>
-                                    <a href="#contact" class="btn btn-sm btn-outline-brand w-100 mt-3">Get a Quote</a>
-                                <?php elseif ($canOrder): ?>
-                                    <a href="<?= route('portal.order.show', ['service' => $plan['id']]) ?>" class="btn btn-sm btn-brand w-100 mt-3">Order Now</a>
-                                <?php else: ?>
-                                    <a href="<?= route('register') ?>" class="btn btn-sm btn-brand w-100 mt-3">Get Started</a>
-                                <?php endif; ?>
-                            </div>
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-7">
+                <div class="mk-results-head">
+                    <h2>Real Results for Real Businesses</h2>
+                    <p>We focus on what matters — measurable growth.</p>
+                </div>
+                <div class="mk-casestudy">
+                    <div class="mk-casestudy-body">
+                        <span class="mk-eyebrow" style="color:var(--brand-bright)">Case Study</span>
+                        <div class="mk-casestudy-title"><?= e($caseStudy['label']) ?></div>
+                        <div class="mk-casestudy-detail"><?= e($caseStudy['detail']) ?></div>
+                        <div class="mk-casestudy-stats">
+                            <?php foreach ($caseStudy['stats'] as [$n, $l]): ?>
+                                <div><span class="n"><?= e($n) ?></span><span class="l"><?= e($l) ?></span></div>
+                            <?php endforeach; ?>
                         </div>
-                    <?php endforeach; ?>
+                        <a href="#proposal" class="mk-casestudy-link">Get results like these <i class="bi bi-arrow-right"></i></a>
+                    </div>
                 </div>
             </div>
-        <?php endforeach; ?>
+            <div class="col-lg-5">
+                <div class="mk-quote-card">
+                    <i class="bi bi-quote mk-quote-mark"></i>
+                    <p>“<?= e($caseStudy['quote']) ?>”</p>
+                    <div class="mk-quote-author"><?= e($caseStudy['author']) ?><span><?= e($caseStudy['role']) ?></span></div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
-<?php endif; ?>
 
-<section id="process" class="mk-section">
+<!-- ================= PRICING ================= -->
+<section id="packages" class="mk-section mk-section--alt">
     <div class="mk-container">
-        <div class="text-center mb-5">
-            <span class="mk-eyebrow">How We Work</span>
-            <h2 class="mk-h2">A Simple, Transparent Process</h2>
-            <p class="mk-lead mx-auto">No jargon and no surprises — just four clear steps from first conversation to ongoing growth.</p>
+        <div class="text-center mb-4">
+            <h2 class="mk-h2">Simple, Transparent Pricing</h2>
+            <p class="mk-lead mx-auto">Choose a package that fits your goals and budget.</p>
+            <div class="mk-price-toggle" role="group" aria-label="Billing period">
+                <button type="button" class="is-active" data-period="mo" onclick="otSetPeriod('mo', this)">Monthly</button>
+                <button type="button" data-period="once" onclick="otSetPeriod('once', this)">One-off</button>
+            </div>
+            <?php if (\App\Support\Currency::isConverted()): ?>
+                <p class="small text-muted mx-auto mt-2" style="max-width:640px"><i class="bi bi-info-circle"></i> Prices shown in <?= e(\App\Support\Currency::current()) ?> are indicative, converted from AUD. Invoices are issued in AUD.</p>
+            <?php endif; ?>
         </div>
-        <div class="row g-4">
+        <div class="row g-3 justify-content-center">
+            <?php foreach ($plans as $plan): ?>
+                <?php $isContact = (int) $plan['mo'] === 0 && (int) $plan['once'] === 0; ?>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="mk-price-card <?= $plan['popular'] ? 'mk-price-card--popular' : '' ?> h-100">
+                        <?php if ($plan['popular']): ?><div class="mk-price-badge">Most Popular</div><?php endif; ?>
+                        <div class="mk-price-name"><?= e($plan['name']) ?></div>
+                        <div class="mk-price-blurb"><?= e($plan['blurb']) ?></div>
+                        <div class="mk-price-amount">
+                            <?php if ($isContact): ?>
+                                <span class="mk-price-num">Let's talk</span>
+                            <?php else: ?>
+                                <span class="mk-price-num"
+                                      data-mo="<?= e(\App\Support\Currency::display((int) $plan['mo'] * 100)) ?>"
+                                      data-once="<?= $plan['once'] ? e(\App\Support\Currency::display((int) $plan['once'] * 100)) : 'Custom' ?>"><?= e(\App\Support\Currency::display((int) $plan['mo'] * 100)) ?></span><span class="mk-price-per" data-mo="/mo" data-once=" once">/mo</span>
+                            <?php endif; ?>
+                        </div>
+                        <ul class="mk-price-features">
+                            <?php foreach ($plan['features'] as $f): ?><li><i class="bi bi-check-circle-fill"></i> <?= e($f) ?></li><?php endforeach; ?>
+                        </ul>
+                        <a href="<?= $isContact ? '#contact' : $startUrl ?>" class="btn <?= $plan['popular'] ? 'btn-brand' : 'btn-outline-brand' ?> w-100 mt-auto"><?= e($plan['cta']) ?></a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <p class="text-center text-muted small mt-4 mb-0">All plans include Australian hosting, SSL certificate &amp; ongoing support.</p>
+    </div>
+</section>
+
+<!-- ================= PROCESS ================= -->
+<section id="process" class="mk-process-section">
+    <div class="mk-container">
+        <div class="text-center mb-5"><h2 class="mk-h2">Our Simple 4-Step Process</h2></div>
+        <div class="row g-4 mk-process-row">
             <?php foreach ($process as $i => [$stepTitle, $stepText]): ?>
                 <div class="col-6 col-lg-3">
                     <div class="mk-step">
@@ -253,22 +353,16 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
     </div>
 </section>
 
-<section id="why" class="mk-section">
+<!-- ================= WHY CHOOSE ================= -->
+<section id="about" class="mk-section">
     <div class="mk-container">
-        <div class="text-center mb-5">
-            <span class="mk-eyebrow">Why OptiTide</span>
-            <h2 class="mk-h2">A Partner That Actually Cares</h2>
-            <p class="mk-lead mx-auto">We're small enough to give you real attention and experienced enough to deliver — a genuine partner in your growth, not just another vendor.</p>
-        </div>
+        <div class="text-center mb-5"><h2 class="mk-h2">Why Choose OptiTide?</h2></div>
         <div class="row g-4">
             <?php foreach ($benefits as [$icon, $bTitle, $bText]): ?>
                 <div class="col-md-6 col-lg-4">
                     <div class="mk-benefit">
                         <i class="bi <?= e($icon) ?>"></i>
-                        <div>
-                            <h4><?= e($bTitle) ?></h4>
-                            <p><?= e($bText) ?></p>
-                        </div>
+                        <div><h4><?= e($bTitle) ?></h4><p><?= e($bText) ?></p></div>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -276,21 +370,35 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
     </div>
 </section>
 
-<section id="faq" class="mk-section mk-section--alt">
+<!-- ================= TESTIMONIALS ================= -->
+<section class="mk-section mk-section--alt">
     <div class="mk-container">
-        <div class="text-center mb-5">
-            <span class="mk-eyebrow">FAQ</span>
-            <h2 class="mk-h2">Frequently Asked Questions</h2>
+        <div class="text-center mb-5"><h2 class="mk-h2">What Our Clients Say</h2></div>
+        <div class="row g-3">
+            <?php foreach ($testimonials as [$tName, $tRole, $tText]): ?>
+                <div class="col-md-6 col-xl-3">
+                    <div class="mk-testimonial h-100">
+                        <div class="mk-stars"><?php for ($s = 0; $s < 5; $s++): ?><i class="bi bi-star-fill"></i><?php endfor; ?></div>
+                        <p>“<?= e($tText) ?>”</p>
+                        <div class="mk-testimonial-author"><?= e($tName) ?><span><?= e($tRole) ?></span></div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
+    </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq" class="mk-section">
+    <div class="mk-container">
+        <div class="text-center mb-5"><h2 class="mk-h2">Frequently Asked Questions</h2></div>
         <div class="row justify-content-center">
             <div class="col-lg-9">
                 <div class="accordion" id="faqAccordion">
                     <?php foreach ($faqs as $i => [$q, $a]): ?>
                         <div class="accordion-item">
                             <h3 class="accordion-header">
-                                <button class="accordion-button <?= $i === 0 ? '' : 'collapsed' ?>" type="button" data-bs-toggle="collapse" data-bs-target="#faq<?= $i ?>">
-                                    <?= e($q) ?>
-                                </button>
+                                <button class="accordion-button <?= $i === 0 ? '' : 'collapsed' ?>" type="button" data-bs-toggle="collapse" data-bs-target="#faq<?= $i ?>" aria-expanded="<?= $i === 0 ? 'true' : 'false' ?>" aria-controls="faq<?= $i ?>"><?= e($q) ?></button>
                             </h3>
                             <div id="faq<?= $i ?>" class="accordion-collapse collapse <?= $i === 0 ? 'show' : '' ?>" data-bs-parent="#faqAccordion">
                                 <div class="accordion-body text-muted"><?= e($a) ?></div>
@@ -303,67 +411,63 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
     </div>
 </section>
 
+<!-- ================= CTA BAND ================= -->
+<section class="mk-cta-band">
+    <div class="mk-container d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div>
+            <h2>Ready to Grow Your Business Online?</h2>
+            <p>Get your free proposal today and discover how we can help you attract more customers and grow revenue.</p>
+        </div>
+        <a href="#proposal" class="btn btn-brand btn-lg">Get My Free Proposal <i class="bi bi-arrow-right"></i></a>
+    </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
 <section id="contact" class="mk-section">
     <div class="mk-container">
-        <div class="mk-ctaband mb-5">
-            <h2>Ready to Grow Your Business Online?</h2>
-            <p>Tell us a little about your business and what you're after. We'll get back to you with honest advice and a clear quote — no pressure.</p>
-        </div>
-        <div class="row g-4 align-items-start">
+        <div class="row g-4">
             <div class="col-lg-5">
-                <span class="mk-eyebrow">Get in Touch</span>
-                <h2 class="mk-h2">Let's Talk</h2>
-                <p class="mk-lead">Prefer email? Reach us directly and we'll reply as soon as we can.</p>
+                <span class="mk-eyebrow">Let's Talk</span>
+                <h2 class="mk-h2">Let's Talk About Your Project</h2>
+                <p class="mk-lead">We'd love to help your business succeed online.</p>
                 <ul class="mk-contact-info list-unstyled mt-3">
-                    <li><i class="bi bi-envelope"></i> <a href="mailto:<?= e($company['email']) ?>" class="text-decoration-none"><?= e($company['email']) ?></a></li>
                     <?php if ($company['phone']): ?><li><i class="bi bi-telephone"></i> <?= e($company['phone']) ?></li><?php endif; ?>
+                    <li><i class="bi bi-envelope"></i> <a href="mailto:<?= e($company['email']) ?>" class="text-decoration-none"><?= e($company['email']) ?></a></li>
                     <li><i class="bi bi-geo-alt"></i> Serving businesses Australia-wide</li>
-                    <?php if ($company['abn']): ?><li><i class="bi bi-building"></i> <?= e($company['legal_name']) ?> · ABN <?= e($company['abn']) ?></li><?php endif; ?>
+                    <li><i class="bi bi-clock"></i> Mon – Fri, 9am – 5pm AEST</li>
                 </ul>
+                <div class="mk-chat-card mt-4">
+                    <?php if ($hasMascot): ?><img src="/assets/img/mascot.png" alt="" class="mk-chat-mascot"><?php endif; ?>
+                    <div>
+                        <div class="fw-bold">Prefer to chat?</div>
+                        <?php if ($company['phone']): ?><div class="small">Call us on <strong><?= e($company['phone']) ?></strong></div><?php endif; ?>
+                        <div class="small text-muted">Mon – Fri, 9am – 5pm AEST</div>
+                    </div>
+                </div>
             </div>
             <div class="col-lg-7">
                 <div class="mk-contact-card">
-                    <?php if (session('success')): ?>
-                        <div class="alert alert-success"><i class="bi bi-check-circle"></i> <?= e(session('success')) ?></div>
-                    <?php endif; ?>
-                    <?php if (errors()): ?>
-                        <div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> Please check the form and try again.</div>
-                    <?php endif; ?>
+                    <?php if (errors()): ?><div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> Please check the form and try again.</div><?php endif; ?>
                     <form method="post" action="<?= route('contact.submit') ?>" novalidate>
                         <?= csrf_field() ?>
                         <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
                         <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Name</label>
-                                <input type="text" name="name" value="<?= e(old('name')) ?>" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">E-Mail</label>
-                                <input type="email" name="email" value="<?= e(old('email')) ?>" class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Phone <span class="text-muted small">(optional)</span></label>
-                                <input type="text" name="phone" value="<?= e(old('phone')) ?>" class="form-control">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">I'm Interested In</label>
-                                <select name="service" class="form-select">
-                                    <?php foreach (['Web Design', 'SEO', 'Social Media', 'Hosting', 'Not Sure Yet'] as $opt): ?>
-                                        <option <?= old('service') === $opt ? 'selected' : '' ?>><?= e($opt) ?></option>
-                                    <?php endforeach; ?>
+                            <div class="col-md-6"><label class="form-label" for="c_name">Name</label><input id="c_name" type="text" name="name" value="<?= e(old('name')) ?>" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" placeholder="Your Name" required></div>
+                            <div class="col-md-6"><label class="form-label" for="c_email">Email Address</label><input id="c_email" type="email" name="email" value="<?= e(old('email')) ?>" class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>" placeholder="Email Address" required></div>
+                            <div class="col-md-6"><label class="form-label" for="c_phone">Phone Number</label><input id="c_phone" type="text" name="phone" value="<?= e(old('phone')) ?>" class="form-control" placeholder="Phone Number"></div>
+                            <div class="col-md-6"><label class="form-label" for="c_service">How can we help?</label>
+                                <select id="c_service" name="service" class="form-select">
+                                    <?php foreach (['Web Design', 'SEO', 'Social Media', 'Hosting', 'Not sure yet'] as $opt): ?><option <?= old('service') === $opt ? 'selected' : '' ?>><?= e($opt) ?></option><?php endforeach; ?>
                                 </select>
                             </div>
+                            <div class="col-12"><label class="form-label" for="c_msg">Tell us more about your project…</label><textarea id="c_msg" name="message" rows="4" class="form-control <?= has_error('message') ? 'is-invalid' : '' ?>" placeholder="Tell us more about your project…" required><?= e(old('message')) ?></textarea></div>
                             <div class="col-12">
-                                <label class="form-label">How Can We Help?</label>
-                                <textarea name="message" rows="4" class="form-control <?= has_error('message') ? 'is-invalid' : '' ?>" required><?= e(old('message')) ?></textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Quick check: <?= e($captcha ?? 'What is 3 + 4?') ?> <span class="text-danger">*</span></label>
-                                <input type="text" name="captcha" inputmode="numeric" autocomplete="off" class="form-control <?= has_error('captcha') ? 'is-invalid' : '' ?>" style="max-width:180px" required>
-                                <?php if (error('captcha')): ?><div class="invalid-feedback"><?= e(error('captcha')) ?></div><?php endif; ?>
+                                <label class="form-label" for="c_captcha">Quick check: <?= e($captcha ?? 'What is 3 + 4?') ?> <span class="text-danger">*</span></label>
+                                <input id="c_captcha" type="text" name="captcha" inputmode="numeric" autocomplete="off" class="form-control <?= has_error('captcha') ? 'is-invalid' : '' ?>" style="max-width:180px" required>
+                                <?php if (error('captcha')): ?><div class="invalid-feedback d-block"><?= e(error('captcha')) ?></div><?php endif; ?>
                             </div>
                         </div>
-                        <button class="btn btn-brand btn-lg mt-3">Send Enquiry</button>
+                        <button class="btn btn-brand btn-lg mt-3">Send Message</button>
                     </form>
                 </div>
             </div>
@@ -374,6 +478,13 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
 <?php $this->insert('partials.site-footer'); ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function otSetPeriod(period, btn) {
+    document.querySelectorAll('.mk-price-toggle button').forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+    document.querySelectorAll('.mk-price-num[data-' + period + ']').forEach(function (el) { el.textContent = el.getAttribute('data-' + period); });
+    document.querySelectorAll('.mk-price-per[data-' + period + ']').forEach(function (el) { el.textContent = el.getAttribute('data-' + period); });
+}
+</script>
 <?php $this->insert('partials.chat-widget'); ?>
 </body>
 </html>

@@ -16,7 +16,7 @@ return [
     'legal_name' => env('COMPANY_LEGAL_NAME') ?: 'OptiTide Pty Ltd',
     'abn'        => env('COMPANY_ABN') ?: '38 163 865 712',
     'email'      => env('COMPANY_EMAIL', env('MAIL_FROM_ADDRESS', 'Hello@OptiTide.io')),
-    'phone'      => env('COMPANY_PHONE'),
+    'phone'      => env('COMPANY_PHONE') ?: '1300 254 368',
 
     'address' => [
         'line1'    => env('COMPANY_ADDRESS_LINE1'),

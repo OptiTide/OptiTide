@@ -71,4 +71,52 @@ class ContactController extends Controller
 
         return $backToContact();
     }
+
+    /** Hero "Get Your Free Proposal" lead form — honeypot-protected, no captcha. */
+    public function proposal(Request $request): Response
+    {
+        $back = fn () => $this->redirect(route('home') . '#proposal');
+
+        if ($request->filled('website')) {
+            Session::flash('success', 'Thanks — we\'ve received your request and will be in touch soon.');
+
+            return $back();
+        }
+
+        $key = 'proposal:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            Session::flash('error', 'You\'ve already sent a few requests — please email us directly.');
+
+            return $back();
+        }
+
+        $data = $this->validate($request, [
+            'name'          => 'required|max:120',
+            'email'         => 'required|email|max:180',
+            'phone'         => 'nullable|max:40',
+            'business_type' => 'nullable|max:80',
+            'service'       => 'nullable|max:80',
+            'message'       => 'nullable|max:4000',
+        ]);
+
+        RateLimiter::hit($key, 3600);
+
+        $message = trim(($data['message'] ?? '') . "\n\nBusiness type: " . ($data['business_type'] ?: '—'));
+        $forTeam = array_merge($data, ['message' => $message ?: 'Free-proposal request (no details provided).']);
+
+        Mail::to(config('company.email'), config('company.legal_name'))
+            ->replyTo($data['email'])
+            ->subject('New free-proposal request from ' . $data['name'] . ' — OptiTide')
+            ->view('emails.contact', ['data' => $forTeam, 'ip' => $request->ip()])
+            ->send();
+
+        Mail::to($data['email'], $data['name'])
+            ->subject('We received your request — OptiTide')
+            ->view('emails.contact-received', ['name' => $data['name'], 'service' => $data['service'] ?? '', 'message' => $data['message'] ?? ''])
+            ->send();
+
+        Session::flash('success', 'Thanks ' . $data['name'] . ' — we\'ll send your free proposal within 24 hours.');
+
+        return $back();
+    }
 }
