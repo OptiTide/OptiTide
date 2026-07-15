@@ -29,6 +29,7 @@ class HomeController extends Controller
                 $services,
                 fn ($s) => (string) $s['category_id'] === (string) $line['id']
             ));
+            usort($plans, fn ($a, $b) => (int) $a['price_cents'] <=> (int) $b['price_cents']);
             if ($plans !== []) {
                 $groups[] = ['line' => $line, 'plans' => $plans];
             }
