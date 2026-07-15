@@ -54,6 +54,7 @@ $company  = config('company');
 <?php if (! empty($jsonLd)): ?>
 <script type="application/ld+json"><?= json_encode($jsonLd, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?></script>
 <?php endif; ?>
+<meta name="csrf-token" content="<?= e(csrf_token()) ?>">
 <?php $this->insert('partials.analytics'); ?>
 <?php $this->insert('partials.pwa'); ?>
 </head>
@@ -124,5 +125,6 @@ $company  = config('company');
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php $this->insert('partials.chat-widget'); ?>
 </body>
 </html>

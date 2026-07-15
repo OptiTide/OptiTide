@@ -112,6 +112,7 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
 <link href="/assets/css/app.css" rel="stylesheet">
 <style>:root{--brand: <?= e($brand) ?>; --brand-dark: <?= e(config('app.brand.accent_dark', '#6d28d9')) ?>;}</style>
 <script type="application/ld+json"><?= json_encode($jsonLd, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?></script>
+<meta name="csrf-token" content="<?= e(csrf_token()) ?>">
 <?php $this->insert('partials.analytics'); ?>
 <?php $this->insert('partials.pwa'); ?>
 </head>
@@ -450,5 +451,6 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php $this->insert('partials.chat-widget'); ?>
 </body>
 </html>

@@ -18,6 +18,11 @@ $router->get('/health', [PublicSite\HealthController::class, 'index'])->name('he
 $router->get('/robots.txt', [PublicSite\SeoController::class, 'robots'])->name('robots');
 $router->get('/sitemap.xml', [PublicSite\SeoController::class, 'sitemap'])->name('sitemap');
 
+// --- Live chat (public JSON endpoints) --------------------------------------
+$router->post('/chat/start', [PublicSite\ChatController::class, 'start'])->name('chat.start')->middleware('csrf');
+$router->post('/chat/message', [PublicSite\ChatController::class, 'message'])->name('chat.message')->middleware('csrf');
+$router->get('/chat/poll', [PublicSite\ChatController::class, 'poll'])->name('chat.poll');
+
 // --- PWA (manifest + service worker + offline shell) ------------------------
 $router->get('/manifest.webmanifest', [PublicSite\PwaController::class, 'manifest'])->name('pwa.manifest');
 $router->get('/sw.js', [PublicSite\PwaController::class, 'serviceWorker'])->name('pwa.sw');
@@ -117,6 +122,13 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->get('/tickets/{id}', [Admin\TicketController::class, 'show'])->name('admin.tickets.show');
     $router->post('/tickets/{id}/reply', [Admin\TicketController::class, 'reply'])->name('admin.tickets.reply');
     $router->post('/tickets/{id}/status', [Admin\TicketController::class, 'status'])->name('admin.tickets.status');
+
+    // Live chat (staff)
+    $router->get('/chat', [Admin\ChatController::class, 'index'])->name('admin.chat.index');
+    $router->get('/chat/{id}', [Admin\ChatController::class, 'show'])->name('admin.chat.show');
+    $router->post('/chat/{id}/reply', [Admin\ChatController::class, 'reply'])->name('admin.chat.reply');
+    $router->post('/chat/{id}/takeover', [Admin\ChatController::class, 'takeover'])->name('admin.chat.takeover');
+    $router->post('/chat/{id}/close', [Admin\ChatController::class, 'close'])->name('admin.chat.close');
 
     // Mass email — admin only (enforced in controller)
     $router->get('/broadcast', [Admin\BroadcastController::class, 'index'])->name('admin.broadcast.index');

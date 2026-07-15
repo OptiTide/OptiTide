@@ -19,6 +19,7 @@ $me = auth();
             <a class="nav-link <?= $active('/admin/invoices') ?>" href="<?= route('admin.invoices.index') ?>"><i class="bi bi-receipt"></i> Invoices</a>
             <a class="nav-link <?= $active('/admin/services') ?>" href="<?= route('admin.services.index') ?>"><i class="bi bi-grid"></i> Services</a>
             <a class="nav-link <?= $active('/admin/tickets') ?>" href="<?= route('admin.tickets.index') ?>"><i class="bi bi-life-preserver"></i> Helpdesk</a>
+            <a class="nav-link <?= $active('/admin/chat') ?>" href="<?= route('admin.chat.index') ?>"><i class="bi bi-chat-dots"></i> Live Chat</a>
             <a class="nav-link <?= $active('/admin/blogs') ?>" href="<?= route('admin.blogs.index') ?>"><i class="bi bi-newspaper"></i> Blog</a>
 
             <div class="nav-section">Web Design</div>
