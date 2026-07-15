@@ -160,6 +160,27 @@ foreach ($services as $s) {
                 <?php endif; ?>
             </div>
         </div>
+        <div class="card mt-3" id="apicredit">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-cpu"></i> API Credit</span>
+                <span class="fw-bold money"><?= e(money((int) ($client['api_credit_cents'] ?? 0), config('company.currency', 'AUD'))->format()) ?></span>
+            </div>
+            <div class="card-body">
+                <form method="post" action="<?= route('admin.clients.apicredit', ['id' => $client['id']]) ?>" class="row g-2 align-items-end mb-0">
+                    <?= csrf_field() ?>
+                    <div class="col-sm-4">
+                        <label class="form-label small">Amount ($)</label>
+                        <input type="number" step="0.01" name="amount" class="form-control form-control-sm" placeholder="e.g. 50 or -20" required>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small">Reason</label>
+                        <input type="text" name="reason" class="form-control form-control-sm" maxlength="200" placeholder="e.g. Comped API credit">
+                    </div>
+                    <div class="col-sm-2"><button class="btn btn-sm btn-brand w-100">Adjust</button></div>
+                    <div class="form-text">Prepaid balance for the white-label OptiTide API. Clients also top up by paying a credit invoice.</div>
+                </form>
+            </div>
+        </div>
         <div class="card mt-3" id="apps">
             <div class="card-header"><i class="bi bi-window-stack"></i> Client Apps</div>
             <div class="card-body">

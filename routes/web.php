@@ -46,6 +46,11 @@ $router->get('/r/{code}', [PublicSite\ReferralController::class, 'capture'])->na
 // --- Display currency switch (AUD/USD) --------------------------------------
 $router->get('/set-currency', [PublicSite\CurrencyController::class, 'set'])->name('currency.set');
 
+// --- White-label API (bearer-authenticated, metered against prepaid credit) --
+// No CSRF/session: machine clients authenticate with their API key.
+$router->post('/api/v1/messages', [\App\Controllers\Api\MessagesController::class, 'create'])->name('api.messages');
+$router->get('/api/v1/credit', [\App\Controllers\Api\MessagesController::class, 'credit'])->name('api.credit');
+
 // --- Legal ------------------------------------------------------------------
 $router->get('/terms', [PublicSite\LegalController::class, 'terms'])->name('legal.terms');
 $router->get('/privacy', [PublicSite\LegalController::class, 'privacy'])->name('legal.privacy');
@@ -101,6 +106,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
 
     // Engagements (client_services) — managed from the client page
     $router->post('/clients/{id}/credit', [Admin\ClientController::class, 'addCredit'])->name('admin.clients.credit');
+    $router->post('/clients/{id}/api-credit', [Admin\ClientController::class, 'adjustApiCredit'])->name('admin.clients.apicredit');
     $router->post('/clients/{id}/apps', [Admin\ClientController::class, 'storeApp'])->name('admin.clients.apps.store');
     $router->post('/apps/{id}/delete', [Admin\ClientController::class, 'destroyApp'])->name('admin.apps.destroy');
     $router->post('/clients/{id}/engagements', [Admin\EngagementController::class, 'store'])->name('admin.engagements.store');
@@ -229,6 +235,10 @@ $router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 't
     $router->get('/meetings', [Client\MeetingController::class, 'index'])->name('portal.meetings');
     $router->post('/meetings', [Client\MeetingController::class, 'store'])->name('portal.meetings.request');
     $router->post('/hosting/{id}/login', [Client\HostingController::class, 'login'])->name('portal.hosting.login');
+    $router->get('/api-credits', [Client\ApiCreditController::class, 'index'])->name('portal.api.index');
+    $router->post('/api-credits/key', [Client\ApiCreditController::class, 'issueKey'])->name('portal.api.key');
+    $router->post('/api-credits/key/revoke', [Client\ApiCreditController::class, 'revokeKey'])->name('portal.api.key.revoke');
+    $router->post('/api-credits/buy', [Client\ApiCreditController::class, 'buy'])->name('portal.api.buy');
     $router->get('/refer', [Client\ReferController::class, 'index'])->name('portal.refer');
     $router->get('/support', [Client\SupportController::class, 'index'])->name('portal.support.index');
     $router->get('/support/new', [Client\SupportController::class, 'create'])->name('portal.support.create');

@@ -142,6 +142,26 @@ final class Request
             : null;
     }
 
+    /**
+     * Decode a JSON request body (for machine/API clients). Cached after first
+     * read. Returns [] when the body is empty or not valid JSON.
+     */
+    public function json(?string $key = null, mixed $default = null): mixed
+    {
+        static $decoded = null;
+        if ($decoded === null) {
+            $raw = file_get_contents('php://input') ?: '';
+            $parsed = json_decode($raw, true);
+            $decoded = is_array($parsed) ? $parsed : [];
+        }
+
+        if ($key === null) {
+            return $decoded;
+        }
+
+        return $decoded[$key] ?? $default;
+    }
+
     public function ip(): string
     {
         return $this->server['REMOTE_ADDR'] ?? '0.0.0.0';

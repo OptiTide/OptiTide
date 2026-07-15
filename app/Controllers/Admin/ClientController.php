@@ -161,6 +161,26 @@ class ClientController extends Controller
         return $this->redirect(route('admin.clients.show', ['id' => $id]) . '#credit');
     }
 
+    /** Manually grant or deduct API credit (e.g. comped credit or a correction). */
+    public function adjustApiCredit(Request $request, string $id): Response
+    {
+        Client::findOrFail($id);
+        $data = $this->validate($request, [
+            'amount' => 'required|numeric',
+            'reason' => 'nullable|max:200',
+        ]);
+
+        $cents = Money::fromDollars(abs((float) $data['amount']), config('company.currency', 'AUD'))->minorUnits;
+        if ((float) $data['amount'] < 0) {
+            $cents = -$cents;
+        }
+
+        (new \App\Services\Api\ApiCreditService())->adjust($id, $cents, $data['reason'] ?? null, Auth::id());
+        Session::flash('success', 'API credit updated.');
+
+        return $this->redirect(route('admin.clients.show', ['id' => $id]) . '#apicredit');
+    }
+
     public function edit(Request $request, string $id): Response
     {
         return $this->view('admin.clients.form', [

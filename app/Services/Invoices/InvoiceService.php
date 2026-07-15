@@ -80,6 +80,7 @@ final class InvoiceService
                 'gst_cents'         => 0,
                 'total_cents'       => 0,
                 'amount_paid_cents' => 0,
+                'api_credit_topup_cents' => (int) ($data['api_credit_topup_cents'] ?? 0),
                 'public_token'      => str_random(48),
             ]);
 
@@ -238,6 +239,23 @@ final class InvoiceService
         if ($result['becamePaid']) {
             try {
                 (new \App\Services\Referrals\CommissionService())->recordForPaidInvoice(Invoice::find($invoiceId));
+            } catch (\Throwable $e) {
+                // ignore
+            }
+
+            // If this invoice was an API-credit top-up, grant the credit now.
+            // Idempotent via the invoice reference so redelivery never double-grants.
+            try {
+                $inv = Invoice::find($invoiceId);
+                $topup = (int) ($inv['api_credit_topup_cents'] ?? 0);
+                if ($inv && $topup > 0 && ! empty($inv['client_id'])) {
+                    (new \App\Services\Api\ApiCreditService())->topUp(
+                        $inv['client_id'],
+                        $topup,
+                        'Credit purchase — invoice ' . $inv['number'],
+                        'invoice:' . $invoiceId,
+                    );
+                }
             } catch (\Throwable $e) {
                 // ignore
             }
