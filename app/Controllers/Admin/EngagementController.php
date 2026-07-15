@@ -19,7 +19,8 @@ class EngagementController extends Controller
         $data = $this->engagementData($request);
         $data['client_id'] = $client['id'];
 
-        ClientService::create($data);
+        // Stamps a JOB- reference and auto-creates the delivery board card.
+        (new \App\Services\Projects\ProjectService())->createEngagement($data);
         Session::flash('success', 'Service added to client.');
 
         return $this->redirect(route('admin.clients.show', ['id' => $client['id']]) . '#services');

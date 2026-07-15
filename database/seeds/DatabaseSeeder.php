@@ -283,7 +283,7 @@ return new class {
         }
 
         $hosting = Service::firstWhere('name', 'Managed Hosting');
-        ClientService::create([
+        $engagement = ClientService::create([
             'client_id'         => $client['id'],
             'service_id'        => $hosting['id'] ?? null,
             'label'             => 'Managed Hosting',
@@ -295,6 +295,7 @@ return new class {
             'started_at'        => today(),
             'next_invoice_date' => date('Y-m-d', strtotime('+1 month')),
         ]);
+        ClientService::updateById($engagement['id'], ['reference' => 'JOB-' . str_pad((string) $engagement['id'], 6, '0', STR_PAD_LEFT)]);
 
         $invoices = new InvoiceService();
 

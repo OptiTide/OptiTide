@@ -12,6 +12,7 @@ use App\Models\Invoice;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Services\Invoices\InvoiceService;
+use App\Services\Projects\ProjectService;
 use App\Support\Gst;
 use App\Support\Money;
 
@@ -65,7 +66,9 @@ class OrderController extends Controller
         $invoice = Database::instance()->transaction(function () use ($svc, $clientId, $invoices) {
             $recurring = $svc['billing_type'] === Service::BILLING_RECURRING;
 
-            ClientService::create([
+            // Creates the engagement, stamps a JOB- reference and drops a card on
+            // the matching delivery board automatically.
+            (new ProjectService())->createEngagement([
                 'client_id'         => $clientId,
                 'service_id'        => $svc['id'],
                 'label'             => $svc['name'],

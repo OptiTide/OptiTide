@@ -44,7 +44,7 @@ $companyEmail = config('company.email');
                 <?php endif; ?>
                 <?php foreach ($engagements as $e): ?>
                     <tr>
-                        <td class="fw-semibold"><?= e($e['label']) ?></td>
+                        <td class="fw-semibold"><?= e($e['label']) ?><?php if (! empty($e['reference'])): ?><div class="text-muted small"><?= e($e['reference']) ?></div><?php endif; ?></td>
                         <td>
                             <?php if ($e['billing_type'] === 'recurring'): ?>
                                 <span class="badge badge-soft"><?= e(ucfirst($e['interval'] ?? 'monthly')) ?></span>

@@ -63,6 +63,13 @@ try {
             $out("Marked $count invoice(s) overdue.");
             break;
 
+        case 'seo:reports':
+            // SEO reports are due at the end of each month — run this on/near the 1st.
+            $month = $flags[0] ?? null;
+            $made = (new App\Services\Projects\SeoReportService())->generateForMonth($month);
+            $out("Created {$made} SEO report card(s) for " . ($month ?: date('F Y')) . '.');
+            break;
+
         case 'make:admin':
             $email = isset($flags[0]) ? strtolower(trim($flags[0])) : null;
             $password = $flags[1] ?? null;
