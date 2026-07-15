@@ -42,11 +42,16 @@ class PwaController extends Controller
     public function serviceWorker(Request $request): Response
     {
         $js = <<<'JS'
-const CACHE = 'optitide-v5';
-const SHELL = ['/', '/offline', '/assets/css/app.css', '/assets/img/logo.png', '/assets/img/favicon.png'];
+const CACHE = 'optitide-v6';
+// Only static, safe-to-cache assets are precached. HTML pages are NEVER cached
+// (see the fetch handler) so a stale/auth/redirect page can never leak across
+// URLs after a login redirect.
+const SHELL = ['/offline', '/assets/css/app.css', '/assets/img/logo.png', '/assets/img/favicon.png'];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(CACHE).then((c) => Promise.allSettled(SHELL.map((u) => c.add(u)))).then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', (e) => {
@@ -62,32 +67,32 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
 
-  // Never cache authenticated or payment pages — always go to network.
-  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/portal') ||
-      url.pathname.startsWith('/pay') || url.pathname.startsWith('/account')) {
-    return;
-  }
-
-  // Static assets: stale-while-revalidate — serve cache fast, refresh in the
-  // background so CSS/JS/image updates always land on the next visit.
+  // Static assets: stale-while-revalidate. Only cache genuine 200 responses
+  // (never redirects/errors/opaque), so we never serve back a bad asset.
   if (url.pathname.startsWith('/assets/')) {
     e.respondWith(
       caches.open(CACHE).then((c) => c.match(req).then((hit) => {
-        const network = fetch(req).then((res) => { c.put(req, res.clone()); return res; }).catch(() => hit);
+        const network = fetch(req).then((res) => {
+          if (res && res.ok && res.type === 'basic') { c.put(req, res.clone()); }
+          return res;
+        }).catch(() => hit);
         return hit || network;
       }))
     );
     return;
   }
 
-  // Pages: network-first, fall back to cache, then the offline page.
-  e.respondWith(
-    fetch(req).then((res) => {
-      const copy = res.clone();
-      caches.open(CACHE).then((c) => c.put(req, copy));
-      return res;
-    }).catch(() => caches.match(req).then((hit) => hit || caches.match('/offline')))
-  );
+  // Page navigations: ALWAYS go to the network (never cache, never serve a
+  // cached page). Only fall back to the offline page when the network is down.
+  // This makes it impossible for the SW to return the wrong page (e.g. the raw
+  // /sw.js or a stale dashboard) after a login redirect.
+  if (req.mode === 'navigate') {
+    e.respondWith(fetch(req).catch(() => caches.match('/offline')));
+    return;
+  }
+
+  // Everything else (the /sw.js update check, the manifest, tracking pings,
+  // API calls): pass straight through, untouched and uncached.
 });
 JS;
 
