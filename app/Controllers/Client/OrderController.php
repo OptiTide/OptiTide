@@ -63,12 +63,12 @@ class OrderController extends Controller
 
         $invoices = new InvoiceService();
 
-        $invoice = Database::instance()->transaction(function () use ($svc, $clientId, $invoices) {
+        $result = Database::instance()->transaction(function () use ($svc, $clientId, $invoices) {
             $recurring = $svc['billing_type'] === Service::BILLING_RECURRING;
 
             // Creates the engagement, stamps a JOB- reference and drops a card on
             // the matching delivery board automatically.
-            (new ProjectService())->createEngagement([
+            $engagement = (new ProjectService())->createEngagement([
                 'client_id'         => $clientId,
                 'service_id'        => $svc['id'],
                 'label'             => $svc['name'],
@@ -87,7 +87,7 @@ class OrderController extends Controller
                 ? $svc['name'] . ' — ' . (Service::INTERVALS[$svc['interval']] ?? 'Recurring') . ' subscription (first period)'
                 : $svc['name'];
 
-            return $invoices->create([
+            $invoice = $invoices->create([
                 'client_id'  => $clientId,
                 'status'     => Invoice::STATUS_SENT,
                 'issue_date' => today(),
@@ -95,7 +95,19 @@ class OrderController extends Controller
             ], [
                 ['description' => $label, 'quantity' => 1, 'unit_price_cents' => (int) $svc['price_cents'], 'service_id' => $svc['id']],
             ]);
+
+            return ['engagement' => $engagement, 'invoice' => $invoice];
         });
+
+        $invoice = $result['invoice'];
+
+        // If this service line has a project brief, collect it before payment.
+        $category = ($svc['category_id'] ?? null) ? (ServiceCategory::find($svc['category_id'])['slug'] ?? null) : null;
+        if (\App\Models\ProjectIntake::questionsFor($category)) {
+            $this->flash('success', 'Order confirmed! Tell us a bit about your project, then complete payment.');
+
+            return $this->redirect(route('portal.intake.show', ['engagement' => $result['engagement']['id']]) . '?invoice=' . $invoice['id']);
+        }
 
         $this->flash('success', 'Order confirmed — invoice ' . $invoice['number'] . ' is ready. Complete payment below to get started.');
 

@@ -98,6 +98,7 @@ class ClientController extends Controller
             'engagements' => ClientService::forClient($id),
             'invoices'    => Invoice::query()->where('client_id', $id)->orderBy('id', 'desc')->get(),
             'services'    => Service::active(),
+            'intakes'     => \App\Models\ProjectIntake::forClient($id),
         ]);
     }
 

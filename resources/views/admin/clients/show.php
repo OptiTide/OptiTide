@@ -102,6 +102,27 @@ foreach ($services as $s) {
                 </table>
             </div>
         </div>
+
+        <?php if (! empty($intakes)): ?>
+        <div class="card mt-3">
+            <div class="card-header"><i class="bi bi-clipboard-check"></i> Project Briefs</div>
+            <div class="card-body">
+                <?php foreach ($intakes as $intake): ?>
+                    <?php $ans = json_decode((string) $intake['data'], true) ?: []; $qset = \App\Models\ProjectIntake::questionsFor($intake['category']); ?>
+                    <div class="mb-3 pb-2 border-bottom">
+                        <div class="fw-semibold"><?= e($qset['label'] ?? ucfirst((string) $intake['category'])) ?> <span class="text-muted small"><?= e($intake['reference'] ?? '') ?></span></div>
+                        <dl class="row small mb-0 mt-2">
+                            <?php foreach (($qset['questions'] ?? []) as $q): ?>
+                                <?php $v = trim((string) ($ans[$q['key']] ?? '')); if ($v === '') continue; ?>
+                                <dt class="col-sm-5 text-muted fw-normal"><?= e($q['label']) ?></dt>
+                                <dd class="col-sm-7"><?= nl2br(e($v)) ?></dd>
+                            <?php endforeach; ?>
+                        </dl>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 </div>
 

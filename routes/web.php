@@ -172,6 +172,8 @@ $router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 't
     $router->get('/order', [Client\OrderController::class, 'index'])->name('portal.order.index');
     $router->get('/order/{service}', [Client\OrderController::class, 'show'])->name('portal.order.show');
     $router->post('/order/{service}', [Client\OrderController::class, 'place'])->name('portal.order.place');
+    $router->get('/intake/{engagement}', [Client\IntakeController::class, 'show'])->name('portal.intake.show');
+    $router->post('/intake/{engagement}', [Client\IntakeController::class, 'store'])->name('portal.intake.store');
     $router->get('/services', [Client\ServiceController::class, 'index'])->name('portal.services');
     $router->post('/services/{id}/cancel', [Client\ServiceController::class, 'cancel'])->name('portal.services.cancel');
     $router->get('/project', [Client\ProjectController::class, 'index'])->name('portal.project');
