@@ -15,6 +15,7 @@ use App\Controllers\PublicSite;
 $router->get('/', [PublicSite\HomeController::class, 'index'])->name('home');
 $router->post('/contact', [PublicSite\ContactController::class, 'submit'])->name('contact.submit')->middleware('csrf');
 $router->get('/health', [PublicSite\HealthController::class, 'index'])->name('health');
+$router->get('/t', [PublicSite\VisitController::class, 'track'])->name('track');
 
 // Inbound-email webhook (secret-gated, CSRF-exempt for external callers).
 $router->post('/webhooks/email', [PublicSite\EmailWebhookController::class, 'inbound'])->name('webhooks.email');
@@ -138,6 +139,9 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->get('/meetings', [Admin\MeetingController::class, 'index'])->name('admin.meetings.index');
     $router->post('/meetings', [Admin\MeetingController::class, 'store'])->name('admin.meetings.store');
     $router->post('/meetings/{id}/cancel', [Admin\MeetingController::class, 'cancel'])->name('admin.meetings.cancel');
+
+    // Visitor analytics (first-party)
+    $router->get('/visitors', [Admin\VisitorController::class, 'index'])->name('admin.visitors.index');
 
     // Live chat (staff)
     $router->get('/chat', [Admin\ChatController::class, 'index'])->name('admin.chat.index');
