@@ -64,6 +64,15 @@ $balance = \App\Models\Invoice::balance($invoice);
 <?php if (\App\Models\Invoice::isPaid($invoice)): ?>
     <div class="alert alert-success"><i class="bi bi-check-circle"></i> This invoice has been paid in full. Thank you!</div>
 <?php else: ?>
+    <?php $credit = (int) ($client['credit_cents'] ?? 0); if ($credit > 0): ?>
+        <div class="card border-0 mb-3" style="background:var(--brand-soft)">
+            <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div><i class="bi bi-wallet2"></i> <strong>Account credit available:</strong> <span class="money"><?= e(money($credit, $invoice['currency'])->format()) ?></span></div>
+                <form method="post" action="<?= route('portal.invoices.credit', ['id' => $invoice['id']]) ?>"><?= csrf_field() ?><button class="btn btn-sm btn-brand">Apply credit to this invoice</button></form>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <h3 class="h5 mb-3">How to Pay</h3>
     <div class="row g-3">
         <?php foreach ($instructions as $instruction): ?>

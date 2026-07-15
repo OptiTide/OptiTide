@@ -2,15 +2,18 @@
 
 namespace App\Controllers\Admin;
 
+use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
 use App\Models\Client;
 use App\Models\ClientService;
+use App\Models\CreditTransaction;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Service;
+use App\Services\Billing\CreditService;
 use App\Support\Money;
 
 class ClientController extends Controller
@@ -99,7 +102,27 @@ class ClientController extends Controller
             'invoices'    => Invoice::query()->where('client_id', $id)->orderBy('id', 'desc')->get(),
             'services'    => Service::active(),
             'intakes'     => \App\Models\ProjectIntake::forClient($id),
+            'credit_txns' => CreditTransaction::forClient($id),
         ]);
+    }
+
+    public function addCredit(Request $request, string $id): Response
+    {
+        $client = Client::findOrFail($id);
+        $data = $this->validate($request, [
+            'amount' => 'required|numeric',
+            'reason' => 'nullable|max:200',
+        ]);
+
+        $cents = Money::fromDollars(abs((float) $data['amount']), config('company.currency', 'AUD'))->minorUnits;
+        if ((float) $data['amount'] < 0) {
+            $cents = -$cents;
+        }
+
+        (new CreditService())->add($id, $cents, $cents >= 0 ? 'add' : 'adjust', $data['reason'] ?? null, Auth::id());
+        Session::flash('success', 'Account credit updated.');
+
+        return $this->redirect(route('admin.clients.show', ['id' => $id]) . '#credit');
     }
 
     public function edit(Request $request, string $id): Response

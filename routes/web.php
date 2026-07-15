@@ -91,6 +91,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->delete('/clients/{id}', [Admin\ClientController::class, 'destroy'])->name('admin.clients.destroy');
 
     // Engagements (client_services) — managed from the client page
+    $router->post('/clients/{id}/credit', [Admin\ClientController::class, 'addCredit'])->name('admin.clients.credit');
     $router->post('/clients/{id}/engagements', [Admin\EngagementController::class, 'store'])->name('admin.engagements.store');
     $router->put('/engagements/{id}', [Admin\EngagementController::class, 'update'])->name('admin.engagements.update');
     $router->delete('/engagements/{id}', [Admin\EngagementController::class, 'destroy'])->name('admin.engagements.destroy');
@@ -204,6 +205,7 @@ $router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 't
     $router->post('/support/{id}/reply', [Client\SupportController::class, 'reply'])->name('portal.support.reply');
     $router->get('/invoices', [Client\InvoiceController::class, 'index'])->name('portal.invoices.index');
     $router->get('/invoices/{id}', [Client\InvoiceController::class, 'show'])->name('portal.invoices.show');
+    $router->post('/invoices/{id}/apply-credit', [Client\InvoiceController::class, 'applyCredit'])->name('portal.invoices.credit');
     $router->get('/invoices/{id}/pdf', [Client\InvoiceController::class, 'pdf'])->name('portal.invoices.pdf');
     $router->get('/profile', [Client\ProfileController::class, 'edit'])->name('portal.profile.edit');
     $router->put('/profile', [Client\ProfileController::class, 'update'])->name('portal.profile.update');

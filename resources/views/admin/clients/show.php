@@ -123,6 +123,43 @@ foreach ($services as $s) {
             </div>
         </div>
         <?php endif; ?>
+
+        <div class="card mt-3" id="credit">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-wallet2"></i> Account Credit</span>
+                <span class="fw-bold money"><?= e(money((int) ($client['credit_cents'] ?? 0), config('company.currency', 'AUD'))->format()) ?></span>
+            </div>
+            <div class="card-body">
+                <form method="post" action="<?= route('admin.clients.credit', ['id' => $client['id']]) ?>" class="row g-2 align-items-end mb-3">
+                    <?= csrf_field() ?>
+                    <div class="col-sm-4">
+                        <label class="form-label small">Amount ($)</label>
+                        <input type="number" step="0.01" name="amount" class="form-control form-control-sm" placeholder="e.g. 50 or -20" required>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label small">Reason</label>
+                        <input type="text" name="reason" class="form-control form-control-sm" maxlength="200" placeholder="e.g. Goodwill credit">
+                    </div>
+                    <div class="col-sm-2"><button class="btn btn-sm btn-brand w-100">Add</button></div>
+                    <div class="form-text">Use a negative amount to deduct. Credit can be applied to invoices.</div>
+                </form>
+                <?php if (! empty($credit_txns)): ?>
+                    <table class="table table-sm align-middle mb-0">
+                        <thead><tr><th>Date</th><th>Type</th><th>Reason</th><th class="text-end">Amount</th></tr></thead>
+                        <tbody>
+                            <?php foreach (array_slice($credit_txns, 0, 8) as $tx): ?>
+                                <tr>
+                                    <td class="text-muted small"><?= e($tx['created_at'] ? date('d M Y', strtotime($tx['created_at'])) : '') ?></td>
+                                    <td><span class="badge badge-soft"><?= e(ucfirst($tx['type'])) ?></span></td>
+                                    <td class="small"><?= e($tx['reason'] ?: '—') ?></td>
+                                    <td class="text-end money <?= (int) $tx['amount_cents'] < 0 ? 'text-danger' : 'text-success' ?>"><?= (int) $tx['amount_cents'] < 0 ? '−' : '+' ?><?= e(money(abs((int) $tx['amount_cents']), config('company.currency', 'AUD'))->format()) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
 </div>
 

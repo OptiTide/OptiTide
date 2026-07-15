@@ -69,6 +69,19 @@ class InvoiceController extends Controller
         return Response::file((new InvoicePdf())->render($id), $invoice['number'] . '.pdf', 'application/pdf');
     }
 
+    /** Client applies their own account credit to one of their invoices. */
+    public function applyCredit(Request $request, string $id): Response
+    {
+        $invoice = $this->ownedInvoice($id);
+        $applied = (new \App\Services\Billing\CreditService())->applyToInvoice($id, Auth::id());
+
+        $this->flash($applied > 0 ? 'success' : 'error', $applied > 0
+            ? 'Applied ' . money($applied, $invoice['currency'])->format() . ' account credit to this invoice.'
+            : 'You have no account credit available to apply.');
+
+        return $this->redirectRoute('portal.invoices.show', ['id' => $id]);
+    }
+
     /** Scope every lookup to the signed-in client (IDOR guard). */
     protected function ownedInvoice(string $id): array
     {
