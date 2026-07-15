@@ -138,6 +138,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     // Meetings
     $router->get('/meetings', [Admin\MeetingController::class, 'index'])->name('admin.meetings.index');
     $router->post('/meetings', [Admin\MeetingController::class, 'store'])->name('admin.meetings.store');
+    $router->post('/meetings/{id}/confirm', [Admin\MeetingController::class, 'confirm'])->name('admin.meetings.confirm');
     $router->post('/meetings/{id}/cancel', [Admin\MeetingController::class, 'cancel'])->name('admin.meetings.cancel');
 
     // Visitor analytics (first-party)
@@ -213,6 +214,7 @@ $router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 't
     $router->get('/project', [Client\ProjectController::class, 'index'])->name('portal.project');
     $router->get('/hosting', [Client\HostingController::class, 'index'])->name('portal.hosting');
     $router->get('/meetings', [Client\MeetingController::class, 'index'])->name('portal.meetings');
+    $router->post('/meetings', [Client\MeetingController::class, 'store'])->name('portal.meetings.request');
     $router->post('/hosting/{id}/login', [Client\HostingController::class, 'login'])->name('portal.hosting.login');
     $router->get('/refer', [Client\ReferController::class, 'index'])->name('portal.refer');
     $router->get('/support', [Client\SupportController::class, 'index'])->name('portal.support.index');

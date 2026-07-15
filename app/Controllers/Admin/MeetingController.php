@@ -65,6 +65,49 @@ class MeetingController extends Controller
         return $this->redirect(route('admin.meetings.index'));
     }
 
+    /** Confirm a client-requested meeting: optionally reschedule, add a link, and invite. */
+    public function confirm(Request $request, string $id): Response
+    {
+        $meeting = Meeting::findOrFail($id);
+
+        $data = $this->validate($request, [
+            'meeting_at' => 'nullable',
+            'location'   => 'nullable|max:300',
+        ]);
+
+        $update = ['status' => Meeting::STATUS_SCHEDULED];
+
+        if (! empty($data['meeting_at'])) {
+            $at = str_replace('T', ' ', trim($data['meeting_at']));
+            if (strlen($at) === 16) {
+                $at .= ':00';
+            }
+            $update['meeting_at'] = $at;
+        }
+        if (! empty($data['location'])) {
+            $update['location'] = $data['location'];
+        }
+
+        Meeting::updateById($id, $update);
+        $meeting = Meeting::find($id);
+
+        $client = Client::find($meeting['client_id']);
+        if ($client && ! empty($client['email'])) {
+            try {
+                Mail::to($client['email'], $client['business_name'])
+                    ->subject('Meeting confirmed: ' . $meeting['title'])
+                    ->view('emails.meeting-invite', ['meeting' => $meeting, 'client' => $client])
+                    ->send();
+            } catch (\Throwable $e) {
+                // never block on the invite mail
+            }
+        }
+
+        Session::flash('success', 'Meeting confirmed and the client has been notified.');
+
+        return $this->redirect(route('admin.meetings.index'));
+    }
+
     public function cancel(Request $request, string $id): Response
     {
         Meeting::findOrFail($id);

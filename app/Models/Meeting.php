@@ -8,6 +8,7 @@ class Meeting extends Model
 {
     protected static string $table = 'meetings';
 
+    public const STATUS_REQUESTED = 'requested';
     public const STATUS_SCHEDULED = 'scheduled';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_CANCELLED = 'cancelled';
