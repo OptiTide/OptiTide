@@ -90,6 +90,19 @@ $addr = $company['address'];
                     <div class="form-text">Payoneer / Resend API keys stay in <code>.env</code> for security.</div>
                 </div>
             </div>
+
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Skrill</span>
+                    <?= in_array('skrill', $enabled, true) ? '<span class="badge text-bg-success">Enabled</span>' : '<span class="badge text-bg-secondary">Off</span>' ?>
+                </div>
+                <div class="card-body">
+                    <label class="form-label">Merchant Skrill e-mail</label>
+                    <input type="email" name="s_skrill_email" value="<?= e($skrill['merchant_email'] ?? '') ?>" class="form-control <?= has_error('s_skrill_email') ? 'is-invalid' : '' ?>" placeholder="payments@yourbusiness.com">
+                    <?php if (error('s_skrill_email')): ?><div class="invalid-feedback"><?= e(error('s_skrill_email')) ?></div><?php endif; ?>
+                    <div class="form-text">The e-mail on your Skrill merchant account. Clients pay via Skrill Quick Checkout.</div>
+                </div>
+            </div>
         </div>
 
         <div class="col-12">

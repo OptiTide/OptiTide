@@ -39,6 +39,45 @@ class PayController extends Controller
         return Response::file($pdf, $invoice['number'] . '.pdf', 'application/pdf');
     }
 
+    /** Hand off to Skrill Quick Checkout via an auto-submitting form. */
+    public function skrill(Request $request, string $token): Response
+    {
+        $invoice = $this->resolve($token);
+        $email = trim((string) config('payments.gateways.skrill.merchant_email', ''));
+        if ($email === '') {
+            $this->abort(404, 'Skrill is not configured.');
+        }
+
+        $balance = max(0, (int) $invoice['total_cents'] - (int) $invoice['amount_paid_cents']);
+        $params = [
+            'pay_to_email'         => $email,
+            'transaction_id'       => (string) $invoice['number'],
+            'amount'               => number_format($balance / 100, 2, '.', ''),
+            'currency'             => (string) $invoice['currency'],
+            'language'             => 'EN',
+            'recipient_description' => (string) config('company.legal_name', 'OptiTide'),
+            'detail1_description'  => 'Invoice',
+            'detail1_text'         => (string) $invoice['number'],
+            'return_url'           => url('pay/' . $token),
+            'cancel_url'           => url('pay/' . $token),
+        ];
+
+        $inputs = '';
+        foreach ($params as $k => $v) {
+            $inputs .= '<input type="hidden" name="' . e($k) . '" value="' . e($v) . '">';
+        }
+
+        $html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Redirecting to Skrill…</title>'
+            . '<meta name="viewport" content="width=device-width, initial-scale=1"></head>'
+            . '<body onload="document.forms[0].submit()" style="font-family:system-ui,sans-serif;text-align:center;padding:4rem 1rem;color:#0D1530">'
+            . '<p>Redirecting you to Skrill to complete your payment…</p>'
+            . '<form action="https://pay.skrill.com" method="post">' . $inputs
+            . '<noscript><button type="submit" style="background:#FF6A00;color:#fff;border:0;border-radius:8px;padding:.7rem 1.4rem;font-size:1rem">Continue to Skrill</button></noscript>'
+            . '</form></body></html>';
+
+        return Response::make($html, 200, ['Content-Type' => 'text/html; charset=UTF-8']);
+    }
+
     protected function resolve(string $token): array
     {
         $invoice = Invoice::firstWhere('public_token', $token);

@@ -17,8 +17,10 @@
 
 return [
     // Order shown to the client on the pay page. First = default.
+    // PayID first, then Skrill, then the rest. First = preferred.
     'enabled' => array_values(array_filter([
         env('PAYID_ENABLED', true) ? 'payid' : null,
+        env('SKRILL_ENABLED', true) ? 'skrill' : null,
         env('PAYONEER_ENABLED', true) ? 'payoneer' : null,
     ])),
 
@@ -30,6 +32,11 @@ return [
             'account_name' => env('PAYID_ACCOUNT_NAME', env('COMPANY_LEGAL_NAME', 'OptiTide Pty Ltd')),
             'bsb'          => env('BANK_BSB', ''),
             'account_number' => env('BANK_ACCOUNT_NUMBER', ''),
+        ],
+
+        'skrill' => [
+            'label'          => 'Skrill',
+            'merchant_email' => env('SKRILL_MERCHANT_EMAIL', ''),
         ],
 
         'payoneer' => [

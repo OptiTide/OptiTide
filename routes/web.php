@@ -24,6 +24,7 @@ $router->get('/sw.js', [PublicSite\PwaController::class, 'serviceWorker'])->name
 $router->get('/offline', [PublicSite\PwaController::class, 'offline'])->name('pwa.offline');
 $router->get('/pay/{token}', [PublicSite\PayController::class, 'show'])->name('pay.show');
 $router->get('/pay/{token}/pdf', [PublicSite\PayController::class, 'pdf'])->name('pay.pdf');
+$router->get('/pay/{token}/skrill', [PublicSite\PayController::class, 'skrill'])->name('pay.skrill');
 
 // --- Blog (public, indexable) ----------------------------------------------
 $router->get('/blog', [PublicSite\BlogController::class, 'index'])->name('blog.index');
