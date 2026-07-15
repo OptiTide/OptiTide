@@ -165,8 +165,26 @@ a:hover { color: var(--brand); }
 .mk-nav { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .mk-nav .mk-container { display: flex; align-items: center; justify-content: space-between; padding-top: .85rem; padding-bottom: .85rem; }
 .mk-nav .brand-mark { font-size: 1.35rem; color: var(--ink); }
-.mk-nav .brand-logo { height: 48px; }
-@media (max-width: 576px) { .mk-nav .brand-logo { height: 40px; } }
+.mk-nav .brand-logo { height: 54px; }
+@media (max-width: 576px) { .mk-nav .brand-logo { height: 44px; } }
+
+/* Top utility bar */
+.mk-topbar { background: var(--navy); color: #b9c0d4; font-size: .82rem; }
+.mk-topbar .mk-container { display: flex; justify-content: space-between; align-items: center; padding-top: .4rem; padding-bottom: .4rem; }
+.mk-topbar a { color: #c7ccdb; text-decoration: none; margin-right: 1.1rem; }
+.mk-topbar a:hover { color: #fff; }
+.mk-topbar i { color: var(--brand-bright); }
+.mk-topbar-tag { color: var(--brand-bright); font-weight: 600; font-style: italic; }
+@media (max-width: 640px) { .mk-topbar-right { display: none; } .mk-topbar a { margin-right: .7rem; } }
+
+/* Moving announcement banner */
+.mk-marquee { background: var(--brand); color: #fff; overflow: hidden; white-space: nowrap; }
+.mk-marquee-track { display: inline-block; padding: .5rem 0; animation: mk-marq 28s linear infinite; }
+.mk-marquee-item { display: inline-block; padding: 0 2rem; font-weight: 600; font-size: .88rem; }
+.mk-marquee-item i { opacity: .85; margin-right: .25rem; }
+.mk-marquee:hover .mk-marquee-track { animation-play-state: paused; }
+@keyframes mk-marq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .mk-marquee-track { animation: none; } }
 .mk-nav-links { display: flex; align-items: center; gap: 1.4rem; }
 .mk-nav-links a { color: #475569; text-decoration: none; font-weight: 600; font-size: .93rem; }
 .mk-nav-links a:hover { color: var(--brand); }

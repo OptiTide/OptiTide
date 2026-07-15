@@ -114,6 +114,20 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
 </head>
 <body class="mk">
 
+<!-- Top utility bar -->
+<div class="mk-topbar">
+    <div class="mk-container">
+        <div class="mk-topbar-left">
+            <a href="mailto:<?= e($company['email']) ?>"><i class="bi bi-envelope"></i> <?= e($company['email']) ?></a>
+            <?php if ($company['phone']): ?><a href="tel:<?= e(preg_replace('/\s+/', '', (string) $company['phone'])) ?>"><i class="bi bi-telephone"></i> <?= e($company['phone']) ?></a><?php endif; ?>
+            <span class="d-none d-md-inline"><i class="bi bi-geo-alt"></i> Serving all of Australia</span>
+        </div>
+        <div class="mk-topbar-right">
+            <span class="mk-topbar-tag">Grow Online. Lead Always.</span>
+        </div>
+    </div>
+</div>
+
 <nav class="mk-nav">
     <div class="mk-container">
         <a href="/" aria-label="OptiTide home"><img class="brand-logo" src="/assets/img/logo.png" alt="OptiTide"></a>
@@ -128,6 +142,16 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
         </div>
     </div>
 </nav>
+
+<!-- Moving announcement banner -->
+<div class="mk-marquee" aria-hidden="true">
+    <div class="mk-marquee-track">
+        <?php $msgs = ['Australian-owned digital agency', 'Web Design · SEO · Social Media · Hosting', 'GST-inclusive, transparent pricing', 'Grow Online. Lead Always.', 'Get a free, no-obligation quote today']; ?>
+        <?php for ($i = 0; $i < 2; $i++): foreach ($msgs as $m): ?>
+            <span class="mk-marquee-item"><i class="bi bi-stars"></i> <?= e($m) ?></span>
+        <?php endforeach; endfor; ?>
+    </div>
+</div>
 
 <header class="mk-hero">
     <div class="mk-container">
@@ -358,38 +382,56 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
     <div class="mk-container">
         <div class="row g-4">
             <div class="col-lg-4">
-                <a href="/"><img class="brand-logo brand-logo--chip" src="/assets/img/logo.png" alt="OptiTide" style="height:40px"></a>
-                <p class="mt-2" style="color:#a7a3d6;font-size:.9rem;max-width:300px">Web design, SEO, social media and hosting for Australian business — all under one roof.</p>
+                <a href="/" class="d-inline-block"><img class="brand-logo brand-logo--chip" src="/assets/img/logo.png" alt="OptiTide" style="height:52px"></a>
+                <p class="mt-3 mb-3" style="color:#a7adc4;font-size:.92rem;max-width:320px;line-height:1.6">OptiTide is an Australian digital agency helping small businesses get found, look professional and grow online — web design, SEO, social media and managed hosting, all under one roof.</p>
+                <p class="mb-1"><i class="bi bi-envelope me-1"></i> <a href="mailto:<?= e($company['email']) ?>"><?= e($company['email']) ?></a></p>
+                <?php if ($company['phone']): ?><p class="mb-1"><i class="bi bi-telephone me-1"></i> <?= e($company['phone']) ?></p><?php endif; ?>
+                <p class="mb-0"><i class="bi bi-geo-alt me-1"></i> Serving businesses Australia-wide</p>
             </div>
-            <div class="col-6 col-lg-3">
+            <div class="col-6 col-lg-2">
                 <h5>Services</h5>
                 <ul class="foot-links">
                     <li><a href="#services">Web Design</a></li>
                     <li><a href="#services">SEO</a></li>
                     <li><a href="#services">Social Media</a></li>
-                    <li><a href="#services">Hosting</a></li>
+                    <li><a href="#services">Web Hosting</a></li>
+                    <li><a href="#packages">Plans &amp; Pricing</a></li>
                 </ul>
             </div>
-            <div class="col-6 col-lg-3">
+            <div class="col-6 col-lg-2">
                 <h5>Company</h5>
                 <ul class="foot-links">
                     <li><a href="#why">Why OptiTide</a></li>
                     <li><a href="#process">Our Process</a></li>
                     <li><a href="#faq">FAQ</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="<?= $dashUrl ?>"><?= $isAuthed ? 'Dashboard' : 'Client Login' ?></a></li>
                 </ul>
             </div>
-            <div class="col-lg-2">
-                <h5>Client Area</h5>
+            <div class="col-6 col-lg-2">
+                <h5>Legal</h5>
                 <ul class="foot-links">
-                    <li><a href="<?= $dashUrl ?>"><?= $isAuthed ? 'Dashboard' : 'Client Login' ?></a></li>
-                    <li><a href="mailto:<?= e($company['email']) ?>"><?= e($company['email']) ?></a></li>
+                    <li><a href="<?= route('legal.terms') ?>">Terms of Service</a></li>
+                    <li><a href="<?= route('legal.privacy') ?>">Privacy Policy</a></li>
+                    <li><a href="<?= route('legal.refund') ?>">Refund Policy</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h5>Get Started</h5>
+                <ul class="foot-links">
+                    <li><a href="#contact">Get a Free Quote</a></li>
+                    <li><a href="#packages">View Packages</a></li>
+                    <li><a href="<?= route('register') ?>">Create Account</a></li>
                 </ul>
             </div>
         </div>
         <div class="mk-footer-bottom d-flex flex-wrap justify-content-between gap-2">
             <span>&copy; <?= date('Y') ?> <?= e($company['legal_name']) ?><?= $company['abn'] ? ' · ABN ' . e($company['abn']) : '' ?></span>
-            <span>Australian Digital Agency</span>
+            <span class="d-flex gap-3">
+                <a href="<?= route('legal.terms') ?>">Terms</a>
+                <a href="<?= route('legal.privacy') ?>">Privacy</a>
+                <span class="mk-topbar-tag">Grow Online. Lead Always.</span>
+            </span>
         </div>
     </div>
 </footer>

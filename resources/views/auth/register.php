@@ -36,6 +36,13 @@
                     <input type="password" name="password_confirmation" class="form-control" required>
                 </div>
             </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" name="accept_terms" value="1" id="accept_terms" class="form-check-input <?= has_error('accept_terms') ? 'is-invalid' : '' ?>" <?= old('accept_terms') ? 'checked' : '' ?> required>
+                <label class="form-check-label small" for="accept_terms">
+                    I agree to the <a href="<?= route('legal.terms') ?>" target="_blank">Terms of Service</a> and <a href="<?= route('legal.privacy') ?>" target="_blank">Privacy Policy</a>.
+                </label>
+                <?php if (error('accept_terms')): ?><div class="text-danger small mt-1">Please accept the Terms and Privacy Policy to continue.</div><?php endif; ?>
+            </div>
             <button class="btn btn-brand w-100">Create Account</button>
         </form>
         <p class="text-center small mt-3 mb-0">Already have an account? <a href="<?= route('login') ?>">Sign In</a></p>

@@ -20,6 +20,11 @@ $router->get('/sitemap.xml', [PublicSite\SeoController::class, 'sitemap'])->name
 $router->get('/pay/{token}', [PublicSite\PayController::class, 'show'])->name('pay.show');
 $router->get('/pay/{token}/pdf', [PublicSite\PayController::class, 'pdf'])->name('pay.pdf');
 
+// --- Legal ------------------------------------------------------------------
+$router->get('/terms', [PublicSite\LegalController::class, 'terms'])->name('legal.terms');
+$router->get('/privacy', [PublicSite\LegalController::class, 'privacy'])->name('legal.privacy');
+$router->get('/refund', [PublicSite\LegalController::class, 'refund'])->name('legal.refund');
+
 // --- Guest auth -------------------------------------------------------------
 $router->group(['middleware' => ['guest', 'csrf']], function ($router) {
     $router->get('/login', [Auth\LoginController::class, 'show'])->name('login');
@@ -35,6 +40,7 @@ $router->group(['middleware' => ['guest', 'csrf']], function ($router) {
 });
 
 $router->post('/logout', [Auth\LogoutController::class, 'logout'])->name('logout')->middleware(['auth', 'csrf']);
+$router->post('/impersonate/leave', [\App\Controllers\ImpersonationController::class, 'leave'])->name('impersonate.leave')->middleware(['auth', 'csrf']);
 
 // --- Two-factor login challenge (password verified, not yet fully signed in) ---
 $router->get('/2fa', [Auth\TwoFactorController::class, 'challenge'])->name('2fa.challenge');
@@ -100,6 +106,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->get('/users/{id}/edit', [Admin\UserController::class, 'edit'])->name('admin.users.edit');
     $router->put('/users/{id}', [Admin\UserController::class, 'update'])->name('admin.users.update');
     $router->delete('/users/{id}', [Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
+    $router->post('/users/{id}/login-as', [\App\Controllers\ImpersonationController::class, 'start'])->name('admin.users.loginas');
 
     // Settings
     $router->get('/settings', [Admin\SettingController::class, 'edit'])->name('admin.settings.edit');
@@ -107,8 +114,10 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
 });
 
 // --- Client portal ----------------------------------------------------------
-$router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 'csrf']], function ($router) {
+$router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 'terms', 'csrf']], function ($router) {
     $router->get('/', [Client\DashboardController::class, 'index'])->name('portal.dashboard');
+    $router->get('/accept-terms', [Client\TermsController::class, 'show'])->name('portal.terms.show');
+    $router->post('/accept-terms', [Client\TermsController::class, 'accept'])->name('portal.terms.accept');
     $router->get('/services', [Client\ServiceController::class, 'index'])->name('portal.services');
     $router->get('/invoices', [Client\InvoiceController::class, 'index'])->name('portal.invoices.index');
     $router->get('/invoices/{id}', [Client\InvoiceController::class, 'show'])->name('portal.invoices.show');

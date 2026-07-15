@@ -26,7 +26,8 @@ class RegisterController extends Controller
             'business_name' => 'required|max:160',
             'email'         => 'required|email|unique:users,email',
             'password'      => 'required|min:8|confirmed',
-        ], ['business_name' => 'Business name']);
+            'accept_terms'  => 'required',
+        ], ['business_name' => 'Business name', 'accept_terms' => 'Terms acceptance']);
 
         $user = Database::instance()->transaction(function () use ($data) {
             $client = Client::create([
@@ -40,9 +41,10 @@ class RegisterController extends Controller
                 'name'          => $data['name'],
                 'email'         => strtolower($data['email']),
                 'password_hash' => password_hash($data['password'], PASSWORD_DEFAULT),
-                'role'          => User::ROLE_CLIENT,
-                'client_id'     => $client['id'],
-                'status'        => 'active',
+                'role'              => User::ROLE_CLIENT,
+                'client_id'         => $client['id'],
+                'status'            => 'active',
+                'terms_accepted_at' => now(),
             ]);
         });
 

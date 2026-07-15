@@ -15,7 +15,8 @@ class ServiceController extends Controller
 {
     public function index(Request $request): Response
     {
-        $services = Service::query()->orderBy('name')->get();
+        // Ordered by service line, then price (lowest first).
+        $services = Service::query()->orderBy('category_id')->orderBy('price_cents')->get();
 
         // "In use" = number of ACTIVE client engagements per service.
         $inUse = [];

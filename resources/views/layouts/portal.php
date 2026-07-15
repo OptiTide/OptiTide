@@ -45,6 +45,12 @@ $me = auth();
         </header>
 
         <main class="main">
+            <?php if (\App\Core\Session::has('_impersonator')): ?>
+                <div class="alert alert-warning d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <span><i class="bi bi-eye"></i> You are previewing this portal as a client (admin view).</span>
+                    <form method="post" action="<?= route('impersonate.leave') ?>" class="m-0"><?= csrf_field() ?><button class="btn btn-sm btn-dark">Return to Admin</button></form>
+                </div>
+            <?php endif; ?>
             <?php $this->insert('partials.flash'); ?>
             <?= $this->yield('content') ?>
         </main>

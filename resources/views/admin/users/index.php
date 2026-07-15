@@ -44,6 +44,12 @@
                         <td class="text-nowrap"><?= e(! empty($user['last_login_at']) ? date('d M Y', strtotime($user['last_login_at'])) : 'Never') ?></td>
                         <td><span class="badge <?= ($user['status'] ?? 'active') === 'active' ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= e(ucfirst($user['status'] ?? 'active')) ?></span></td>
                         <td class="text-end text-nowrap">
+                            <?php if ($user['role'] === \App\Models\User::ROLE_CLIENT && \App\Core\Auth::isAdmin()): ?>
+                                <form method="post" action="<?= route('admin.users.loginas', ['id' => $user['id']]) ?>" class="d-inline" title="Log in as this client">
+                                    <?= csrf_field() ?>
+                                    <button class="btn btn-sm btn-link" onclick="return confirm('Log in as this client to preview their portal?')"><i class="bi bi-box-arrow-in-right"></i></button>
+                                </form>
+                            <?php endif; ?>
                             <a href="<?= route('admin.users.edit', ['id' => $user['id']]) ?>" class="btn btn-sm btn-link"><i class="bi bi-pencil"></i></a>
                             <?php if ((string) $user['id'] !== (string) auth()['id']): ?>
                                 <form method="post" action="<?= route('admin.users.destroy', ['id' => $user['id']]) ?>" class="d-inline" onsubmit="return confirm('Delete this user?')">
