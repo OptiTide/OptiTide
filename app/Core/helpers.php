@@ -46,6 +46,13 @@ if (! function_exists('resource_path')) {
     }
 }
 
+if (! function_exists('public_path')) {
+    function public_path(string $path = ''): string
+    {
+        return base_path('public' . ($path ? '/' . ltrim($path, '/') : ''));
+    }
+}
+
 if (! function_exists('e')) {
     function e(mixed $value): string
     {

@@ -12,6 +12,8 @@ $services = [
     ['bi-megaphone', 'Social Media Marketing', 'Show up consistently where your audience already is. We plan, create and manage on-brand content that builds awareness, engagement and trust across your channels.', ['Monthly content calendar', 'On-brand graphics & copy', 'Scheduling & publishing', 'Community management', 'Performance reporting']],
     ['bi-hdd-network', 'Managed Web Hosting', 'Reliable, secure, fully managed hosting so your website is always fast, safe and online. We handle the servers, security and backups — you focus on your business.', ['Fast, secure managed hosting', 'Free SSL & security hardening', 'Automated daily backups', 'Uptime & SSL monitoring', 'Priority Australian support']],
 ];
+// Drop PNGs named service-<slug>.png in public/assets/img to use your own icons.
+$serviceSlugs = ['web-design', 'seo', 'social-media', 'hosting'];
 
 $process = [
     ['Discover', 'We start by understanding your business, your customers and your goals — so everything we build has a purpose.'],
@@ -128,6 +130,9 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
 
 <header class="mk-hero">
     <div class="mk-container">
+        <?php $hasMascot = is_file(public_path('assets/img/mascot.png')); ?>
+        <div class="row align-items-center g-4">
+            <div class="col-lg-<?= $hasMascot ? '7' : '12' ?>">
         <span class="mk-badge"><i class="bi bi-stars"></i> Australian Digital Agency</span>
         <h1>Web Design, SEO &amp; Digital Marketing<br class="d-none d-md-inline"> for <span class="mk-gradient-text">Australian Business</span></h1>
         <p>OptiTide helps Australian businesses get found, look professional and grow online — with web design, SEO, social media and managed hosting, all under one roof.</p>
@@ -140,6 +145,13 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
             <div><div class="n mk-gradient-text">Australian</div><div class="l">Owned &amp; operated</div></div>
             <div><div class="n mk-gradient-text">GST-Ready</div><div class="l">Clear, inclusive invoicing</div></div>
         </div>
+            </div>
+            <?php if ($hasMascot): ?>
+                <div class="col-lg-5 text-center">
+                    <img src="/assets/img/mascot.png" alt="OptiTide mascot" class="mk-hero-mascot" style="max-height:440px">
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
 </header>
 
@@ -151,10 +163,15 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
             <p class="mk-lead mx-auto">Four core services that work together — so your website, your search rankings, your social presence and your hosting all pull in the same direction.</p>
         </div>
         <div class="row g-4">
-            <?php foreach ($services as [$icon, $sTitle, $blurb, $points]): ?>
+            <?php foreach ($services as $idx => [$icon, $sTitle, $blurb, $points]): ?>
+                <?php $iconImg = 'assets/img/service-' . $serviceSlugs[$idx] . '.png'; ?>
                 <div class="col-md-6">
                     <article class="mk-service">
-                        <div class="mk-service-icon"><i class="bi <?= e($icon) ?>"></i></div>
+                        <?php if (is_file(public_path($iconImg))): ?>
+                            <img src="/<?= $iconImg ?>" alt="<?= e($sTitle) ?>" class="mk-service-icon-img brand-img">
+                        <?php else: ?>
+                            <div class="mk-service-icon"><i class="bi <?= e($icon) ?>"></i></div>
+                        <?php endif; ?>
                         <h3><?= e($sTitle) ?></h3>
                         <p><?= e($blurb) ?></p>
                         <ul>

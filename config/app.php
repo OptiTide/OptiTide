@@ -9,7 +9,7 @@ return [
     'timezone' => env('APP_TIMEZONE', 'Australia/Sydney'),
 
     'brand' => [
-        'accent'      => env('BRAND_ACCENT', '#7c3aed'),
-        'accent_dark' => env('BRAND_ACCENT_DARK', '#6d28d9'),
+        'accent'      => env('BRAND_ACCENT', '#FF6A00'),
+        'accent_dark' => env('BRAND_ACCENT_DARK', '#E85F00'),
     ],
 ];
