@@ -9,6 +9,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
 use App\Models\User;
+use App\Services\TwoFactor\TwoFactorService;
 
 class LoginController extends Controller
 {
@@ -34,7 +35,9 @@ class LoginController extends Controller
             return $this->back();
         }
 
-        if (! Auth::attempt((string) $request->input('email'), (string) $request->input('password'))) {
+        $user = Auth::validateCredentials((string) $request->input('email'), (string) $request->input('password'));
+
+        if ($user === null) {
             RateLimiter::hit($throttleKey, 60);
             Session::flash('error', 'Those credentials do not match our records.');
             Session::flash('_old', ['email' => $request->input('email')]);
@@ -43,6 +46,19 @@ class LoginController extends Controller
         }
 
         RateLimiter::clear($throttleKey);
+
+        // Password OK — if 2FA is on, hold the login and go to the challenge.
+        $twoFactor = new TwoFactorService();
+        if ($twoFactor->enabled($user)) {
+            Session::put('_2fa_user', $user['id']);
+            if (($user['two_factor_method'] ?? null) === TwoFactorService::METHOD_EMAIL) {
+                $twoFactor->sendEmailCode($user);
+            }
+
+            return $this->redirect(route('2fa.challenge'));
+        }
+
+        Auth::login($user);
         User::updateById(Auth::id(), ['last_login_at' => now()]);
 
         $intended = Session::pull('_intended');

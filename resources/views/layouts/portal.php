@@ -32,6 +32,7 @@ $me = auth();
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" href="<?= route('portal.profile.edit') ?>">Profile</a></li>
+                    <li><a class="dropdown-item" href="<?= route('security.show') ?>">Security &amp; 2FA</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form method="post" action="<?= route('logout') ?>" class="px-1">

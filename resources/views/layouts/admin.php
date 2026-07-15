@@ -38,6 +38,7 @@ $me = auth();
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><span class="dropdown-item-text small text-muted"><?= e(ucfirst($me['role'] ?? '')) ?></span></li>
+                    <li><a class="dropdown-item" href="<?= route('security.show') ?>"><i class="bi bi-shield-lock"></i> Security &amp; 2FA</a></li>
                     <?php if (\App\Core\Auth::isAdmin()): ?>
                         <li><a class="dropdown-item" href="<?= route('admin.settings.edit') ?>">Settings</a></li>
                     <?php endif; ?>

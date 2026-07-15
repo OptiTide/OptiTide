@@ -36,6 +36,19 @@ $router->group(['middleware' => ['guest', 'csrf']], function ($router) {
 
 $router->post('/logout', [Auth\LogoutController::class, 'logout'])->name('logout')->middleware(['auth', 'csrf']);
 
+// --- Two-factor login challenge (password verified, not yet fully signed in) ---
+$router->get('/2fa', [Auth\TwoFactorController::class, 'challenge'])->name('2fa.challenge');
+$router->post('/2fa', [Auth\TwoFactorController::class, 'verify'])->name('2fa.verify')->middleware('csrf');
+$router->post('/2fa/resend', [Auth\TwoFactorController::class, 'resend'])->name('2fa.resend')->middleware('csrf');
+
+// --- Account security (2FA setup) — any signed-in user ---
+$router->group(['prefix' => 'account', 'middleware' => ['auth', 'csrf']], function ($router) {
+    $router->get('/security', [\App\Controllers\SecurityController::class, 'show'])->name('security.show');
+    $router->post('/security/setup', [\App\Controllers\SecurityController::class, 'setup'])->name('security.setup');
+    $router->post('/security/confirm', [\App\Controllers\SecurityController::class, 'confirm'])->name('security.confirm');
+    $router->post('/security/disable', [\App\Controllers\SecurityController::class, 'disable'])->name('security.disable');
+});
+
 // --- Admin (staff) ----------------------------------------------------------
 $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff', 'csrf']], function ($router) {
     $router->get('/', [Admin\DashboardController::class, 'index'])->name('admin.dashboard');

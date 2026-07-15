@@ -9,6 +9,7 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-pdo": "*",
+        "bacon/bacon-qr-code": "^3.0",
         "dompdf/dompdf": "^3.0",
         "predis/predis": "^2.2"
     },

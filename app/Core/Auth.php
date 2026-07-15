@@ -11,26 +11,38 @@ final class Auth
 
     public static function attempt(string $email, string $password): bool
     {
+        $user = static::validateCredentials($email, $password);
+
+        if ($user === null) {
+            return false;
+        }
+
+        static::login($user);
+
+        return true;
+    }
+
+    /** Verify credentials WITHOUT logging in (used by the 2FA login flow). */
+    public static function validateCredentials(string $email, string $password): ?array
+    {
         $user = User::findByEmail($email);
 
         if (! $user || ($user['status'] ?? 'active') !== 'active') {
             // Hash a dummy value to keep timing consistent for unknown emails.
             password_verify($password, '$2y$12$usesomesillystringforsalt................');
 
-            return false;
+            return null;
         }
 
         if (! password_verify($password, (string) ($user['password_hash'] ?? ''))) {
-            return false;
+            return null;
         }
 
         if (password_needs_rehash((string) $user['password_hash'], PASSWORD_DEFAULT)) {
             User::updateById($user['id'], ['password_hash' => password_hash($password, PASSWORD_DEFAULT)]);
         }
 
-        static::login($user);
-
-        return true;
+        return $user;
     }
 
     public static function login(array $user): void
