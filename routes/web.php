@@ -134,6 +134,11 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->post('/tickets/{id}/reply', [Admin\TicketController::class, 'reply'])->name('admin.tickets.reply');
     $router->post('/tickets/{id}/status', [Admin\TicketController::class, 'status'])->name('admin.tickets.status');
 
+    // Meetings
+    $router->get('/meetings', [Admin\MeetingController::class, 'index'])->name('admin.meetings.index');
+    $router->post('/meetings', [Admin\MeetingController::class, 'store'])->name('admin.meetings.store');
+    $router->post('/meetings/{id}/cancel', [Admin\MeetingController::class, 'cancel'])->name('admin.meetings.cancel');
+
     // Live chat (staff)
     $router->get('/chat', [Admin\ChatController::class, 'index'])->name('admin.chat.index');
     $router->get('/chat/{id}', [Admin\ChatController::class, 'show'])->name('admin.chat.show');
@@ -203,6 +208,7 @@ $router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 't
     $router->post('/services/{id}/cancel', [Client\ServiceController::class, 'cancel'])->name('portal.services.cancel');
     $router->get('/project', [Client\ProjectController::class, 'index'])->name('portal.project');
     $router->get('/hosting', [Client\HostingController::class, 'index'])->name('portal.hosting');
+    $router->get('/meetings', [Client\MeetingController::class, 'index'])->name('portal.meetings');
     $router->post('/hosting/{id}/login', [Client\HostingController::class, 'login'])->name('portal.hosting.login');
     $router->get('/refer', [Client\ReferController::class, 'index'])->name('portal.refer');
     $router->get('/support', [Client\SupportController::class, 'index'])->name('portal.support.index');
