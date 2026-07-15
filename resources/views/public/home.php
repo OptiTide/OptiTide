@@ -3,7 +3,7 @@ $company = config('company');
 $appUrl = rtrim(config('app.url'), '/');
 $brand = config('app.brand.accent', '#7c3aed');
 $title = 'OptiTide — Web Design, SEO, Social Media & Hosting in Australia';
-$description = 'OptiTide is an Australian digital agency delivering web design, SEO, social media marketing and managed hosting for small business — all under one roof, with clear pricing and GST-ready tax invoices.';
+$description = 'OptiTide is an Australian digital agency delivering web design, SEO, social media marketing and managed hosting for small business — all under one roof, with fixed upfront pricing and no surprise bills.';
 $ogImage = $appUrl . '/assets/img/favicon.png';
 
 $services = [
@@ -25,7 +25,7 @@ $process = [
 $benefits = [
     ['bi-geo-alt', 'Australian-Owned', 'A local team who understand the Australian market, with support in your timezone.'],
     ['bi-stack', 'All-in-One', 'Web, SEO, social and hosting managed together — one partner instead of five.'],
-    ['bi-cash-coin', 'Transparent Pricing', 'Clear, upfront quotes and GST-inclusive tax invoices. You always know what you\'re paying.'],
+    ['bi-cash-coin', 'No Surprise Bills', 'You get a clear, fixed quote before we start — the price we quote is the price you pay. Every invoice is a proper Australian tax invoice with GST already included.'],
     ['bi-people', 'Dedicated Support', 'A real person to talk to, not a ticket queue. We treat your business like our own.'],
     ['bi-speedometer2', 'Results-Focused', 'Everything we do is aimed at real outcomes — more traffic, more leads, more customers.'],
     ['bi-shield-check', 'Secure & Reliable', 'Best-practice security, backups and monitoring baked into everything we host and build.'],
@@ -37,7 +37,7 @@ $faqs = [
     ['Do you offer ongoing hosting and support?', 'Yes. We offer fully managed hosting with SSL, daily backups, uptime monitoring and priority support, plus ongoing website care so you\'re never left on your own after launch.'],
     ['Do you work with businesses outside your local area?', 'Absolutely. We work with businesses right across Australia and communicate remotely, so distance is never a barrier to working together.'],
     ['What\'s included in social media management?', 'Content planning, on-brand graphics and copy, scheduling and publishing, community management and regular performance reporting across the platforms that matter for your business.'],
-    ['Are your prices GST-inclusive?', 'Yes. We\'re a registered Australian business, so all of our pricing and tax invoices are GST-inclusive and in AUD.'],
+    ['Is GST included in the price?', 'Yes. We\'re a registered Australian business, so every price you see already includes GST (10%) — there\'s nothing added on top. You\'ll always get a proper tax invoice in Australian dollars.'],
 ];
 
 // --- Structured data (schema.org) -----------------------------------------
@@ -132,6 +132,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
     <div class="mk-container">
         <a href="/" aria-label="OptiTide home"><img class="brand-logo" src="/assets/img/logo.png" alt="OptiTide"></a>
         <div class="mk-nav-links">
+            <a href="/" class="mk-nav-link">Home</a>
             <a href="#services" class="mk-nav-link">Services</a>
             <a href="#packages" class="mk-nav-link">Packages</a>
             <a href="#process" class="mk-nav-link">Process</a>
@@ -146,7 +147,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
 <!-- Moving announcement banner -->
 <div class="mk-marquee" aria-hidden="true">
     <div class="mk-marquee-track">
-        <?php $msgs = ['Australian-owned digital agency', 'Web Design · SEO · Social Media · Hosting', 'GST-inclusive, transparent pricing', 'Grow Online. Lead Always.', 'Get a free, no-obligation quote today']; ?>
+        <?php $msgs = ['Australian-owned & operated', 'Websites that win you customers', 'Get found on Google', 'Fixed pricing — no surprise bills', 'One team for web, SEO, social & hosting', 'Free, no-obligation quotes']; ?>
         <?php for ($i = 0; $i < 2; $i++): foreach ($msgs as $m): ?>
             <span class="mk-marquee-item"><i class="bi bi-stars"></i> <?= e($m) ?></span>
         <?php endforeach; endfor; ?>
@@ -160,15 +161,15 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
             <div class="col-lg-<?= $hasMascot ? '7' : '12' ?>">
         <span class="mk-badge"><i class="bi bi-stars"></i> Australian Digital Agency</span>
         <h1>Web Design, SEO &amp; Digital Marketing<br class="d-none d-md-inline"> for <span class="mk-gradient-text">Australian Business</span></h1>
-        <p>OptiTide helps Australian businesses get found, look professional and grow online — with web design, SEO, social media and managed hosting, all under one roof.</p>
+        <p>We build websites that win you customers, get your business found on Google, and keep you looking professional online — web design, SEO, social media and hosting, all handled by one Australian team. No jargon, no surprise bills.</p>
         <div class="mk-hero-cta">
             <a href="#contact" class="btn btn-brand btn-lg">Get a Free Quote</a>
-            <a href="#services" class="btn btn-ghost btn-lg">Explore Services</a>
+            <a href="#packages" class="btn btn-ghost btn-lg">See Pricing</a>
         </div>
         <div class="mk-hero-stats">
-            <div><div class="n mk-gradient-text">All-in-One</div><div class="l">Web · SEO · Social · Hosting</div></div>
-            <div><div class="n mk-gradient-text">Australian</div><div class="l">Owned &amp; operated</div></div>
-            <div><div class="n mk-gradient-text">GST-Ready</div><div class="l">Clear, inclusive invoicing</div></div>
+            <div><div class="n mk-gradient-text">One Team</div><div class="l">Web, SEO, social &amp; hosting in one place</div></div>
+            <div><div class="n mk-gradient-text">Australian</div><div class="l">Local team, real people, real support</div></div>
+            <div><div class="n mk-gradient-text">Fixed Pricing</div><div class="l">Clear quotes upfront — no surprise bills</div></div>
         </div>
             </div>
             <?php if ($hasMascot): ?>
@@ -217,7 +218,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
         <div class="text-center mb-5">
             <span class="mk-eyebrow">Plans &amp; Packages</span>
             <h2 class="mk-h2">Simple, Transparent Pricing</h2>
-            <p class="mk-lead mx-auto">Named packages for every service line — pick a plan that fits, or ask us for a custom quote. All prices are in AUD and GST-inclusive.</p>
+            <p class="mk-lead mx-auto">Simple packages for every service — pick a plan that fits, or ask us for a custom quote. All prices are in Australian dollars and already include GST, so the price you see is the price you pay.</p>
         </div>
         <?php foreach ($packages as $group): ?>
             <div class="mb-4">
