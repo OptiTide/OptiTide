@@ -30,19 +30,24 @@ final class ChatService
         return ChatConversation::find($conversation['id']);
     }
 
-    public function postVisitorMessage(array $conversation, string $body): void
+    /** Returns the stored visitor message (so the caller can advance the poll cursor). */
+    public function postVisitorMessage(array $conversation, string $body): array
     {
-        $this->addMessage($conversation['id'], 'visitor', $body, false, null);
+        $visitor = $this->addMessage($conversation['id'], 'visitor', $body, false, null);
         ChatConversation::updateById($conversation['id'], [
             'last_message_at' => now(),
             'status'          => ChatConversation::STATUS_OPEN,
         ]);
 
-        // Instant assistant reply only while no human has taken over.
+        // Instant assistant reply only while no human has taken over. The reply is
+        // stored now but delivered to the visitor via the SAME poll channel as a
+        // human reply — so a visitor can't tell AI from human by how it arrives.
         if (($conversation['mode'] ?? ChatConversation::MODE_AI) === ChatConversation::MODE_AI) {
             $reply = (new ChatAiService())->reply(ChatConversation::messages($conversation['id']));
             $this->postAgent($conversation['id'], $reply, true, null);
         }
+
+        return $visitor;
     }
 
     public function postAgent(int|string $conversationId, string $body, bool $isAi, int|string|null $userId): void
@@ -63,9 +68,9 @@ final class ChatService
         }
     }
 
-    protected function addMessage(int|string $conversationId, string $sender, string $body, bool $isAi, int|string|null $userId): void
+    protected function addMessage(int|string $conversationId, string $sender, string $body, bool $isAi, int|string|null $userId): array
     {
-        ChatMessage::create([
+        return ChatMessage::create([
             'conversation_id' => $conversationId,
             'sender'          => $sender,
             'is_ai'           => $isAi ? 1 : 0,

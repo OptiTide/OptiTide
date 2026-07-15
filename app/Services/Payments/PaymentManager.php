@@ -12,6 +12,7 @@ final class PaymentManager
     protected array $registry = [
         'payid'    => PayIdGateway::class,
         'skrill'   => SkrillGateway::class,
+        'paypal'   => PayPalGateway::class,
         'payoneer' => PayoneerGateway::class,
     ];
 
@@ -49,7 +50,7 @@ final class PaymentManager
     /** Valid manual payment methods for the "record payment" form. */
     public function methods(): array
     {
-        $methods = ['payid' => 'PayID / Bank transfer', 'skrill' => 'Skrill', 'payoneer' => 'Payoneer', 'manual' => 'Manual / Other'];
+        $methods = ['payid' => 'PayID / Bank transfer', 'skrill' => 'Skrill', 'paypal' => 'PayPal', 'payoneer' => 'Payoneer', 'manual' => 'Manual / Other'];
 
         return $methods;
     }

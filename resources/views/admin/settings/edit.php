@@ -103,6 +103,21 @@ $addr = $company['address'];
                     <div class="form-text">The e-mail on your Skrill merchant account. Clients pay via Skrill Quick Checkout.</div>
                 </div>
             </div>
+
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>PayPal</span>
+                    <?= in_array('paypal', $enabled, true) ? '<span class="badge text-bg-success">Enabled</span>' : '<span class="badge text-bg-secondary">Off</span>' ?>
+                </div>
+                <div class="card-body">
+                    <label class="form-label">PayPal.Me handle</label>
+                    <div class="input-group">
+                        <span class="input-group-text">paypal.me/</span>
+                        <input type="text" name="s_paypal_handle" value="<?= e($paypal['me_handle'] ?? '') ?>" class="form-control" placeholder="YourBusiness">
+                    </div>
+                    <div class="form-text">Your PayPal.Me handle. Clients are sent a pre-filled PayPal link for the invoice balance.</div>
+                </div>
+            </div>
         </div>
 
         <div class="col-12">

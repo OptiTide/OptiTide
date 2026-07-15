@@ -38,7 +38,24 @@ final class CommissionService
         }
 
         $rate = max(0, (int) config('affiliate.commission_bps', 1000));
-        $amountCents = (int) round((int) $invoice['total_cents'] * $rate / 10000);
+
+        // Commission is a % of the ORDER total. For split/installment plans the
+        // paid invoice is only part of the order, but the engagement carries the
+        // full order value — use it so split orders don't under-credit the referrer.
+        $base = (int) $invoice['total_cents'];
+        $items = \App\Models\Invoice::items($invoice['id']);
+        $serviceId = $items[0]['service_id'] ?? null;
+        if ($serviceId) {
+            $engagement = \App\Models\ClientService::query()
+                ->where('client_id', $clientId)
+                ->where('service_id', $serviceId)
+                ->orderBy('id', 'desc')->first();
+            if ($engagement && (int) $engagement['price_cents'] > 0) {
+                $base = (int) $engagement['price_cents'];
+            }
+        }
+
+        $amountCents = (int) round($base * $rate / 10000);
         if ($amountCents <= 0) {
             return null;
         }
@@ -81,7 +98,8 @@ final class CommissionService
         $totals = ['pending' => 0, 'approved' => 0, 'paid' => 0];
         $rows = Commission::query()->where('referrer_id', $referrerId)->get();
         foreach ($rows as $c) {
-            if (isset($totals[$c['status']])) {
+            // Never add across currencies — only sum rows in the requested currency.
+            if (isset($totals[$c['status']]) && ($c['currency'] ?? $currency) === $currency) {
                 $totals[$c['status']] += (int) $c['amount_cents'];
             }
         }

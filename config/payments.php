@@ -21,6 +21,7 @@ return [
     'enabled' => array_values(array_filter([
         env('PAYID_ENABLED', true) ? 'payid' : null,
         env('SKRILL_ENABLED', true) ? 'skrill' : null,
+        env('PAYPAL_ENABLED', true) ? 'paypal' : null,
         env('PAYONEER_ENABLED', true) ? 'payoneer' : null,
     ])),
 
@@ -37,6 +38,11 @@ return [
         'skrill' => [
             'label'          => 'Skrill',
             'merchant_email' => env('SKRILL_MERCHANT_EMAIL', ''),
+        ],
+
+        'paypal' => [
+            'label'     => 'PayPal',
+            'me_handle' => env('PAYPAL_ME', ''),   // your PayPal.Me handle (without the URL)
         ],
 
         'payoneer' => [

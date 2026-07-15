@@ -92,7 +92,8 @@ final class ChatAiService
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => $payload,
-            CURLOPT_TIMEOUT        => 25,
+            CURLOPT_TIMEOUT        => 12,
+            CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_HTTPHEADER     => [
                 'content-type: application/json',
                 'x-api-key: ' . $key,

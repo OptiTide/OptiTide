@@ -65,12 +65,17 @@
     function send() {
         var body = input.value.trim(); if (!body) return;
         input.value = '';
-        appendLocal('visitor', body);
-        api('POST', '<?= route('chat.message') ?>', { token: token, body: body }, function (res) { if (res && res.messages) render(res.messages); });
+        var bubble = appendLocal('visitor', body);
+        api('POST', '<?= route('chat.message') ?>', { body: body },
+            function (res) {
+                if (res && res.ok) { if (res.last_id) lastId = Math.max(lastId, res.last_id); setTimeout(function () { poll(false); }, 800); }
+                else if (bubble && bubble.parentNode) { bubble.parentNode.removeChild(bubble); }
+            },
+            function () { if (bubble && bubble.parentNode) { bubble.parentNode.removeChild(bubble); } });
     }
     function poll(initial) {
         if (!token) return;
-        fetch('<?= route('chat.poll') ?>?token=' + encodeURIComponent(token) + '&after=' + (initial ? 0 : lastId), { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        fetch('<?= route('chat.poll') ?>?after=' + (initial ? 0 : lastId), { headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-Chat-Token': token } })
             .then(function (r) { return r.json(); })
             .then(function (res) { if (res && res.messages && res.messages.length) { if (initial) render(res.messages); else res.messages.forEach(appendMsg); } })
             .catch(function () {});
@@ -83,12 +88,13 @@
         d.className = 'otc-msg ' + (sender === 'visitor' ? 'otc-me' : 'otc-them');
         d.textContent = body;
         msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+        return d;
     }
-    function api(method, url, data, cb) {
+    function api(method, url, data, cb, onErr) {
         var body = new URLSearchParams();
         Object.keys(data).forEach(function (k) { body.append(k, data[k]); });
-        fetch(url, { method: method, headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-TOKEN': meta ? meta.content : '', 'X-Requested-With': 'XMLHttpRequest' }, body: body.toString() })
-            .then(function (r) { return r.json(); }).then(cb).catch(function () {});
+        fetch(url, { method: method, headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-TOKEN': meta ? meta.content : '', 'X-Chat-Token': token || '', 'X-Requested-With': 'XMLHttpRequest' }, body: body.toString() })
+            .then(function (r) { return r.json(); }).then(cb).catch(function () { if (onErr) onErr(); });
     }
     function getCookie(n) { var v = document.cookie.match('(^|;)\\s*' + n + '\\s*=\\s*([^;]+)'); return v ? v.pop() : null; }
 })();

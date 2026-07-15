@@ -217,7 +217,7 @@ class InvoiceController extends Controller
 
         $data = $this->validate($request, [
             'amount'    => 'required|numeric|min:0.01',
-            'method'    => 'required|in:payid,skrill,payoneer,manual',
+            'method'    => 'required|in:payid,skrill,paypal,payoneer,manual',
             'reference' => 'nullable|max:120',
             'paid_at'   => 'nullable|date',
         ]);

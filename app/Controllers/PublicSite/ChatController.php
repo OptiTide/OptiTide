@@ -50,12 +50,12 @@ class ChatController extends Controller
             $body = mb_substr($body, 0, 2000);
         }
 
-        (new ChatService())->postVisitorMessage($conversation, $body);
+        $visitor = (new ChatService())->postVisitorMessage($conversation, $body);
 
-        return $this->json([
-            'ok'       => true,
-            'messages' => $this->format(ChatConversation::messages($conversation['id'])),
-        ]);
+        // Return only the visitor's own message id as the poll cursor. The agent
+        // reply (AI or human) is delivered through the same poll channel, so its
+        // arrival is indistinguishable.
+        return $this->json(['ok' => true, 'last_id' => (int) $visitor['id']]);
     }
 
     public function poll(Request $request): Response
@@ -73,7 +73,9 @@ class ChatController extends Controller
 
     protected function resolve(Request $request): array
     {
-        $token = (string) ($request->input('token') ?? $request->query('token') ?? $request->cookie('ot_chat', ''));
+        // Prefer the header/body/cookie over the query string so the capability
+        // token doesn't end up in access logs or Referer headers.
+        $token = (string) ($request->input('token') ?? $request->header('X-Chat-Token') ?? $request->cookie('ot_chat', '') ?? $request->query('token'));
         $conversation = ChatConversation::byToken($token);
         if (! $conversation) {
             $this->abort(404, 'Conversation not found.');

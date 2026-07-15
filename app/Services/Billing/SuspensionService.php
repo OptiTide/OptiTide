@@ -71,11 +71,14 @@ final class SuspensionService
             return false;
         }
 
-        $stillOwing = Invoice::query()
+        // Only an OVERDUE invoice keeps a client suspended. A future, not-yet-due
+        // installment (still SENT) must not block reactivation once they've paid
+        // what was actually overdue.
+        $stillOverdue = Invoice::query()
             ->where('client_id', $clientId)
-            ->whereIn('status', [Invoice::STATUS_SENT, Invoice::STATUS_OVERDUE])
+            ->where('status', Invoice::STATUS_OVERDUE)
             ->exists();
-        if ($stillOwing) {
+        if ($stillOverdue) {
             return false;
         }
 
