@@ -39,7 +39,7 @@
         </div>
         <div class="mk-footer-bottom d-flex flex-wrap justify-content-between gap-2">
             <span>&copy; <?= date('Y') ?> <?= e($company['legal_name'] ?? 'OptiTide') ?><?= ! empty($company['abn']) ? ' · ABN ' . e($company['abn']) : '' ?></span>
-            <span class="mk-footer-tagline">Grow Online. Lead Always.</span>
+            <span class="mk-footer-tagline">🇦🇺 Proudly Australian owned &amp; operated</span>
         </div>
     </div>
 </footer>

@@ -166,10 +166,10 @@ a:hover { color: var(--brand); }
 .mk-nav { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .mk-nav .mk-container { display: flex; align-items: center; justify-content: space-between; padding-top: .85rem; padding-bottom: .85rem; }
 .mk-nav .brand-mark { font-size: 1.35rem; color: var(--ink); }
-.mk-nav .brand-logo { height: 116px; }
+.mk-nav .brand-logo { height: 84px; }
 /* Tagline logo runs bigger so the slogan is legible. */
-.mk-nav .brand-logo--tagline { height: 132px; }
-@media (max-width: 576px) { .mk-nav .brand-logo, .mk-nav .brand-logo--tagline { height: 78px; } }
+.mk-nav .brand-logo--tagline { height: 84px; }
+@media (max-width: 576px) { .mk-nav .brand-logo, .mk-nav .brand-logo--tagline { height: 52px; } }
 
 /* Top utility bar */
 .mk-topbar { background: var(--navy); color: #b9c0d4; font-size: .82rem; }
