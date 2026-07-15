@@ -167,7 +167,9 @@ a:hover { color: var(--brand); }
 .mk-nav .mk-container { display: flex; align-items: center; justify-content: space-between; padding-top: .85rem; padding-bottom: .85rem; }
 .mk-nav .brand-mark { font-size: 1.35rem; color: var(--ink); }
 .mk-nav .brand-logo { height: 72px; }
-@media (max-width: 576px) { .mk-nav .brand-logo { height: 56px; } }
+/* Tagline logo runs bigger so the slogan is legible. */
+.mk-nav .brand-logo--tagline { height: 92px; }
+@media (max-width: 576px) { .mk-nav .brand-logo, .mk-nav .brand-logo--tagline { height: 60px; } }
 
 /* Top utility bar */
 .mk-topbar { background: var(--navy); color: #b9c0d4; font-size: .82rem; }

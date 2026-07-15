@@ -22,7 +22,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
 
 <nav class="mk-nav">
     <div class="mk-container">
-        <a href="/" aria-label="OptiTide home"><img class="brand-logo" src="/assets/img/logo.png" alt="OptiTide"></a>
+        <a href="/" aria-label="OptiTide home"><img class="brand-logo brand-logo--tagline" src="/assets/img/logo-tagline.png" alt="OptiTide — Grow Online. Lead Always."></a>
         <button class="mk-nav-toggle" type="button" aria-label="Menu" aria-expanded="false" onclick="var m=document.getElementById('mkNav');m.classList.toggle('open');this.setAttribute('aria-expanded',m.classList.contains('open'))"><i class="bi bi-list"></i></button>
         <div class="mk-nav-links" id="mkNav">
             <a href="/" class="mk-nav-link">Home</a>

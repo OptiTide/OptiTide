@@ -25,7 +25,7 @@ final class ChatService
             'last_message_at' => now(),
         ]);
 
-        $this->postAgent($conversation['id'], 'Hi! 👋 Welcome to OptiTide. How can we help you today — web design, SEO, social media or hosting?', true, null);
+        $this->postAgent($conversation['id'], 'Hi! 👋 I\'m the OptiTide AI assistant — I can answer most questions instantly, and a human teammate can jump in whenever you need. How can I help today — web design, SEO, social media or hosting?', true, null);
 
         return ChatConversation::find($conversation['id']);
     }
