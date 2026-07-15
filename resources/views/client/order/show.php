@@ -38,6 +38,17 @@ $this->extends('layouts.portal');
 
                 <form method="post" action="<?= route('portal.order.place', ['service' => $service['id']]) ?>">
                     <?= csrf_field() ?>
+                    <?php if (count($plans ?? []) > 1): ?>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Payment option</label>
+                            <?php foreach ($plans as $i => $plan): ?>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="plan" id="plan_<?= e($plan['key']) ?>" value="<?= e($plan['key']) ?>" <?= $i === 0 ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="plan_<?= e($plan['key']) ?>"><?= e($plan['label']) ?></label>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                     <div class="d-flex flex-wrap gap-2">
                         <button type="submit" class="btn btn-brand"><i class="bi bi-bag-check"></i> Confirm Order &amp; Continue to Payment</button>
                         <a href="<?= route('portal.order.index') ?>" class="btn btn-light">Cancel</a>
