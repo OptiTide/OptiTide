@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\ClientService;
 use App\Models\Invoice;
 use App\Models\Service;
+use App\Services\Mail\Mail;
 
 /**
  * Generates invoices for recurring engagements (hosting, retainers) that are
@@ -104,13 +105,37 @@ final class RecurringBiller
     }
 
     /** Mark past-due sent invoices as overdue. */
-    public function markOverdue(?string $asOf = null): int
+    public function markOverdue(?string $asOf = null, bool $notify = true): int
     {
         $asOf ??= today();
 
-        return Invoice::query()
+        $due = Invoice::query()
             ->where('status', Invoice::STATUS_SENT)
             ->where('due_date', '<', $asOf)
-            ->update(['status' => Invoice::STATUS_OVERDUE, 'updated_at' => now()]);
+            ->get();
+
+        $count = 0;
+        foreach ($due as $invoice) {
+            Invoice::updateById($invoice['id'], ['status' => Invoice::STATUS_OVERDUE, 'updated_at' => now()]);
+            $count++;
+
+            if (! $notify) {
+                continue;
+            }
+
+            $client = Client::find($invoice['client_id']);
+            if ($client && ! empty($client['email'])) {
+                Mail::to($client['email'], $client['business_name'])
+                    ->subject('Reminder: invoice ' . $invoice['number'] . ' is overdue')
+                    ->view('emails.invoice-reminder', [
+                        'invoice' => Invoice::find($invoice['id']),
+                        'client'  => $client,
+                        'payUrl'  => url('pay/' . $invoice['public_token']),
+                    ])
+                    ->send();
+            }
+        }
+
+        return $count;
     }
 }

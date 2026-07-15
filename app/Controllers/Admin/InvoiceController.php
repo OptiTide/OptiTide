@@ -222,7 +222,7 @@ class InvoiceController extends Controller
             'paid_at'   => 'nullable|date',
         ]);
 
-        $this->invoices->recordPayment(
+        $payment = $this->invoices->recordPayment(
             $id,
             Money::fromDollars($data['amount'], $invoice['currency'])->minorUnits,
             $data['method'],
@@ -231,7 +231,20 @@ class InvoiceController extends Controller
             Auth::id()
         );
 
-        Session::flash('success', 'Payment recorded.');
+        // E-mail the client a receipt.
+        $client = Client::find($invoice['client_id']);
+        if ($client && ! empty($client['email'])) {
+            \App\Services\Mail\Mail::to($client['email'], $client['business_name'])
+                ->subject('Payment received — invoice ' . $invoice['number'])
+                ->view('emails.payment-receipt', [
+                    'invoice' => Invoice::find($id),
+                    'payment' => $payment,
+                    'client'  => $client,
+                ])
+                ->send();
+        }
+
+        Session::flash('success', 'Payment recorded and receipt e-mailed.');
 
         return $this->redirect(route('admin.invoices.show', ['id' => $id]));
     }

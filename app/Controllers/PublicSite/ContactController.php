@@ -48,6 +48,16 @@ class ContactController extends Controller
             ])
             ->send();
 
+        // Auto-reply to the person who enquired.
+        Mail::to($data['email'], $data['name'])
+            ->subject('We received your enquiry — OptiTide')
+            ->view('emails.contact-received', [
+                'name'    => $data['name'],
+                'service' => $data['service'] ?? '',
+                'message' => $data['message'],
+            ])
+            ->send();
+
         Session::flash('success', 'Thanks ' . $data['name'] . ' — your enquiry has been sent. We\'ll be in touch soon.');
 
         return $backToContact();

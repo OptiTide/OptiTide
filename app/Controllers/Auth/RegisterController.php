@@ -10,6 +10,7 @@ use App\Core\Response;
 use App\Core\Session;
 use App\Models\Client;
 use App\Models\User;
+use App\Services\Mail\Mail;
 
 class RegisterController extends Controller
 {
@@ -46,6 +47,12 @@ class RegisterController extends Controller
         });
 
         Auth::login($user);
+
+        Mail::to($user['email'], $user['name'])
+            ->subject('Welcome to OptiTide')
+            ->view('emails.welcome', ['name' => $user['name'], 'url' => url('portal')])
+            ->send();
+
         Session::flash('success', 'Welcome to OptiTide!');
 
         return $this->redirect(route('portal.dashboard'));

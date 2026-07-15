@@ -70,7 +70,8 @@
                         <?php foreach ($recent_payments as $payment): ?>
                             <tr>
                                 <td class="fw-semibold"><?= e($payment['business_name']) ?></td>
-                                <td><span class="badge text-bg-light"><?= e(ucwords(str_replace('_', ' ', (string) $payment['method']))) ?></span></td>
+                                <?php $ml = ['payid' => 'PayID', 'payoneer' => 'Payoneer', 'manual' => 'Manual'][$payment['method']] ?? ucwords(str_replace('_', ' ', (string) $payment['method'])); ?>
+                                <td><span class="badge text-bg-light"><?= e($ml) ?></span></td>
                                 <td><?= e($payment['paid_at'] ? date('d M Y', strtotime($payment['paid_at'])) : '—') ?></td>
                                 <td class="text-end money"><?= e($payment['amount']->format()) ?></td>
                             </tr>

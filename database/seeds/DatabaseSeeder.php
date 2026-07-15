@@ -18,7 +18,7 @@ return new class {
         $this->services($categories);
 
         $out('Seeding users…');
-        $this->user('OptiTide Admin', 'Hello@OptiTide.io', User::ROLE_ADMIN);
+        $this->user('Michael Long', 'Hello@OptiTide.io', User::ROLE_ADMIN);
         $this->user('Support Staff', 'staff@optitide.io', User::ROLE_STAFF);
 
         $out('Seeding demo client + portal login…');
