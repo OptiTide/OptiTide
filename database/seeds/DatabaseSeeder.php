@@ -235,23 +235,26 @@ return new class {
     {
         $posts = require __DIR__ . '/blog_posts.php';
 
-        foreach ($posts as $i => [$category, $title, $excerpt, $keywords, $body]) {
-            $slug = Blog::slugify($title);
+        foreach ($posts as $i => $p) {
+            $slug = $p['slug'] ?? Blog::slugify($p['title']);
             if (Blog::firstWhere('slug', $slug)) {
                 continue;
             }
 
+            $cover = '/assets/img/blog/' . $slug . '.svg';
+            $hasCover = defined('BASE_PATH') && is_file(BASE_PATH . '/public' . $cover);
+
             Blog::create([
-                'title'            => $title,
+                'title'            => $p['title'],
                 'slug'             => $slug,
-                'excerpt'          => $excerpt,
-                'body'             => $body,
-                'category'         => $category,
+                'excerpt'          => $p['excerpt'] ?? null,
+                'body'             => $p['body'],
+                'category'         => $p['category'] ?? null,
                 'author'           => 'OptiTide',
-                'keywords'         => $keywords,
-                'meta_title'       => null,
-                'meta_description' => $excerpt,
-                'cover_image'      => null,
+                'keywords'         => $p['keywords'] ?? null,
+                'meta_title'       => $p['meta_title'] ?? null,
+                'meta_description' => $p['meta_description'] ?? ($p['excerpt'] ?? null),
+                'cover_image'      => $hasCover ? $cover : null,
                 'status'           => Blog::STATUS_PUBLISHED,
                 // Stagger publish dates so the feed looks natural (newest first).
                 'published_at'     => date('Y-m-d H:i:s', strtotime('-' . ($i * 3) . ' days')),
