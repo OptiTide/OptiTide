@@ -361,63 +361,7 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
     </div>
 </section>
 
-<footer class="mk-footer">
-    <div class="mk-container">
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <a href="/" class="d-inline-block"><img class="brand-logo brand-logo--chip" src="/assets/img/logo.png" alt="OptiTide" style="height:52px"></a>
-                <p class="mt-3 mb-3" style="color:#a7adc4;font-size:.92rem;max-width:320px;line-height:1.6">OptiTide is an Australian digital agency helping small businesses get found, look professional and grow online — web design, SEO, social media and managed hosting, all under one roof.</p>
-                <p class="mb-1"><i class="bi bi-envelope me-1"></i> <a href="mailto:<?= e($company['email']) ?>"><?= e($company['email']) ?></a></p>
-                <?php if ($company['phone']): ?><p class="mb-1"><i class="bi bi-telephone me-1"></i> <?= e($company['phone']) ?></p><?php endif; ?>
-                <p class="mb-0"><i class="bi bi-geo-alt me-1"></i> Serving businesses Australia-wide</p>
-            </div>
-            <div class="col-6 col-lg-2">
-                <h5>Services</h5>
-                <ul class="foot-links">
-                    <li><a href="#services">Web Design</a></li>
-                    <li><a href="#services">SEO</a></li>
-                    <li><a href="#services">Social Media</a></li>
-                    <li><a href="#services">Web Hosting</a></li>
-                    <li><a href="#packages">Plans &amp; Pricing</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-lg-2">
-                <h5>Company</h5>
-                <ul class="foot-links">
-                    <li><a href="#why">Why OptiTide</a></li>
-                    <li><a href="#process">Our Process</a></li>
-                    <li><a href="#faq">FAQ</a></li>
-                    <li><a href="#contact">Contact Us</a></li>
-                    <li><a href="<?= $dashUrl ?>"><?= $isAuthed ? 'Dashboard' : 'Client Login' ?></a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-lg-2">
-                <h5>Legal</h5>
-                <ul class="foot-links">
-                    <li><a href="<?= route('legal.terms') ?>">Terms of Service</a></li>
-                    <li><a href="<?= route('legal.privacy') ?>">Privacy Policy</a></li>
-                    <li><a href="<?= route('legal.refund') ?>">Refund Policy</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-lg-2">
-                <h5>Get Started</h5>
-                <ul class="foot-links">
-                    <li><a href="#contact">Get a Free Quote</a></li>
-                    <li><a href="#packages">View Packages</a></li>
-                    <li><a href="<?= route('register') ?>">Create Account</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="mk-footer-bottom d-flex flex-wrap justify-content-between gap-2">
-            <span>&copy; <?= date('Y') ?> <?= e($company['legal_name']) ?><?= $company['abn'] ? ' · ABN ' . e($company['abn']) : '' ?></span>
-            <span class="d-flex gap-3">
-                <a href="<?= route('legal.terms') ?>">Terms</a>
-                <a href="<?= route('legal.privacy') ?>">Privacy</a>
-                <span class="mk-topbar-tag">Grow Online. Lead Always.</span>
-            </span>
-        </div>
-    </div>
-</footer>
+<?php $this->insert('partials.site-footer'); ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <?php $this->insert('partials.chat-widget'); ?>

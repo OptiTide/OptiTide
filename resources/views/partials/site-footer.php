@@ -3,7 +3,7 @@
     <div class="mk-container">
         <div class="row g-4">
             <div class="col-lg-4">
-                <div class="brand-logo--chip d-inline-block mb-3"><img src="/assets/img/logo.png" alt="OptiTide" style="height:46px"></div>
+                <div class="brand-logo--chip d-inline-block mb-3"><img src="/assets/img/logo.png" alt="OptiTide" style="height:60px"></div>
                 <p class="mk-footer-about">OptiTide is an Australian digital agency helping small businesses get found, look professional and grow online — web design, SEO, social media and hosting under one roof.</p>
                 <div class="mk-footer-contact">
                     <?php if (! empty($company['email'])): ?><a href="mailto:<?= e($company['email']) ?>"><i class="bi bi-envelope"></i> <?= e($company['email']) ?></a><?php endif; ?>
