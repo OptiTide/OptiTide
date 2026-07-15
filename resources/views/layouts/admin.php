@@ -9,7 +9,7 @@ $me = auth();
 <body>
 <div class="app">
     <aside class="sidebar" id="sidebar">
-        <a href="<?= route('admin.dashboard') ?>" class="d-block mb-2"><img class="brand-logo" src="/assets/img/logo-dark.png" alt="OptiTide"></a>
+        <a href="<?= route('admin.dashboard') ?>" class="d-block mb-2"><img class="brand-logo brand-logo--chip" src="/assets/img/logo.png" alt="OptiTide"></a>
         <div class="text-secondary small mb-2" style="font-size:.72rem">Billing &amp; CRM</div>
 
         <nav class="nav flex-column">

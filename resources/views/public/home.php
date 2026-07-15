@@ -103,7 +103,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
 <meta name="twitter:description" content="<?= e($description) ?>">
 <meta name="twitter:image" content="<?= e($ogImage) ?>">
 
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
+<link rel="icon" href="/assets/img/favicon.png" sizes="any">
 <link rel="icon" href="/assets/img/favicon.png" sizes="any">
 <link rel="apple-touch-icon" href="/assets/img/favicon.png">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -354,7 +354,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
     <div class="mk-container">
         <div class="row g-4">
             <div class="col-lg-4">
-                <a href="/"><img class="brand-logo" src="/assets/img/logo-dark.png" alt="OptiTide" style="height:46px"></a>
+                <a href="/"><img class="brand-logo brand-logo--chip" src="/assets/img/logo.png" alt="OptiTide" style="height:40px"></a>
                 <p class="mt-2" style="color:#a7a3d6;font-size:.9rem;max-width:300px">Web design, SEO, social media and hosting for Australian business — all under one roof.</p>
             </div>
             <div class="col-6 col-lg-3">
