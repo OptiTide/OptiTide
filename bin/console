@@ -63,10 +63,44 @@ try {
             $out("Marked $count invoice(s) overdue.");
             break;
 
+        case 'make:admin':
+            $email = isset($flags[0]) ? strtolower(trim($flags[0])) : null;
+            $password = $flags[1] ?? null;
+            $name = $flags[2] ?? 'Administrator';
+
+            if (! $email) {
+                $out('Usage: php bin/console make:admin <email> [password] [name]');
+                break;
+            }
+
+            $existing = App\Models\User::findByEmail($email);
+            if ($existing) {
+                $update = ['role' => 'admin', 'status' => 'active'];
+                if ($password) {
+                    $update['password_hash'] = password_hash($password, PASSWORD_DEFAULT);
+                }
+                App\Models\User::updateById($existing['id'], $update);
+                $out("Promoted $email to admin." . ($password ? ' Password updated.' : ''));
+            } elseif (! $password) {
+                $out("No user with that e-mail. To create one, pass a password:");
+                $out("  php bin/console make:admin $email <password> [name]");
+            } else {
+                App\Models\User::create([
+                    'name'          => $name,
+                    'email'         => $email,
+                    'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+                    'role'          => 'admin',
+                    'status'        => 'active',
+                ]);
+                $out("Created admin account: $email");
+            }
+            break;
+
         default:
             $out('OptiTide console. Available commands:');
             $out('  migrate | migrate:fresh [--seed] | migrate:rollback | seed');
             $out('  key:generate');
+            $out('  make:admin <email> [password] [name]');
             $out('  invoices:recurring [--send] | invoices:overdue');
     }
 } catch (\Throwable $e) {

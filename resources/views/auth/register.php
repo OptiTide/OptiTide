@@ -19,7 +19,7 @@
                 <?php if (error('business_name')): ?><div class="invalid-feedback"><?= e(error('business_name')) ?></div><?php endif; ?>
             </div>
             <div class="mb-3">
-                <label class="form-label">Email Address</label>
+                <label class="form-label">E-Mail Address</label>
                 <input type="email" name="email" value="<?= e(old('email')) ?>"
                        class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>" required>
                 <?php if (error('email')): ?><div class="invalid-feedback"><?= e(error('email')) ?></div><?php endif; ?>

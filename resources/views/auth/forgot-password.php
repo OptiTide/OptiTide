@@ -7,7 +7,7 @@
         <form method="post" action="<?= route('password.email') ?>" novalidate>
             <?= csrf_field() ?>
             <div class="mb-3">
-                <label class="form-label">Email Address</label>
+                <label class="form-label">E-Mail Address</label>
                 <input type="email" name="email" value="<?= e(old('email')) ?>"
                        class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>" required autofocus>
                 <?php if (error('email')): ?><div class="invalid-feedback"><?= e(error('email')) ?></div><?php endif; ?>

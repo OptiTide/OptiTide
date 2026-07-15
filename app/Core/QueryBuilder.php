@@ -69,6 +69,14 @@ class QueryBuilder
         return $this;
     }
 
+    public function whereRaw(string $sql, array $bindings = []): static
+    {
+        $this->wheres[] = ['type' => 'raw', 'sql' => $sql];
+        $this->bindings = array_merge($this->bindings, $bindings);
+
+        return $this;
+    }
+
     public function whereNull(string $column): static
     {
         $this->wheres[] = ['type' => 'null', 'sql' => $this->wrap($column) . ' IS NULL'];

@@ -18,9 +18,10 @@ class User extends Model
         self::ROLE_CLIENT => 'Client',
     ];
 
+    /** Case-insensitive lookup so login works regardless of how the email was cased. */
     public static function findByEmail(string $email): ?array
     {
-        return static::firstWhere('email', strtolower(trim($email)));
+        return static::query()->whereRaw('LOWER(email) = ?', [strtolower(trim($email))])->first();
     }
 
     public static function isStaffRole(?string $role): bool

@@ -17,7 +17,7 @@ $yes = fn ($v) => $v ? '<span class="badge text-bg-success">Configured</span>' :
                 <dl class="row mb-0 small">
                     <dt class="col-5 text-muted">Legal name</dt><dd class="col-7"><?= e($company['legal_name']) ?></dd>
                     <dt class="col-5 text-muted">ABN</dt><dd class="col-7"><?= $company['abn'] ? e($company['abn']) : '<span class="text-warning">Set COMPANY_ABN</span>' ?></dd>
-                    <dt class="col-5 text-muted">Email</dt><dd class="col-7"><?= e($company['email']) ?></dd>
+                    <dt class="col-5 text-muted">E-Mail</dt><dd class="col-7"><?= e($company['email']) ?></dd>
                     <dt class="col-5 text-muted">GST registered</dt><dd class="col-7"><?= $company['gst_registered'] ? 'Yes (' . e(\App\Support\Gst::rateLabel()) . ' inclusive)' : 'No' ?></dd>
                     <dt class="col-5 text-muted">Currency</dt><dd class="col-7"><?= e($company['currency']) ?></dd>
                 </dl>
@@ -25,7 +25,7 @@ $yes = fn ($v) => $v ? '<span class="badge text-bg-success">Configured</span>' :
         </div>
 
         <div class="card">
-            <div class="card-header">Email (Resend)</div>
+            <div class="card-header">E-Mail (Resend)</div>
             <div class="card-body">
                 <dl class="row mb-0 small">
                     <dt class="col-5 text-muted">Driver</dt><dd class="col-7"><?= e($mail['driver']) ?></dd>

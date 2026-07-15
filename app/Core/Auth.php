@@ -11,7 +11,7 @@ final class Auth
 
     public static function attempt(string $email, string $password): bool
     {
-        $user = User::firstWhere('email', strtolower(trim($email)));
+        $user = User::findByEmail($email);
 
         if (! $user || ($user['status'] ?? 'active') !== 'active') {
             // Hash a dummy value to keep timing consistent for unknown emails.

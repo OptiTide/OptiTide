@@ -29,7 +29,7 @@ $val = fn (string $key, $default = '') => e(old($key, $client[$key] ?? $default)
                             <input type="text" name="contact_name" value="<?= $val('contact_name') ?>" class="form-control">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">E-Mail</label>
                             <input type="email" name="email" value="<?= $val('email') ?>" class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>">
                             <?php if (error('email')): ?><div class="invalid-feedback"><?= e(error('email')) ?></div><?php endif; ?>
                         </div>

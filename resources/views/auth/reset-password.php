@@ -7,7 +7,7 @@
             <?= csrf_field() ?>
             <input type="hidden" name="token" value="<?= e($token) ?>">
             <div class="mb-3">
-                <label class="form-label">Email Address</label>
+                <label class="form-label">E-Mail Address</label>
                 <input type="email" name="email" value="<?= e($email) ?>"
                        class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>" required>
                 <?php if (error('email')): ?><div class="invalid-feedback"><?= e(error('email')) ?></div><?php endif; ?>

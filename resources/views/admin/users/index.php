@@ -8,7 +8,7 @@
 <div class="card">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
-            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Client</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th>Name</th><th>E-Mail</th><th>Role</th><th>Client</th><th>Status</th><th></th></tr></thead>
             <tbody>
                 <?php foreach ($users as $user): ?>
                     <tr>

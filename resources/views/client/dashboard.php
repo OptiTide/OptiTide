@@ -1,53 +1,98 @@
-<?php $this->extends('layouts.portal'); ?>
+<?php
+$this->extends('layouts.portal');
+$companyEmail = config('company.email');
+?>
 <?php $this->section('content'); ?>
 
 <div class="row g-3 mb-4">
-    <div class="col-md-6">
-        <div class="card stat-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-                <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
-                <div>
-                    <div class="stat-value money"><?= e($outstanding->format()) ?></div>
-                    <div class="stat-label">Balance Owing</div>
+    <?php
+    $cards = [
+        ['Balance Owing', $outstanding->format(), 'bi-hourglass-split', route('portal.invoices.index')],
+        ['Paid to Date', $paid->format(), 'bi-check2-circle', route('portal.invoices.index')],
+        ['Active Services', $services, 'bi-grid', route('portal.services')],
+        ['Overdue', $overdue, 'bi-exclamation-triangle', route('portal.invoices.index') . '?status=overdue'],
+    ];
+    foreach ($cards as [$label, $value, $icon, $href]):
+        ?>
+        <div class="col-6 col-xl-3">
+            <a href="<?= $href ?>" class="text-decoration-none text-reset">
+                <div class="card stat-card h-100">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="stat-icon"><i class="bi <?= $icon ?>"></i></div>
+                        <div>
+                            <div class="stat-value money"><?= e($value) ?></div>
+                            <div class="stat-label"><?= e($label) ?></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card stat-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-                <div class="stat-icon"><i class="bi bi-grid"></i></div>
-                <div>
-                    <div class="stat-value"><?= e($services) ?></div>
-                    <div class="stat-label">Active Services</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php endforeach; ?>
 </div>
 
-<div class="card">
-    <div class="card-header">Recent Invoices</div>
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead>
-                <tr><th>Invoice</th><th>Issued</th><th>Status</th><th class="text-end">Balance</th><th></th></tr>
-            </thead>
-            <tbody>
-                <?php if (! $recent): ?>
-                    <tr><td colspan="5" class="text-center text-muted py-4">No invoices yet.</td></tr>
-                <?php endif; ?>
-                <?php foreach ($recent as $invoice): ?>
-                    <tr>
-                        <td class="fw-semibold"><?= e($invoice['number']) ?></td>
-                        <td><?= e($invoice['issue_date']) ?></td>
-                        <td><span class="badge text-bg-<?= \App\Models\Invoice::STATUS_COLORS[$invoice['status']] ?>"><?= e(\App\Models\Invoice::STATUSES[$invoice['status']]) ?></span></td>
-                        <td class="text-end money"><?= e(\App\Models\Invoice::balance($invoice)->format()) ?></td>
-                        <td class="text-end"><a href="<?= route('portal.invoices.show', ['id' => $invoice['id']]) ?>" class="btn btn-sm btn-light">View</a></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+<?php if ($next_due): ?>
+    <div class="card mb-4 border-start border-4 <?= $next_due['status'] === 'overdue' ? 'border-danger' : 'border-info' ?>">
+        <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <div class="text-muted small text-uppercase"><?= $next_due['status'] === 'overdue' ? 'Payment Overdue' : 'Next Payment Due' ?></div>
+                <div class="fw-semibold"><?= e($next_due['number']) ?> · <?= e(\App\Models\Invoice::balance($next_due)->format()) ?> · due <?= e($next_due['due_date']) ?></div>
+            </div>
+            <a href="<?= route('portal.invoices.show', ['id' => $next_due['id']]) ?>" class="btn btn-brand">Pay Now</a>
+        </div>
+    </div>
+<?php endif; ?>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Recent Invoices</span>
+                <a href="<?= route('portal.invoices.index') ?>" class="btn btn-sm btn-light">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr><th>Invoice</th><th>Issued</th><th>Status</th><th class="text-end">Balance</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        <?php if (! $recent): ?>
+                            <tr><td colspan="5" class="text-center text-muted py-4">No invoices yet.</td></tr>
+                        <?php endif; ?>
+                        <?php foreach ($recent as $invoice): ?>
+                            <tr>
+                                <td class="fw-semibold"><?= e($invoice['number']) ?></td>
+                                <td><?= e($invoice['issue_date']) ?></td>
+                                <td><span class="badge text-bg-<?= \App\Models\Invoice::STATUS_COLORS[$invoice['status']] ?>"><?= e(\App\Models\Invoice::STATUSES[$invoice['status']]) ?></span></td>
+                                <td class="text-end money"><?= e(\App\Models\Invoice::balance($invoice)->format()) ?></td>
+                                <td class="text-end"><a href="<?= route('portal.invoices.show', ['id' => $invoice['id']]) ?>" class="btn btn-sm <?= \App\Models\Invoice::isPayable($invoice) ? 'btn-brand' : 'btn-light' ?>"><?= \App\Models\Invoice::isPayable($invoice) ? 'Pay' : 'View' ?></a></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-header">Quick Actions</div>
+            <div class="list-group list-group-flush">
+                <a href="<?= route('portal.invoices.index') ?>" class="list-group-item list-group-item-action d-flex align-items-center gap-2"><i class="bi bi-receipt text-brand"></i> View &amp; Pay Invoices</a>
+                <a href="<?= route('portal.services') ?>" class="list-group-item list-group-item-action d-flex align-items-center gap-2"><i class="bi bi-grid text-brand"></i> My Services</a>
+                <a href="<?= route('portal.profile.edit') ?>" class="list-group-item list-group-item-action d-flex align-items-center gap-2"><i class="bi bi-person text-brand"></i> Update Profile</a>
+                <a href="mailto:<?= e($companyEmail) ?>" class="list-group-item list-group-item-action d-flex align-items-center gap-2"><i class="bi bi-life-preserver text-brand"></i> Contact Support</a>
+            </div>
+        </div>
+
+        <?php if ($next_renewal): ?>
+            <div class="card">
+                <div class="card-header">Next Renewal</div>
+                <div class="card-body">
+                    <div class="fw-semibold"><?= e($next_renewal['label']) ?></div>
+                    <div class="text-muted small">Renews <?= e($next_renewal['next_invoice_date']) ?> · <?= e(money((int) $next_renewal['price_cents'], $next_renewal['currency'])->format()) ?> / <?= e(substr($next_renewal['interval'] ?? 'mo', 0, 2)) ?></div>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 <?php $this->endSection(); ?>

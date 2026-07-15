@@ -19,7 +19,7 @@ $role = old('role', $user['role'] ?? 'client');
                         <?php if (error('name')): ?><div class="invalid-feedback"><?= e(error('name')) ?></div><?php endif; ?>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
+                        <label class="form-label">E-Mail</label>
                         <input type="email" name="email" value="<?= e(old('email', $user['email'] ?? '')) ?>" class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>" required>
                         <?php if (error('email')): ?><div class="invalid-feedback"><?= e(error('email')) ?></div><?php endif; ?>
                     </div>
