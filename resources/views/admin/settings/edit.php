@@ -67,12 +67,33 @@ $yes = fn ($v) => $v ? '<span class="badge text-bg-success">Configured</span>' :
     </div>
 </div>
 
-<form method="post" action="<?= route('admin.settings.update') ?>" class="card mt-3">
+<form method="post" action="<?= route('admin.settings.update') ?>" class="card mt-3" novalidate>
     <?= csrf_field() ?><?= method_field('PUT') ?>
-    <div class="card-header">Invoice Footer Note</div>
-    <div class="card-body">
-        <textarea name="invoice_footer" rows="2" class="form-control" placeholder="e.g. Thank you for your business."><?= e(\App\Models\Setting::get('invoice_footer', '')) ?></textarea>
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="bi bi-sliders text-brand"></i>
+        <span>Invoicing Defaults</span>
     </div>
-    <div class="card-footer"><button class="btn btn-brand">Save</button></div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-8">
+                <label class="form-label" for="invoice_footer">Invoice Footer Note</label>
+                <textarea id="invoice_footer" name="invoice_footer" rows="3" maxlength="500" class="form-control <?= has_error('invoice_footer') ? 'is-invalid' : '' ?>" placeholder="e.g. Thank You For Your Business."><?= e(old('invoice_footer', \App\Models\Setting::get('invoice_footer', ''))) ?></textarea>
+                <?php if (error('invoice_footer')): ?><div class="invalid-feedback"><?= e(error('invoice_footer')) ?></div><?php endif; ?>
+                <div class="form-text">Printed at the bottom of every invoice PDF. Up to 500 characters.</div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="default_payment_terms">Default Payment Terms (Days)</label>
+                <div class="input-group">
+                    <input type="number" id="default_payment_terms" name="default_payment_terms" min="0" max="120" step="1"
+                           value="<?= e(old('default_payment_terms', \App\Models\Setting::get('default_payment_terms', '14'))) ?>"
+                           class="form-control <?= has_error('default_payment_terms') ? 'is-invalid' : '' ?>">
+                    <span class="input-group-text">Days</span>
+                </div>
+                <?php if (error('default_payment_terms')): ?><div class="text-danger small mt-1"><?= e(error('default_payment_terms')) ?></div><?php endif; ?>
+                <div class="form-text">Due date offset for new invoices (0–120). Blank defaults to 14.</div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer"><button class="btn btn-brand"><i class="bi bi-check-lg"></i> Save Settings</button></div>
 </form>
 <?php $this->endSection(); ?>

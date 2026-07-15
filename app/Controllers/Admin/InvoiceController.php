@@ -25,9 +25,34 @@ class InvoiceController extends Controller
     public function index(Request $request): Response
     {
         $status = (string) $request->query('status', '');
+        $search = trim((string) $request->query('q', ''));
+        $clientNames = array_column(Client::all(), 'business_name', 'id');
+
         $query = Invoice::query()->orderBy('id', 'desc');
         if ($status !== '' && isset(Invoice::STATUSES[$status])) {
             $query->where('status', $status);
+        }
+
+        if ($search !== '') {
+            // Match the invoice number OR any client whose business name contains
+            // the term (resolved client_id → business_name, then filtered by id).
+            $like = '%' . $search . '%';
+            $matchingClientIds = [];
+            foreach ($clientNames as $clientId => $name) {
+                if (stripos((string) $name, $search) !== false) {
+                    $matchingClientIds[] = $clientId;
+                }
+            }
+
+            if ($matchingClientIds !== []) {
+                $placeholders = implode(', ', array_fill(0, count($matchingClientIds), '?'));
+                $query->whereRaw(
+                    '(number LIKE ? OR client_id IN (' . $placeholders . '))',
+                    array_merge([$like], array_values($matchingClientIds))
+                );
+            } else {
+                $query->whereLike('number', $like);
+            }
         }
 
         $page = $request->integer('page', 1);
@@ -37,8 +62,34 @@ class InvoiceController extends Controller
             'title'        => 'Invoices',
             'result'       => $result,
             'status'       => $status,
-            'client_names' => array_column(Client::all(), 'business_name', 'id'),
+            'search'       => $search,
+            'client_names' => $clientNames,
+            'stats'        => $this->indexStats(),
         ]);
+    }
+
+    /**
+     * KPI figures for the invoices list header.
+     *
+     * @return array<string,mixed>
+     */
+    protected function indexStats(): array
+    {
+        $currency = config('company.currency', 'AUD');
+        $outstandingStatuses = [Invoice::STATUS_SENT, Invoice::STATUS_OVERDUE];
+
+        $billed = Invoice::query()->whereIn('status', $outstandingStatuses)->sum('total_cents');
+        $collected = Invoice::query()->whereIn('status', $outstandingStatuses)->sum('amount_paid_cents');
+
+        $monthStart = date('Y-m-01');
+        $paidThisMonth = Payment::query()->where('paid_at', '>=', $monthStart)->sum('amount_cents');
+
+        return [
+            'outstanding'     => money(max(0, $billed - $collected), $currency),
+            'paid_this_month' => money($paidThisMonth, $currency),
+            'draft_count'     => Invoice::query()->where('status', Invoice::STATUS_DRAFT)->count(),
+            'overdue_count'   => Invoice::query()->where('status', Invoice::STATUS_OVERDUE)->count(),
+        ];
     }
 
     public function create(Request $request): Response

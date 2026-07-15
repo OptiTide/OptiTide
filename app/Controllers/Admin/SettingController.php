@@ -35,10 +35,18 @@ class SettingController extends Controller
         // Editable-in-app settings are stored in the settings table; secrets and
         // gateway credentials stay in .env and are shown read-only above.
         $data = $this->validate($request, [
-            'invoice_footer' => 'nullable|max:500',
+            'invoice_footer'        => 'nullable|max:500',
+            'default_payment_terms' => 'nullable|integer|min:0|max:120',
+        ], [
+            'default_payment_terms' => 'Default Payment Terms',
         ]);
 
         \App\Models\Setting::put('invoice_footer', $data['invoice_footer'] ?? '');
+
+        // Blank terms field falls back to net-14; otherwise store the whole days.
+        $terms = ($data['default_payment_terms'] ?? '') === '' ? 14 : (int) $data['default_payment_terms'];
+        \App\Models\Setting::put('default_payment_terms', (string) $terms);
+
         Session::flash('success', 'Settings saved.');
 
         return $this->redirect(route('admin.settings.edit'));

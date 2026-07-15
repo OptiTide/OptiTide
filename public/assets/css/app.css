@@ -199,6 +199,14 @@ a:hover { color: var(--brand); }
 .mk-service li { display: flex; gap: .5rem; align-items: flex-start; font-size: .9rem; color: #475569; padding: .2rem 0; }
 .mk-service li i { color: var(--brand); margin-top: .15rem; }
 
+/* Plan / package cards */
+.mk-plan { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 1.35rem; height: 100%; text-align: center; transition: box-shadow .18s, transform .18s; }
+.mk-plan:hover { box-shadow: 0 10px 28px rgba(13,21,48,.10); transform: translateY(-3px); }
+.mk-plan--custom { border-color: #ffc79e; background: #fff8f2; }
+.mk-plan-name { font-weight: 700; margin-bottom: .4rem; }
+.mk-plan-price { font-size: 1.7rem; font-weight: 800; color: var(--navy); line-height: 1.1; }
+.mk-plan-per, .mk-plan-from { font-size: .8rem; font-weight: 600; color: var(--muted); }
+
 /* Process steps */
 .mk-step { text-align: center; padding: 0 .5rem; }
 .mk-step-num { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto .8rem; font-weight: 800; color: #fff; background: var(--brand); }

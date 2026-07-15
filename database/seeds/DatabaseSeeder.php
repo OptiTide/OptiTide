@@ -37,10 +37,10 @@ return new class {
     private function categories(): array
     {
         $lines = [
-            ['Web Design', 'web-design'],
-            ['SEO', 'seo'],
-            ['SMM', 'smm'],
-            ['Hosting', 'hosting'],
+            ['Web Design & Development', 'web-design'],
+            ['Search Engine Optimisation (SEO)', 'seo'],
+            ['Social Media Marketing (SMM)', 'smm'],
+            ['Web Hosting', 'hosting'],
         ];
 
         $ids = [];
@@ -58,13 +58,21 @@ return new class {
 
     private function services(array $categories): void
     {
+        // Named package plans per service line.
         $catalogue = [
+            // Web Design & Development — 2 plans + 1 custom
             ['web-design', 'Starter Website', 'one_off', null, 149900],
             ['web-design', 'Business Website', 'one_off', null, 299900],
-            ['seo', 'SEO Retainer', 'recurring', Service::INTERVAL_MONTHLY, 99000],
-            ['smm', 'Social Media Management', 'recurring', Service::INTERVAL_MONTHLY, 79000],
-            ['hosting', 'Managed Hosting — Basic', 'recurring', Service::INTERVAL_MONTHLY, 4900],
-            ['hosting', 'Managed Hosting — Pro', 'recurring', Service::INTERVAL_MONTHLY, 9900],
+            ['web-design', 'Custom Website', 'one_off', null, 499900],
+            // SEO — 2 plans + 1 custom (monthly)
+            ['seo', 'SEO Essentials', 'recurring', Service::INTERVAL_MONTHLY, 79000],
+            ['seo', 'SEO Growth', 'recurring', Service::INTERVAL_MONTHLY, 149000],
+            ['seo', 'Custom SEO', 'recurring', Service::INTERVAL_MONTHLY, 250000],
+            // SMM — 1 plan
+            ['smm', 'Social Media Management', 'recurring', Service::INTERVAL_MONTHLY, 89000],
+            // Web Hosting — 2 plans (unmanaged / managed)
+            ['hosting', 'Unmanaged Hosting', 'recurring', Service::INTERVAL_MONTHLY, 1900],
+            ['hosting', 'Managed Hosting', 'recurring', Service::INTERVAL_MONTHLY, 4900],
         ];
 
         foreach ($catalogue as [$slug, $name, $billing, $interval, $price]) {
@@ -123,11 +131,11 @@ return new class {
             return;
         }
 
-        $hosting = Service::firstWhere('name', 'Managed Hosting — Basic');
+        $hosting = Service::firstWhere('name', 'Managed Hosting');
         ClientService::create([
             'client_id'         => $client['id'],
             'service_id'        => $hosting['id'] ?? null,
-            'label'             => 'Managed Hosting — Basic',
+            'label'             => 'Managed Hosting',
             'billing_type'      => 'recurring',
             'interval'          => Service::INTERVAL_MONTHLY,
             'price_cents'       => 4900,
@@ -157,7 +165,7 @@ return new class {
             'issue_date' => date('Y-m-d', strtotime('-20 days')),
             'due_date'   => date('Y-m-d', strtotime('-6 days')),
         ], [
-            ['description' => 'Managed Hosting — Basic (setup)', 'quantity' => 1, 'unit_price_cents' => 4900],
+            ['description' => 'Managed Hosting (setup)', 'quantity' => 1, 'unit_price_cents' => 4900],
         ]);
         $invoices->recordPayment($paid['id'], (int) $paid['total_cents'], 'payid', 'DEMO-REF', date('Y-m-d', strtotime('-10 days')), null);
     }

@@ -9,6 +9,7 @@ use App\Core\Session;
 use App\Models\Client;
 use App\Models\ClientService;
 use App\Models\Invoice;
+use App\Models\Payment;
 use App\Models\Service;
 use App\Support\Money;
 
@@ -17,27 +18,52 @@ class ClientController extends Controller
     public function index(Request $request): Response
     {
         $search = trim((string) $request->query('q', ''));
+
+        $status = (string) $request->query('status', '');
+        if (! in_array($status, [Client::STATUS_ACTIVE, Client::STATUS_ARCHIVED], true)) {
+            $status = '';
+        }
+
         $query = Client::query()->orderBy('business_name');
         if ($search !== '') {
             $query->whereLike('business_name', "%$search%");
+        }
+        if ($status !== '') {
+            $query->where('status', $status);
         }
 
         $clients = $query->get();
         $currency = config('company.currency', 'AUD');
 
-        // Outstanding balance per client.
+        // Outstanding balance per client (unpaid issued invoices).
         $balances = [];
         foreach (Invoice::query()->whereIn('status', [Invoice::STATUS_SENT, Invoice::STATUS_OVERDUE])->get() as $invoice) {
             $balances[$invoice['client_id']] = ($balances[$invoice['client_id']] ?? 0)
                 + (int) $invoice['total_cents'] - (int) $invoice['amount_paid_cents'];
         }
 
+        // Total paid per client (from recorded payments).
+        $paid = [];
+        foreach (Payment::query()->get() as $payment) {
+            $paid[$payment['client_id']] = ($paid[$payment['client_id']] ?? 0)
+                + (int) $payment['amount_cents'];
+        }
+
+        // One-line summary reflecting the current filter.
+        $outstandingTotal = 0;
+        foreach ($clients as $client) {
+            $outstandingTotal += (int) ($balances[$client['id']] ?? 0);
+        }
+
         return $this->view('admin.clients.index', [
-            'title'    => 'Clients',
-            'clients'  => $clients,
-            'balances' => $balances,
-            'currency' => $currency,
-            'search'   => $search,
+            'title'            => 'Clients',
+            'clients'          => $clients,
+            'balances'         => $balances,
+            'paid'             => $paid,
+            'currency'         => $currency,
+            'search'           => $search,
+            'status'           => $status,
+            'outstandingTotal' => $outstandingTotal,
         ]);
     }
 

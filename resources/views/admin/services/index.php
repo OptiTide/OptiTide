@@ -13,24 +13,38 @@ $currency = config('company.currency', 'AUD');
             </div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead><tr><th>Name</th><th>Line</th><th>Billing</th><th class="text-end">Price</th><th></th><th></th></tr></thead>
+                    <thead><tr><th>Name</th><th>Line</th><th>Billing</th><th>State</th><th class="text-end">Price</th><th class="text-end">In Use</th><th></th></tr></thead>
                     <tbody>
                         <?php if (! $services): ?>
-                            <tr><td colspan="6" class="text-center text-muted py-4">No services yet.</td></tr>
+                            <tr><td colspan="7" class="text-center text-muted py-4">No services yet.</td></tr>
                         <?php endif; ?>
                         <?php foreach ($services as $service): ?>
+                            <?php $count = (int) ($in_use[$service['id']] ?? 0); ?>
                             <tr>
                                 <td class="fw-semibold"><?= e($service['name']) ?></td>
                                 <td><?= e($cat_names[$service['category_id']] ?? '—') ?></td>
                                 <td>
                                     <?php if ($service['billing_type'] === 'recurring'): ?>
-                                        <span class="badge badge-soft"><?= e(ucfirst($service['interval'] ?? 'monthly')) ?></span>
+                                        <span class="badge text-bg-info"><i class="bi bi-arrow-repeat"></i> Recurring (<?= e(ucfirst($service['interval'] ?? 'monthly')) ?>)</span>
                                     <?php else: ?>
-                                        <span class="badge badge-soft">One-off</span>
+                                        <span class="badge badge-soft"><i class="bi bi-dot"></i> One-off</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if ($service['active']): ?>
+                                        <span class="badge text-bg-success">Active</span>
+                                    <?php else: ?>
+                                        <span class="badge text-bg-secondary">Inactive</span>
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-end money"><?= e(money((int) $service['price_cents'], $service['currency'])->format()) ?></td>
-                                <td><?php if (! $service['active']): ?><span class="badge text-bg-secondary">Inactive</span><?php endif; ?></td>
+                                <td class="text-end">
+                                    <?php if ($count > 0): ?>
+                                        <span class="badge text-bg-light border" title="<?= e($count) ?> active client engagement<?= $count === 1 ? '' : 's' ?>"><i class="bi bi-people"></i> <?= e($count) ?></span>
+                                    <?php else: ?>
+                                        <span class="text-muted">—</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td class="text-end text-nowrap">
                                     <a href="<?= route('admin.services.edit', ['id' => $service['id']]) ?>" class="btn btn-sm btn-link"><i class="bi bi-pencil"></i></a>
                                     <form method="post" action="<?= route('admin.services.destroy', ['id' => $service['id']]) ?>" class="d-inline" onsubmit="return confirm('Delete this service?')">

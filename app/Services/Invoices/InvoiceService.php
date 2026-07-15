@@ -50,6 +50,14 @@ final class InvoiceService
         return 'INV-' . str_pad((string) $n, 6, '0', STR_PAD_LEFT);
     }
 
+    /** Default due date = issue date + the configured payment terms (days). */
+    protected function defaultDueDate(): string
+    {
+        $days = (int) Setting::get('default_payment_terms', 14);
+
+        return date('Y-m-d', strtotime('+' . max(0, $days) . ' days'));
+    }
+
     /**
      * @param array<string,mixed> $data   client_id, currency, issue_date, due_date, notes, status, payoneer_link
      * @param array<int,array{description:string,quantity:int|float,unit_price_cents:int,service_id?:int|null}> $items
@@ -65,7 +73,7 @@ final class InvoiceService
                 'status'            => $data['status'] ?? Invoice::STATUS_DRAFT,
                 'currency'          => $currency,
                 'issue_date'        => $data['issue_date'] ?? today(),
-                'due_date'          => $data['due_date'] ?? date('Y-m-d', strtotime('+14 days')),
+                'due_date'          => $data['due_date'] ?? $this->defaultDueDate(),
                 'notes'             => $data['notes'] ?? null,
                 'payoneer_link'     => $data['payoneer_link'] ?? null,
                 'subtotal_cents'    => 0,
@@ -153,7 +161,7 @@ final class InvoiceService
             Invoice::updateById($invoiceId, [
                 'status'     => Invoice::STATUS_SENT,
                 'issue_date' => $invoice['issue_date'] ?: today(),
-                'due_date'   => $invoice['due_date'] ?: date('Y-m-d', strtotime('+14 days')),
+                'due_date'   => $invoice['due_date'] ?: $this->defaultDueDate(),
             ]);
             $invoice = Invoice::find($invoiceId);
         }

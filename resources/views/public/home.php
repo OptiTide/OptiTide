@@ -4,7 +4,7 @@ $appUrl = rtrim(config('app.url'), '/');
 $brand = config('app.brand.accent', '#7c3aed');
 $title = 'OptiTide — Web Design, SEO, Social Media & Hosting in Australia';
 $description = 'OptiTide is an Australian digital agency delivering web design, SEO, social media marketing and managed hosting for small business — all under one roof, with clear pricing and GST-ready tax invoices.';
-$ogImage = $appUrl . '/assets/img/optitide-mark.svg';
+$ogImage = $appUrl . '/assets/img/favicon.png';
 
 $services = [
     ['bi-palette', 'Web Design & Development', 'Fast, modern, mobile-first websites built to convert visitors into customers and to rank well from day one. We design around your brand and your goals — not a template.', ['Custom responsive design', 'SEO-friendly, fast-loading build', 'Easy-to-edit content management', 'E-commerce & bookings ready', 'Ongoing care & updates']],
@@ -103,7 +103,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
 <meta name="twitter:description" content="<?= e($description) ?>">
 <meta name="twitter:image" content="<?= e($ogImage) ?>">
 
-<link rel="icon" href="/assets/img/optitide-mark.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
 <link rel="icon" href="/assets/img/favicon.png" sizes="any">
 <link rel="apple-touch-icon" href="/assets/img/favicon.png">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -119,6 +119,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
         <a href="/" aria-label="OptiTide home"><img class="brand-logo" src="/assets/img/logo.png" alt="OptiTide"></a>
         <div class="mk-nav-links">
             <a href="#services" class="mk-nav-link">Services</a>
+            <a href="#packages" class="mk-nav-link">Packages</a>
             <a href="#process" class="mk-nav-link">Process</a>
             <a href="#why" class="mk-nav-link">Why Us</a>
             <a href="#faq" class="mk-nav-link">FAQ</a>
@@ -186,7 +187,36 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
     </div>
 </section>
 
-<section id="process" class="mk-section mk-section--alt">
+<section id="packages" class="mk-section mk-section--alt">
+    <div class="mk-container">
+        <div class="text-center mb-5">
+            <span class="mk-eyebrow">Plans &amp; Packages</span>
+            <h2 class="mk-h2">Simple, Transparent Pricing</h2>
+            <p class="mk-lead mx-auto">Named packages for every service line — pick a plan that fits, or ask us for a custom quote. All prices are in AUD and GST-inclusive.</p>
+        </div>
+        <?php foreach ($packages as $group): ?>
+            <div class="mb-4">
+                <h3 class="h5 fw-bold mb-3"><?= e($group['line']['name']) ?></h3>
+                <div class="row g-3">
+                    <?php foreach ($group['plans'] as $plan): ?>
+                        <?php $isCustom = stripos($plan['name'], 'custom') !== false; ?>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="mk-plan <?= $isCustom ? 'mk-plan--custom' : '' ?>">
+                                <div class="mk-plan-name"><?= e($plan['name']) ?></div>
+                                <div class="mk-plan-price">
+                                    <?php if ($isCustom): ?><span class="mk-plan-from">from</span> <?php endif; ?><?= e(money((int) $plan['price_cents'], $plan['currency'])->format()) ?><?php if ($plan['billing_type'] === 'recurring'): ?><span class="mk-plan-per">/<?= e(substr($plan['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?>
+                                </div>
+                                <a href="#contact" class="btn btn-sm <?= $isCustom ? 'btn-outline-brand' : 'btn-brand' ?> w-100 mt-3"><?= $isCustom ? 'Get a Quote' : 'Get Started' ?></a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</section>
+
+<section id="process" class="mk-section">
     <div class="mk-container">
         <div class="text-center mb-5">
             <span class="mk-eyebrow">How We Work</span>

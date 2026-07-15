@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
+use App\Models\ClientService;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Support\Money;
@@ -14,11 +15,23 @@ class ServiceController extends Controller
 {
     public function index(Request $request): Response
     {
+        $services = Service::query()->orderBy('name')->get();
+
+        // "In use" = number of ACTIVE client engagements per service.
+        $inUse = [];
+        foreach (ClientService::query()->where('status', ClientService::STATUS_ACTIVE)->get() as $cs) {
+            $sid = $cs['service_id'] ?? null;
+            if ($sid !== null) {
+                $inUse[$sid] = ($inUse[$sid] ?? 0) + 1;
+            }
+        }
+
         return $this->view('admin.services.index', [
             'title'      => 'Services',
-            'services'   => Service::query()->orderBy('name')->get(),
+            'services'   => $services,
             'categories' => ServiceCategory::ordered(),
             'cat_names'  => array_column(ServiceCategory::all(), 'name', 'id'),
+            'in_use'     => $inUse,
         ]);
     }
 

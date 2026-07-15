@@ -121,5 +121,10 @@ $fmt = fn (int $cents) => money($cents, $invoice['currency'])->format();
 <?php if (! empty($invoice['notes'])): ?>
     <div style="margin-top:18px;color:#64748b;font-size:11px;"><?= nl2br(e($invoice['notes'])) ?></div>
 <?php endif; ?>
+
+<?php $footerNote = \App\Models\Setting::get('invoice_footer'); ?>
+<?php if ($footerNote): ?>
+    <div style="margin-top:24px;padding-top:10px;border-top:1px solid #e2e8f0;text-align:center;color:#94a3b8;font-size:10px;"><?= nl2br(e($footerNote)) ?></div>
+<?php endif; ?>
 </body>
 </html>

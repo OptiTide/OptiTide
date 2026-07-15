@@ -17,10 +17,25 @@ class UserController extends Controller
     {
         $this->guard();
 
+        $role  = (string) $request->query('role', '');
+        $valid = array_key_exists($role, User::ROLES);
+
+        $query = User::query();
+        if ($valid) {
+            $query->where('role', $role);
+        }
+
+        $counts = ['' => User::query()->count()];
+        foreach (array_keys(User::ROLES) as $roleKey) {
+            $counts[$roleKey] = User::query()->where('role', $roleKey)->count();
+        }
+
         return $this->view('admin.users.index', [
             'title'        => 'Users',
-            'users'        => User::query()->orderBy('name')->get(),
+            'users'        => $query->orderBy('name')->get(),
             'client_names' => array_column(Client::all(), 'business_name', 'id'),
+            'role'         => $valid ? $role : '',
+            'role_counts'  => $counts,
         ]);
     }
 
