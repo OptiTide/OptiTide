@@ -1,17 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-AU">
 <head><?php $this->insert('partials.head', ['title' => $title ?? 'Sign in — OptiTide']); ?></head>
-<body>
-<div class="auth-wrap">
-    <div class="auth-card">
-        <div class="text-center mb-4">
-            <a href="/" class="d-inline-block bg-white rounded-3 shadow-sm px-3 py-2"><img src="/assets/img/logo.png" alt="OptiTide" class="brand-logo" style="height:40px"></a>
+<body class="mk">
+
+<nav class="mk-nav">
+    <div class="mk-container">
+        <a href="/" aria-label="OptiTide home"><img class="brand-logo" src="/assets/img/logo.png" alt="OptiTide"></a>
+        <button class="mk-nav-toggle" type="button" aria-label="Menu" aria-expanded="false" onclick="var m=document.getElementById('mkNav');m.classList.toggle('open');this.setAttribute('aria-expanded',m.classList.contains('open'))"><i class="bi bi-list"></i></button>
+        <div class="mk-nav-links" id="mkNav">
+            <a href="/" class="mk-nav-link">Home</a>
+            <a href="/#services" class="mk-nav-link">Services</a>
+            <a href="/#packages" class="mk-nav-link">Packages</a>
+            <a href="<?= route('blog.index') ?>" class="mk-nav-link">Blog</a>
+            <a href="/#contact" class="mk-nav-link">Contact</a>
         </div>
+    </div>
+</nav>
+
+<div class="auth-body">
+    <div class="auth-card">
         <?php $this->insert('partials.flash'); ?>
         <?= $this->yield('content') ?>
-        <p class="text-center text-muted small mt-4 mb-0">&copy; <?= date('Y') ?> <?= e(config('company.legal_name')) ?></p>
     </div>
 </div>
+
+<?php $this->insert('partials.site-footer'); ?>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

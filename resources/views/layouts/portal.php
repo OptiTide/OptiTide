@@ -58,6 +58,10 @@ $me = auth();
             <?php $this->insert('partials.flash'); ?>
             <?= $this->yield('content') ?>
         </main>
+        <footer class="app-footer">
+            <span>&copy; <?= date('Y') ?> <?= e(config('company.legal_name')) ?><?= config('company.abn') ? ' · ABN ' . e(config('company.abn')) : '' ?></span>
+            <span><a href="<?= route('legal.terms') ?>">Terms</a> &middot; <a href="<?= route('legal.privacy') ?>">Privacy</a> &middot; <a href="<?= route('portal.support.index') ?>">Support</a> &middot; <span class="tag">Grow Online. Lead Always.</span></span>
+        </footer>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

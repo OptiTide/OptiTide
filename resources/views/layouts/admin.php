@@ -13,14 +13,25 @@ $me = auth();
         <div class="text-secondary small mb-2" style="font-size:.72rem">Billing &amp; CRM</div>
 
         <nav class="nav flex-column">
+            <div class="nav-section">General</div>
             <a class="nav-link <?= $active('/admin', true) ?>" href="<?= route('admin.dashboard') ?>"><i class="bi bi-speedometer2"></i> Dashboard</a>
             <a class="nav-link <?= $active('/admin/clients') ?>" href="<?= route('admin.clients.index') ?>"><i class="bi bi-people"></i> Clients</a>
             <a class="nav-link <?= $active('/admin/invoices') ?>" href="<?= route('admin.invoices.index') ?>"><i class="bi bi-receipt"></i> Invoices</a>
             <a class="nav-link <?= $active('/admin/services') ?>" href="<?= route('admin.services.index') ?>"><i class="bi bi-grid"></i> Services</a>
-            <a class="nav-link <?= $active('/admin/boards') ?>" href="<?= route('admin.boards.index') ?>"><i class="bi bi-kanban"></i> Project Boards</a>
             <a class="nav-link <?= $active('/admin/tickets') ?>" href="<?= route('admin.tickets.index') ?>"><i class="bi bi-life-preserver"></i> Helpdesk</a>
-            <a class="nav-link <?= $active('/admin/hosting') ?>" href="<?= route('admin.hosting.index') ?>"><i class="bi bi-hdd-network"></i> Hosting</a>
             <a class="nav-link <?= $active('/admin/blogs') ?>" href="<?= route('admin.blogs.index') ?>"><i class="bi bi-newspaper"></i> Blog</a>
+
+            <div class="nav-section">Web Design</div>
+            <a class="nav-link <?= $active('/admin/boards/web-design') ?>" href="<?= route('admin.boards.show', ['key' => 'web-design']) ?>"><i class="bi bi-palette"></i> Web Design Board</a>
+
+            <div class="nav-section">SEO</div>
+            <a class="nav-link <?= $active('/admin/boards/seo') ?>" href="<?= route('admin.boards.show', ['key' => 'seo']) ?>"><i class="bi bi-graph-up-arrow"></i> SEO Board</a>
+
+            <div class="nav-section">Social Media</div>
+            <a class="nav-link <?= $active('/admin/boards/smm') ?>" href="<?= route('admin.boards.show', ['key' => 'smm']) ?>"><i class="bi bi-megaphone"></i> Social Board</a>
+
+            <div class="nav-section">Web Hosting</div>
+            <a class="nav-link <?= $active('/admin/hosting') ?>" href="<?= route('admin.hosting.index') ?>"><i class="bi bi-hdd-network"></i> Hosting Accounts</a>
 
             <?php if (\App\Core\Auth::isAdmin()): ?>
                 <div class="nav-section">Admin</div>

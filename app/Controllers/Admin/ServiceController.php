@@ -15,8 +15,19 @@ class ServiceController extends Controller
 {
     public function index(Request $request): Response
     {
-        // Ordered by service line, then price (lowest first).
-        $services = Service::query()->orderBy('category_id')->orderBy('price_cents')->get();
+        // Ordered by service line, then price (lowest first) — but quote-based
+        // plans (price 0, e.g. "Custom Website") always sort LAST within a line,
+        // so Custom sits after Starter + Business rather than jumping to the top.
+        $services = Service::query()->orderBy('category_id')->get();
+        usort($services, function ($a, $b) {
+            if ((string) $a['category_id'] !== (string) $b['category_id']) {
+                return (int) $a['category_id'] <=> (int) $b['category_id'];
+            }
+            $pa = (int) $a['price_cents'] === 0 ? PHP_INT_MAX : (int) $a['price_cents'];
+            $pb = (int) $b['price_cents'] === 0 ? PHP_INT_MAX : (int) $b['price_cents'];
+
+            return $pa <=> $pb;
+        });
 
         // "In use" = number of ACTIVE client engagements per service.
         $inUse = [];

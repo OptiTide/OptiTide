@@ -42,7 +42,7 @@ class PwaController extends Controller
     public function serviceWorker(Request $request): Response
     {
         $js = <<<'JS'
-const CACHE = 'optitide-v1';
+const CACHE = 'optitide-v2';
 const SHELL = ['/', '/offline', '/assets/css/app.css', '/assets/img/logo.png', '/assets/img/favicon.png'];
 
 self.addEventListener('install', (e) => {
@@ -68,14 +68,14 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Static assets: cache-first.
+  // Static assets: stale-while-revalidate — serve cache fast, refresh in the
+  // background so CSS/JS/image updates always land on the next visit.
   if (url.pathname.startsWith('/assets/')) {
     e.respondWith(
-      caches.match(req).then((hit) => hit || fetch(req).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(req, copy));
-        return res;
-      }).catch(() => hit))
+      caches.open(CACHE).then((c) => c.match(req).then((hit) => {
+        const network = fetch(req).then((res) => { c.put(req, res.clone()); return res; }).catch(() => hit);
+        return hit || network;
+      }))
     );
     return;
   }
