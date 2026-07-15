@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Blog;
 use App\Models\Client;
 use App\Models\ClientService;
 use App\Models\Invoice;
@@ -27,6 +28,9 @@ return new class {
         User::query()->where('email', 'client@example.com')->update(['terms_accepted_at' => now()]);
 
         $this->demoEngagementsAndInvoices($client);
+
+        $out('Seeding starter blog articles…');
+        $this->blogs();
 
         $out('');
         $out('Done. Local logins (password: "password"):');
@@ -106,6 +110,35 @@ return new class {
             'client_id'     => $clientId,
             'status'        => 'active',
         ]);
+    }
+
+    private function blogs(): void
+    {
+        $posts = require __DIR__ . '/blog_posts.php';
+
+        foreach ($posts as $i => [$category, $title, $excerpt, $keywords, $body]) {
+            $slug = Blog::slugify($title);
+            if (Blog::firstWhere('slug', $slug)) {
+                continue;
+            }
+
+            Blog::create([
+                'title'            => $title,
+                'slug'             => $slug,
+                'excerpt'          => $excerpt,
+                'body'             => $body,
+                'category'         => $category,
+                'author'           => 'OptiTide',
+                'keywords'         => $keywords,
+                'meta_title'       => null,
+                'meta_description' => $excerpt,
+                'cover_image'      => null,
+                'status'           => Blog::STATUS_PUBLISHED,
+                // Stagger publish dates so the feed looks natural (newest first).
+                'published_at'     => date('Y-m-d H:i:s', strtotime('-' . ($i * 3) . ' days')),
+                'views'            => 0,
+            ]);
+        }
     }
 
     private function demoClient(): array

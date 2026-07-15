@@ -111,6 +111,34 @@ $addr = $company['address'];
                 </div>
             </div>
         </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center gap-2"><i class="bi bi-graph-up text-brand"></i><span>Analytics &amp; Tracking</span></div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">Paste the ID only (never a full script). We emit the official snippet on your public pages. Leave blank to disable. Invalid formats are simply ignored.</p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Google Analytics 4 — Measurement ID</label>
+                            <input type="text" name="s_ga4" value="<?= e($analytics['ga4'] ?? '') ?>" class="form-control" placeholder="G-XXXXXXXXXX">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Google Tag Manager — Container ID</label>
+                            <input type="text" name="s_gtm" value="<?= e($analytics['gtm'] ?? '') ?>" class="form-control" placeholder="GTM-XXXXXXX">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Google Search Console — Verification token</label>
+                            <input type="text" name="s_gsc" value="<?= e($analytics['gsc'] ?? '') ?>" class="form-control" placeholder="content value from the meta tag">
+                            <div class="form-text">Choose the “HTML tag” method in Search Console and paste the <code>content</code> value.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Meta (Facebook) Pixel ID</label>
+                            <input type="text" name="s_meta_pixel" value="<?= e($analytics['meta_pixel'] ?? '') ?>" class="form-control" placeholder="123456789012345">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="mt-3"><button class="btn btn-brand btn-lg"><i class="bi bi-check-lg"></i> Save Settings</button></div>

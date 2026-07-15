@@ -112,6 +112,7 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
 <link href="/assets/css/app.css" rel="stylesheet">
 <style>:root{--brand: <?= e($brand) ?>; --brand-dark: <?= e(config('app.brand.accent_dark', '#6d28d9')) ?>;}</style>
 <script type="application/ld+json"><?= json_encode($jsonLd, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?></script>
+<?php $this->insert('partials.analytics'); ?>
 </head>
 <body class="mk">
 
@@ -138,7 +139,7 @@ $canOrder = $isAuthed && \App\Core\Auth::isClient();
             <a href="#packages" class="mk-nav-link">Packages</a>
             <a href="#process" class="mk-nav-link">Process</a>
             <a href="#why" class="mk-nav-link">Why Us</a>
-            <a href="#faq" class="mk-nav-link">FAQ</a>
+            <a href="<?= route('blog.index') ?>" class="mk-nav-link">Blog</a>
             <a href="#contact" class="mk-nav-link">Contact</a>
             <a href="<?= $dashUrl ?>" class="btn btn-brand btn-sm"><?= $isAuthed ? 'Dashboard' : 'Client Login' ?></a>
         </div>

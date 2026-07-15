@@ -32,6 +32,10 @@ class SettingController extends Controller
         's_bank_bsb'      => 'payments.gateways.payid.bsb',
         's_bank_account'  => 'payments.gateways.payid.account_number',
         's_payoneer_mode' => 'payments.gateways.payoneer.mode',
+        's_ga4'           => 'analytics.ga4',
+        's_gtm'           => 'analytics.gtm',
+        's_gsc'           => 'analytics.gsc',
+        's_meta_pixel'    => 'analytics.meta_pixel',
     ];
 
     public function edit(Request $request): Response
@@ -43,8 +47,9 @@ class SettingController extends Controller
             'company'  => config('company'),
             'payid'    => config('payments.gateways.payid'),
             'payoneer' => config('payments.gateways.payoneer'),
-            'enabled'  => config('payments.enabled'),
-            'mail'     => config('mail'),
+            'enabled'   => config('payments.enabled'),
+            'mail'      => config('mail'),
+            'analytics' => config('analytics'),
         ]);
     }
 
@@ -58,6 +63,10 @@ class SettingController extends Controller
             's_addr_postcode'       => 'nullable|max:4',
             's_payid_type'          => 'nullable|in:mobile,email,abn',
             's_payoneer_mode'       => 'nullable|in:manual,api',
+            's_ga4'                 => 'nullable|max:40',
+            's_gtm'                 => 'nullable|max:40',
+            's_gsc'                 => 'nullable|max:120',
+            's_meta_pixel'          => 'nullable|max:30',
             'invoice_footer'        => 'nullable|max:500',
             'default_payment_terms' => 'nullable|integer|min:0|max:120',
         ], ['s_email' => 'Company e-mail', 's_abn' => 'ABN', 'default_payment_terms' => 'Default Payment Terms']);

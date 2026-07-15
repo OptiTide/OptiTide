@@ -20,6 +20,11 @@ $router->get('/sitemap.xml', [PublicSite\SeoController::class, 'sitemap'])->name
 $router->get('/pay/{token}', [PublicSite\PayController::class, 'show'])->name('pay.show');
 $router->get('/pay/{token}/pdf', [PublicSite\PayController::class, 'pdf'])->name('pay.pdf');
 
+// --- Blog (public, indexable) ----------------------------------------------
+$router->get('/blog', [PublicSite\BlogController::class, 'index'])->name('blog.index');
+$router->get('/blog/rss.xml', [PublicSite\SeoController::class, 'rss'])->name('blog.rss');
+$router->get('/blog/{slug}', [PublicSite\BlogController::class, 'show'])->name('blog.show');
+
 // --- Legal ------------------------------------------------------------------
 $router->get('/terms', [PublicSite\LegalController::class, 'terms'])->name('legal.terms');
 $router->get('/privacy', [PublicSite\LegalController::class, 'privacy'])->name('legal.privacy');
@@ -80,6 +85,14 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->get('/services/{id}/edit', [Admin\ServiceController::class, 'edit'])->name('admin.services.edit');
     $router->put('/services/{id}', [Admin\ServiceController::class, 'update'])->name('admin.services.update');
     $router->delete('/services/{id}', [Admin\ServiceController::class, 'destroy'])->name('admin.services.destroy');
+
+    // Blog
+    $router->get('/blogs', [Admin\BlogController::class, 'index'])->name('admin.blogs.index');
+    $router->get('/blogs/create', [Admin\BlogController::class, 'create'])->name('admin.blogs.create');
+    $router->post('/blogs', [Admin\BlogController::class, 'store'])->name('admin.blogs.store');
+    $router->get('/blogs/{id}/edit', [Admin\BlogController::class, 'edit'])->name('admin.blogs.edit');
+    $router->put('/blogs/{id}', [Admin\BlogController::class, 'update'])->name('admin.blogs.update');
+    $router->delete('/blogs/{id}', [Admin\BlogController::class, 'destroy'])->name('admin.blogs.destroy');
 
     // Service categories (service lines)
     $router->post('/categories', [Admin\ServiceCategoryController::class, 'store'])->name('admin.categories.store');
