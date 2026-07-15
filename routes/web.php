@@ -118,6 +118,10 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->post('/tickets/{id}/reply', [Admin\TicketController::class, 'reply'])->name('admin.tickets.reply');
     $router->post('/tickets/{id}/status', [Admin\TicketController::class, 'status'])->name('admin.tickets.status');
 
+    // Mass email — admin only (enforced in controller)
+    $router->get('/broadcast', [Admin\BroadcastController::class, 'index'])->name('admin.broadcast.index');
+    $router->post('/broadcast/send', [Admin\BroadcastController::class, 'send'])->name('admin.broadcast.send');
+
     // Commissions (referral payouts) — admin only (enforced in controller)
     $router->get('/commissions', [Admin\CommissionController::class, 'index'])->name('admin.commissions.index');
     $router->post('/commissions/{id}/approve', [Admin\CommissionController::class, 'approve'])->name('admin.commissions.approve');
