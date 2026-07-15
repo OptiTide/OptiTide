@@ -116,7 +116,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
 
 <nav class="mk-nav">
     <div class="mk-container">
-        <a href="/" class="brand-mark text-decoration-none" aria-label="OptiTide home"><img class="brand-icon" src="/assets/img/optitide-mark.svg" alt="OptiTide logo">Opti<span>Tide</span></a>
+        <a href="/" aria-label="OptiTide home"><img class="brand-logo" src="/assets/img/logo.png" alt="OptiTide"></a>
         <div class="mk-nav-links">
             <a href="#services" class="mk-nav-link">Services</a>
             <a href="#process" class="mk-nav-link">Process</a>
@@ -324,7 +324,7 @@ $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : r
     <div class="mk-container">
         <div class="row g-4">
             <div class="col-lg-4">
-                <a href="/" class="brand-mark text-decoration-none fs-4"><img class="brand-icon" src="/assets/img/optitide-mark.svg" alt="OptiTide logo">Opti<span>Tide</span></a>
+                <a href="/"><img class="brand-logo" src="/assets/img/logo-dark.png" alt="OptiTide" style="height:46px"></a>
                 <p class="mt-2" style="color:#a7a3d6;font-size:.9rem;max-width:300px">Web design, SEO, social media and hosting for Australian business — all under one roof.</p>
             </div>
             <div class="col-6 col-lg-3">

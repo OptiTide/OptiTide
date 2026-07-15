@@ -9,7 +9,7 @@ $me = auth();
 <body>
 <div class="app">
     <aside class="sidebar" id="sidebar">
-        <a href="<?= route('portal.dashboard') ?>" class="text-decoration-none brand-mark d-block mb-2"><img class="brand-icon" src="/assets/img/optitide-mark.svg" alt="">Opti<span>Tide</span></a>
+        <a href="<?= route('portal.dashboard') ?>" class="d-block mb-2"><img class="brand-logo" src="/assets/img/logo-dark.png" alt="OptiTide"></a>
         <div class="text-secondary small mb-2" style="font-size:.72rem">Client Portal</div>
 
         <nav class="nav flex-column">

@@ -24,7 +24,7 @@
 body {
     background: var(--canvas);
     color: var(--ink);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 a { color: var(--brand-dark); }
@@ -47,6 +47,8 @@ a:hover { color: var(--brand); }
 /* Real brand images (logo, wave, mascot, service icons): preserve aspect ratio,
    always contain, never cover. */
 .brand-img { object-fit: contain; width: auto; height: auto; max-width: 100%; }
+.brand-logo { height: 36px; width: auto; max-width: 100%; object-fit: contain; display: block; }
+.sidebar .brand-logo { height: 30px; margin-bottom: .25rem; }
 
 .btn-brand,
 .btn-primary {
