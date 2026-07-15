@@ -1,0 +1,84 @@
+# Self-contained stack: app + PostgreSQL + Redis. Coolify can deploy this
+# compose directly, or build the Dockerfile and attach managed Postgres/Redis.
+#
+# Required secrets have NO insecure defaults — the stack refuses to start until
+# APP_KEY and DB_PASSWORD are provided (via Coolify env or a local .env).
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: ${APP_URL:-http://localhost:8080}
+      APP_KEY: ${APP_KEY:?set APP_KEY — generate with: php bin/console key:generate}
+      APP_TIMEZONE: Australia/Sydney
+
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_DATABASE: ${DB_DATABASE:-optitide}
+      DB_USERNAME: ${DB_USERNAME:-optitide}
+      DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD}
+
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      SESSION_DRIVER: redis
+      CACHE_DRIVER: redis
+
+      RUN_MIGRATIONS: "true"
+      SEED_ON_BOOT: ${SEED_ON_BOOT:-false}
+
+      MAIL_DRIVER: ${MAIL_DRIVER:-resend}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-accounts@optitide.io}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-OptiTide}
+
+      COMPANY_LEGAL_NAME: ${COMPANY_LEGAL_NAME:-OptiTide Pty Ltd}
+      COMPANY_ABN: ${COMPANY_ABN:-}
+      COMPANY_EMAIL: ${COMPANY_EMAIL:-accounts@optitide.io}
+      COMPANY_GST_REGISTERED: ${COMPANY_GST_REGISTERED:-true}
+
+      PAYID_ENABLED: ${PAYID_ENABLED:-true}
+      PAYID_TYPE: ${PAYID_TYPE:-mobile}
+      PAYID_VALUE: ${PAYID_VALUE:-}
+      PAYID_ACCOUNT_NAME: ${PAYID_ACCOUNT_NAME:-OptiTide Pty Ltd}
+      BANK_BSB: ${BANK_BSB:-}
+      BANK_ACCOUNT_NUMBER: ${BANK_ACCOUNT_NUMBER:-}
+      PAYONEER_ENABLED: ${PAYONEER_ENABLED:-true}
+      PAYONEER_MODE: ${PAYONEER_MODE:-manual}
+
+      BRAND_ACCENT: ${BRAND_ACCENT:-#0d9488}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-optitide}
+      POSTGRES_USER: ${DB_USERNAME:-optitide}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-optitide} -d ${DB_DATABASE:-optitide}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--save", "60", "1", "--appendonly", "no"]
+    volumes:
+      - redisdata:/data
+
+volumes:
+  pgdata:
+  redisdata:

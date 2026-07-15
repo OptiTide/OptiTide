@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * OptiTide CLI console.
+ *
+ *   php bin/console migrate               run pending migrations
+ *   php bin/console migrate:fresh --seed  drop everything, migrate, seed
+ *   php bin/console migrate:rollback      roll back the last batch
+ *   php bin/console seed                  run the database seeder
+ *   php bin/console key:generate          generate + persist APP_KEY
+ *   php bin/console invoices:recurring    generate due recurring invoices
+ *   php bin/console invoices:overdue      mark past-due invoices overdue
+ */
+
+require __DIR__ . '/bootstrap.php';
+
+use App\Core\Migrator;
+use App\Services\Invoices\RecurringBiller;
+
+$command = $argv[1] ?? 'help';
+$flags = array_slice($argv, 2);
+$out = function (string $message = ''): void {
+    fwrite(STDOUT, $message . "\n");
+};
+
+$migrator = fn () => new Migrator(BASE_PATH . '/database/migrations');
+
+try {
+    switch ($command) {
+        case 'migrate':
+            $migrator()->run($out);
+            break;
+
+        case 'migrate:rollback':
+            $migrator()->rollback($out);
+            break;
+
+        case 'migrate:fresh':
+            $migrator()->fresh($out);
+            if (in_array('--seed', $flags, true)) {
+                (require BASE_PATH . '/database/seeds/DatabaseSeeder.php')->run($out);
+            }
+            break;
+
+        case 'seed':
+            (require BASE_PATH . '/database/seeds/DatabaseSeeder.php')->run($out);
+            break;
+
+        case 'key:generate':
+            $key = 'base64:' . base64_encode(random_bytes(32));
+            set_env_value('APP_KEY', $key);
+            $out('APP_KEY set.');
+            break;
+
+        case 'invoices:recurring':
+            $autoSend = in_array('--send', $flags, true);
+            $result = (new RecurringBiller())->run($autoSend);
+            $out("Generated {$result['generated']} invoice(s): " . (implode(', ', $result['invoices']) ?: '—'));
+            break;
+
+        case 'invoices:overdue':
+            $count = (new RecurringBiller())->markOverdue();
+            $out("Marked $count invoice(s) overdue.");
+            break;
+
+        default:
+            $out('OptiTide console. Available commands:');
+            $out('  migrate | migrate:fresh [--seed] | migrate:rollback | seed');
+            $out('  key:generate');
+            $out('  invoices:recurring [--send] | invoices:overdue');
+    }
+} catch (\Throwable $e) {
+    fwrite(STDERR, 'Error: ' . $e->getMessage() . "\n" . $e->getTraceAsString() . "\n");
+    exit(1);
+}
+
+function set_env_value(string $key, string $value): void
+{
+    $path = BASE_PATH . '/.env';
+    if (! is_file($path)) {
+        copy(BASE_PATH . '/.env.example', $path);
+    }
+
+    $contents = file_get_contents($path);
+    $line = $key . '=' . (preg_match('/\s/', $value) ? '"' . $value . '"' : $value);
+
+    if (preg_match('/^' . preg_quote($key, '/') . '=.*$/m', $contents)) {
+        $contents = preg_replace('/^' . preg_quote($key, '/') . '=.*$/m', $line, $contents);
+    } else {
+        $contents .= "\n" . $line . "\n";
+    }
+
+    file_put_contents($path, $contents);
+}

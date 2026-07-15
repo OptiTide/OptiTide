@@ -1,0 +1,9 @@
+# Normalise line endings to LF in the repo — required so shell scripts and the
+# console binary keep working shebangs inside the Linux Docker image.
+* text=auto eol=lf
+
+*.sh text eol=lf
+bin/console text eol=lf
+*.php text eol=lf
+*.css text eol=lf
+*.md text eol=lf
