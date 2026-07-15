@@ -39,6 +39,13 @@ final class Mail
         return $this;
     }
 
+    public function replyTo(string $email): self
+    {
+        $this->message->replyTo = $email;
+
+        return $this;
+    }
+
     public function html(string $html): self
     {
         $this->message->html = $html;

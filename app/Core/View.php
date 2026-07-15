@@ -60,18 +60,20 @@ final class View
         return $childOutput;
     }
 
-    protected function renderFile(string $template, array $data): string
+    protected function renderFile(string $__template, array $__data): string
     {
-        $path = static::path($template);
+        // Prefixed param names so a view variable named "data" or "template"
+        // isn't blocked by extract()'s EXTR_SKIP colliding with a local.
+        $__path = static::path($__template);
 
-        if (! is_file($path)) {
-            throw new RuntimeException("View [$template] not found at $path");
+        if (! is_file($__path)) {
+            throw new RuntimeException("View [$__template] not found at $__path");
         }
 
-        extract($data, EXTR_SKIP);
+        extract($__data, EXTR_SKIP);
 
         ob_start();
-        include $path;
+        include $__path;
 
         return ob_get_clean();
     }

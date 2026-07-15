@@ -13,7 +13,10 @@ use App\Controllers\PublicSite;
 
 // --- Public -----------------------------------------------------------------
 $router->get('/', [PublicSite\HomeController::class, 'index'])->name('home');
+$router->post('/contact', [PublicSite\ContactController::class, 'submit'])->name('contact.submit')->middleware('csrf');
 $router->get('/health', [PublicSite\HealthController::class, 'index'])->name('health');
+$router->get('/robots.txt', [PublicSite\SeoController::class, 'robots'])->name('robots');
+$router->get('/sitemap.xml', [PublicSite\SeoController::class, 'sitemap'])->name('sitemap');
 $router->get('/pay/{token}', [PublicSite\PayController::class, 'show'])->name('pay.show');
 $router->get('/pay/{token}/pdf', [PublicSite\PayController::class, 'pdf'])->name('pay.pdf');
 
