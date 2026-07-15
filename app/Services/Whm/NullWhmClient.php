@@ -14,4 +14,9 @@ final class NullWhmClient implements WhmClient
     {
         return [];
     }
+
+    public function createCpanelSession(string $username): ?string
+    {
+        return null;
+    }
 }

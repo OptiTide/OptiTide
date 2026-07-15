@@ -175,6 +175,8 @@ $router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 't
     $router->get('/services', [Client\ServiceController::class, 'index'])->name('portal.services');
     $router->post('/services/{id}/cancel', [Client\ServiceController::class, 'cancel'])->name('portal.services.cancel');
     $router->get('/project', [Client\ProjectController::class, 'index'])->name('portal.project');
+    $router->get('/hosting', [Client\HostingController::class, 'index'])->name('portal.hosting');
+    $router->post('/hosting/{id}/login', [Client\HostingController::class, 'login'])->name('portal.hosting.login');
     $router->get('/refer', [Client\ReferController::class, 'index'])->name('portal.refer');
     $router->get('/support', [Client\SupportController::class, 'index'])->name('portal.support.index');
     $router->get('/support/new', [Client\SupportController::class, 'create'])->name('portal.support.create');

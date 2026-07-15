@@ -13,4 +13,7 @@ interface WhmClient
      * @return array<int,array{domain:string,user:string,plan:?string,status:string,ip:?string,disk_used_mb:?int,disk_limit_mb:?int,server:?string}>
      */
     public function listAccounts(): array;
+
+    /** A one-time cPanel login URL for a hosting account, or null if unavailable. */
+    public function createCpanelSession(string $username): ?string;
 }

@@ -76,6 +76,41 @@ final class WhmApiClient implements WhmClient
         return $out;
     }
 
+    public function createCpanelSession(string $username): ?string
+    {
+        $username = trim($username);
+        if ($username === '') {
+            return null;
+        }
+
+        $url = sprintf(
+            'https://%s:%d/json-api/create_user_session?api.version=1&user=%s&service=cpaneld',
+            $this->host,
+            $this->port,
+            rawurlencode($username)
+        );
+
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => ['Authorization: whm ' . $this->username . ':' . $this->token],
+            CURLOPT_TIMEOUT        => 20,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+        ]);
+        $body = curl_exec($ch);
+        curl_close($ch);
+
+        if ($body === false) {
+            return null;
+        }
+
+        $data = json_decode((string) $body, true);
+        $sessionUrl = $data['data']['url'] ?? null;
+
+        return is_string($sessionUrl) && $sessionUrl !== '' ? $sessionUrl : null;
+    }
+
     /** Parse WHM disk figures like "512M", "2.5G", "unlimited" into MB. */
     private function toMb(mixed $value): ?int
     {
