@@ -20,7 +20,7 @@ $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/');
             <span class="mk-ccy" title="Choose the currency prices are shown in">
                 <?php foreach (\App\Support\Currency::supported() as $code): ?><a class="mk-ccy-link <?= $ccyNow === $code ? 'is-active' : '' ?>" href="<?= route('currency.set') ?>?c=<?= e($code) ?>&amp;return=<?= $ccyReturn ?>"><?= e($code) ?></a><?php endforeach; ?>
             </span>
-            <span class="mk-topbar-hours d-none d-md-inline"><i class="bi bi-clock"></i> Mon – Fri 9am – 5pm AEST</span>
+            <span class="mk-topbar-hours d-none d-md-inline"><i class="bi bi-clock"></i> <?= e(config('company.hours')) ?></span>
             <a href="<?= $dashUrl ?>" class="mk-topbar-login"><i class="bi bi-person-circle"></i> <?= $isAuthed ? 'My Dashboard' : 'Client &amp; Staff Login' ?></a>
         </div>
     </div>

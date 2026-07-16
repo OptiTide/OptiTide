@@ -26,6 +26,16 @@ return [
         'country'  => env('COMPANY_ADDRESS_COUNTRY', 'Australia'),
     ],
 
+    // Shown in the top bar, footer and contact pages. Editable in admin Settings.
+    'hours' => env('COMPANY_HOURS') ?: 'Mon – Fri, 9am – 5pm AEST',
+
+    // Footer social links — each is hidden entirely when left blank.
+    'social' => [
+        'facebook'  => env('COMPANY_SOCIAL_FACEBOOK'),
+        'instagram' => env('COMPANY_SOCIAL_INSTAGRAM'),
+        'linkedin'  => env('COMPANY_SOCIAL_LINKEDIN'),
+    ],
+
     'currency'         => env('CURRENCY', 'AUD'),
     'gst_registered'   => (bool) env('COMPANY_GST_REGISTERED', true),
     'gst_basis_points' => (int) env('COMPANY_GST_BASIS_POINTS', 1000),

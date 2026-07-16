@@ -48,15 +48,53 @@ final class ChatAiService
     }
 
     /** @param array<int,array<string,mixed>> $messages */
+    /**
+     * Built from the LIVE catalogue + company settings, never hardcoded — so the
+     * bot can't quote a customer a price that's been changed in the admin.
+     */
+    private function systemPrompt(): string
+    {
+        $company = config('company');
+        $name = $company['legal_name'] ?: 'OptiTide';
+
+        // Real plans, grouped by service line, straight from the DB catalogue.
+        $lines = [];
+        foreach (\App\Support\Catalog::grouped() as $group) {
+            $plans = [];
+            foreach ($group['plans'] as $plan) {
+                $plans[] = (int) $plan['price_cents'] === 0
+                    ? $plan['name'] . ' (custom quote)'
+                    : $plan['name'] . ' ' . money((int) $plan['price_cents'], $plan['currency'] ?? 'AUD')->format()
+                        . \App\Support\Catalog::suffix($plan);
+            }
+            $lines[] = $group['line']['name'] . ': ' . implode(', ', $plans);
+        }
+        $pricing = $lines
+            ? 'Current services & pricing (GST-inclusive ' . ($company['currency'] ?: 'AUD') . ') — ' . implode(' | ', $lines) . '. '
+            : 'If asked about pricing, offer to have a human send a tailored quote. ';
+
+        $contact = 'Contact: ' . $company['email'];
+        if (! empty($company['phone'])) {
+            $contact .= ', phone ' . $company['phone'];
+        }
+        if (! empty($company['hours'])) {
+            $contact .= ' (' . $company['hours'] . ')';
+        }
+
+        return "You are the friendly 24/7 AI assistant for {$name}, an Australian digital agency. "
+            . $pricing
+            . $contact . '. Tagline: "Grow Online. Lead Always." '
+            . 'Be warm, concise and genuinely helpful, no jargon, Australian spelling. Help with pre-sales and support questions. '
+            . 'Only quote the prices listed above — if something is not listed, say you will have a teammate confirm. '
+            . 'If you cannot resolve something, reassure them a human teammate will follow up. Never invent facts or guarantee search rankings.';
+    }
+
     private function callAnthropic(array $messages): ?string
     {
         $key = trim((string) config('ai.anthropic_key', ''));
         $model = (string) config('ai.model', 'claude-haiku-4-5-20251001');
 
-        $system = 'You are the friendly 24/7 support assistant for OptiTide, an Australian digital agency. '
-            . 'Services & pricing (all GST-inclusive AUD): web design from $750, SEO from $750/month, social media from $250/month, hosting from $25/month. Tagline: "Grow Online. Lead Always." '
-            . 'Be warm, concise and genuinely helpful, no jargon, Australian spelling. Help with pre-sales and support questions. '
-            . 'If you cannot resolve something, reassure them a human teammate will follow up. Never invent facts or guarantee search rankings.';
+        $system = $this->systemPrompt();
 
         // Build strictly-alternating user/assistant turns (merge consecutive same-role).
         $turns = [];

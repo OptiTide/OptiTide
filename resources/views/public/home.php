@@ -345,14 +345,14 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
                     <?php if ($company['phone']): ?><li><i class="bi bi-telephone"></i> <?= e($company['phone']) ?></li><?php endif; ?>
                     <li><i class="bi bi-envelope"></i> <a href="mailto:<?= e($company['email']) ?>" class="text-decoration-none"><?= e($company['email']) ?></a></li>
                     <li><i class="bi bi-geo-alt"></i> Serving businesses Australia-wide</li>
-                    <li><i class="bi bi-clock"></i> Mon – Fri, 9am – 5pm AEST</li>
+                    <li><i class="bi bi-clock"></i> <?= e(config('company.hours')) ?></li>
                 </ul>
                 <div class="mk-chat-card mt-4">
                     <?php if ($hasMascot): ?><img src="/assets/img/mascot.png" alt="" class="mk-chat-mascot"><?php endif; ?>
                     <div>
                         <div class="fw-bold">Prefer to chat?</div>
                         <?php if ($company['phone']): ?><div class="small">Call us on <strong><?= e($company['phone']) ?></strong></div><?php endif; ?>
-                        <div class="small text-muted">Mon – Fri, 9am – 5pm AEST</div>
+                        <div class="small text-muted"><?= e(config('company.hours')) ?></div>
                     </div>
                 </div>
             </div>

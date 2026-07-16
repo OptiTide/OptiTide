@@ -5,11 +5,21 @@
             <div class="col-lg-4">
                 <div class="brand-logo--chip d-inline-block mb-3"><img src="/assets/img/logo.png" alt="OptiTide" style="height:60px"></div>
                 <p class="mk-footer-about">Helping Australian businesses ride the digital tide with web design, SEO, marketing and hosting solutions that deliver real results.</p>
-                <div class="mk-footer-social">
-                    <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-                    <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-                </div>
+                <?php
+                // Only render socials you've actually set in admin Settings.
+                $socials = array_filter([
+                    'facebook'  => $company['social']['facebook'] ?? null,
+                    'instagram' => $company['social']['instagram'] ?? null,
+                    'linkedin'  => $company['social']['linkedin'] ?? null,
+                ]);
+                ?>
+                <?php if ($socials): ?>
+                    <div class="mk-footer-social">
+                        <?php foreach ($socials as $network => $url): ?>
+                            <a href="<?= e($url) ?>" target="_blank" rel="noopener" aria-label="<?= e(ucfirst($network)) ?>"><i class="bi bi-<?= e($network) ?>"></i></a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="col-6 col-lg-2 mk-footer-col">
@@ -41,7 +51,7 @@
                     <a href="tel:<?= e(preg_replace('/\s+/', '', (string) $company['phone'])) ?>"><i class="bi bi-telephone"></i> <?= e($company['phone']) ?></a>
                 <?php endif; ?>
                 <a href="mailto:<?= e($company['email']) ?>"><i class="bi bi-envelope"></i> <?= e($company['email']) ?></a>
-                <span class="mk-footer-note"><i class="bi bi-clock"></i> Mon – Fri, 9am – 5pm AEST</span>
+                <span class="mk-footer-note"><i class="bi bi-clock"></i> <?= e(config('company.hours')) ?></span>
                 <span class="mk-footer-note"><i class="bi bi-geo-alt"></i> Australia-wide</span>
             </div>
         </div>

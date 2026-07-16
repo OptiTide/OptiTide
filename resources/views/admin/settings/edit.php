@@ -47,6 +47,19 @@ $addr = $company['address'];
                         </div>
                         <div class="col-md-3"><label class="form-label">Postcode</label><input type="text" name="s_addr_postcode" value="<?= e($addr['postcode']) ?>" maxlength="4" class="form-control <?= has_error('s_addr_postcode') ? 'is-invalid' : '' ?>"></div>
                     </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <label class="form-label">Business hours</label>
+                            <input type="text" name="s_hours" value="<?= e($company['hours'] ?? '') ?>" maxlength="80" class="form-control <?= has_error('s_hours') ? 'is-invalid' : '' ?>" placeholder="Mon – Fri, 9am – 5pm AEST">
+                            <div class="form-text">Shown in the website top bar, footer and contact page.</div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-12"><label class="form-label mb-1">Social profiles <span class="text-muted small fw-normal">— leave blank to hide that icon</span></label></div>
+                        <div class="col-md-4"><div class="input-group"><span class="input-group-text"><i class="bi bi-facebook"></i></span><input type="url" name="s_social_fb" value="<?= e($company['social']['facebook'] ?? '') ?>" class="form-control" placeholder="https://facebook.com/…"></div></div>
+                        <div class="col-md-4"><div class="input-group"><span class="input-group-text"><i class="bi bi-instagram"></i></span><input type="url" name="s_social_ig" value="<?= e($company['social']['instagram'] ?? '') ?>" class="form-control" placeholder="https://instagram.com/…"></div></div>
+                        <div class="col-md-4"><div class="input-group"><span class="input-group-text"><i class="bi bi-linkedin"></i></span><input type="url" name="s_social_li" value="<?= e($company['social']['linkedin'] ?? '') ?>" class="form-control" placeholder="https://linkedin.com/company/…"></div></div>
+                    </div>
                     <div class="form-text mt-2">GST: <?= $company['gst_registered'] ? 'Registered (' . e(\App\Support\Gst::rateLabel()) . ' inclusive)' : 'Not registered' ?> · Currency: <?= e($company['currency']) ?> (set in .env)</div>
                 </div>
             </div>

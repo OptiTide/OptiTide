@@ -22,7 +22,7 @@
                         <li><i class="bi bi-telephone"></i> <a href="tel:<?= e(preg_replace('/\s+/', '', (string) $company['phone'])) ?>" class="text-decoration-none"><?= e($company['phone']) ?></a></li>
                     <?php endif; ?>
                     <li><i class="bi bi-envelope"></i> <a href="mailto:<?= e($company['email']) ?>" class="text-decoration-none"><?= e($company['email']) ?></a></li>
-                    <li><i class="bi bi-clock"></i> Mon – Fri, 9am – 5pm AEST</li>
+                    <li><i class="bi bi-clock"></i> <?= e(config('company.hours')) ?></li>
                     <li><i class="bi bi-geo-alt"></i> Serving businesses Australia-wide</li>
                     <?php if (! empty($company['abn'])): ?><li><i class="bi bi-building"></i> <?= e($company['legal_name']) ?> · ABN <?= e($company['abn']) ?></li><?php endif; ?>
                 </ul>
