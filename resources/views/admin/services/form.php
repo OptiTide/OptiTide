@@ -31,6 +31,12 @@ $currency = config('company.currency', 'AUD');
                     <div class="mb-3">
                         <label class="form-label">Description</label>
                         <textarea name="description" rows="2" class="form-control"><?= e(old('description', $service['description'] ?? '')) ?></textarea>
+                        <div class="form-text">One line under the plan name on the public pricing card.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">What's included <span class="text-muted small fw-normal">— one per line</span></label>
+                        <textarea name="features" rows="5" class="form-control" placeholder="5-page custom website&#10;Mobile-first design&#10;Contact form &amp; Google Maps&#10;3 rounds of revisions"><?= e(old('features', $service['features'] ?? '')) ?></textarea>
+                        <div class="form-text">Shown as a tick list on this plan's pricing card, on the homepage and /services. Leave blank to show no list — we won't make features up.</div>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-4">

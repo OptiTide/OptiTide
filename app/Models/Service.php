@@ -8,6 +8,26 @@ class Service extends Model
 {
     protected static string $table = 'services';
 
+    /**
+     * The plan's feature bullets, one per line, for the public pricing card.
+     * Empty is fine — the card then shows no tick list rather than inventing
+     * one. Tolerates pasted "-" / "•" bullets.
+     *
+     * @return array<int,string>
+     */
+    public static function featureList(?string $features): array
+    {
+        $out = [];
+        foreach (preg_split('/\r\n|\r|\n/', (string) $features) ?: [] as $line) {
+            $line = trim(ltrim(trim($line), "-*•\t "));
+            if ($line !== '') {
+                $out[] = $line;
+            }
+        }
+
+        return $out;
+    }
+
     public const BILLING_ONE_OFF = 'one_off';
     public const BILLING_RECURRING = 'recurring';
 

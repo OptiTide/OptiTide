@@ -687,3 +687,18 @@ a:hover { color: var(--brand); }
     background: rgba(255,106,0,.16); border-color: var(--brand);
     color: #fff; transform: translateY(-1px);
 }
+
+/* Per-plan feature ticks on the pricing card (admin-authored; empty = hidden) */
+.mk-price-features { list-style: none; padding: 0; margin: .9rem 0 1.1rem; display: grid; gap: .45rem; text-align: left; }
+.mk-price-features li { display: flex; align-items: flex-start; gap: .5rem; font-size: .87rem; color: #475569; line-height: 1.45; }
+.mk-price-features i { color: #15803d; font-size: .9rem; flex: 0 0 auto; margin-top: .15rem; }
+
+/* "Keep grouped, just prettier": more air between service lines + clearer group headings */
+.mk-price-group + .mk-price-group { margin-top: 3rem; }
+.mk-price-group-title {
+    display: flex; align-items: center; gap: .75rem;
+    font-size: 1.05rem; font-weight: 800; letter-spacing: .02em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem;
+}
+.mk-price-group-title::after { content: ""; flex: 1 1 auto; height: 1px; background: var(--line); }
+.mk-price-card { padding: 1.6rem 1.35rem; }

@@ -97,6 +97,7 @@ class ServiceController extends Controller
             'name'         => 'required|max:160',
             'category_id'  => 'nullable|exists:service_categories,id',
             'description'  => 'nullable|max:1000',
+            'features'     => 'nullable|max:2000',
             'billing_type' => 'required|in:one_off,recurring',
             'interval'     => 'nullable|in:monthly,quarterly,yearly',
             'price'        => 'required|numeric|min:0',
@@ -106,6 +107,7 @@ class ServiceController extends Controller
 
         return [
             'name'         => $data['name'],
+            'features'     => $data['features'] ?: null,
             'category_id'  => ! empty($data['category_id']) ? (int) $data['category_id'] : null,
             'description'  => $data['description'] ?? null,
             'billing_type' => $data['billing_type'],

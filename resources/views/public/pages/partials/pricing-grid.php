@@ -38,6 +38,19 @@ $startUrl = $startUrl ?? '/register';
                         <div class="mk-price-terms">
                             <?= $plan['billing_type'] === 'recurring' ? 'Ongoing — cancel any time' : 'One-off project fee' ?>
                         </div>
+                        <?php
+                        // The admin's own per-plan bullets (/admin/services). No
+                        // features set = no list, rather than inventing any or
+                        // repeating the line-level ones on every tier.
+                        $planFeatures = \App\Models\Service::featureList($plan['features'] ?? null);
+                        ?>
+                        <?php if ($planFeatures): ?>
+                            <ul class="mk-price-features">
+                                <?php foreach ($planFeatures as $pf): ?>
+                                    <li><i class="bi bi-check2"></i> <?= e($pf) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
                         <?php if ($isQuote): ?>
                             <a href="<?= route('pages.contact') ?>" class="btn btn-outline-brand w-100 mt-auto">Get a Quote</a>
                         <?php elseif ($canOrder): ?>
