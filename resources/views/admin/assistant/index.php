@@ -42,7 +42,9 @@
     var busy = false;
 
     greet();
-    function greet() { bubble('ai', "G'day! I'm your OptiTide admin assistant. Ask me about clients, invoices, outstanding balances or recent activity — I'll pull live data. I can also propose changes (like adjusting a client's credit) for you to confirm."); }
+    // JSON-encoded, not e(): HTML entities aren't decoded inside <script>.
+    const BRAND = <?= json_encode((string) config('company.brand_name'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    function greet() { bubble('ai', "G'day! I'm your " + BRAND + " admin assistant. Ask me about clients, invoices, outstanding balances or recent activity — I'll pull live data. I can also propose changes (like adjusting a client's credit) for you to confirm."); }
 
     form.addEventListener('submit', function (e) { e.preventDefault(); send(); });
 

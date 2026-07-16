@@ -13,6 +13,10 @@
 */
 
 return [
+    // The trading name customers see: e-mail "from" name, subjects, PDF header,
+    // page titles. Kept separate from legal_name (which is what the ABN is
+    // registered to, and is what a tax invoice must show).
+    'brand_name' => env('COMPANY_BRAND_NAME') ?: 'OptiTide',
     'legal_name' => env('COMPANY_LEGAL_NAME') ?: 'OptiTide Pty Ltd',
     'abn'        => env('COMPANY_ABN') ?: '38 163 865 712',
     'email'      => env('COMPANY_EMAIL', env('MAIL_FROM_ADDRESS', 'Hello@OptiTide.io')),

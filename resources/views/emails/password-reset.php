@@ -2,7 +2,7 @@
 <?php $this->section('content'); ?>
 <p style="margin:0 0 14px;font-size:16px;">Hi <?= e($name) ?>,</p>
 <p style="margin:0 0 18px;line-height:1.6;">
-    We received a request to reset your OptiTide password. Click below to choose a new one.
+    We received a request to reset your <?= e(config('company.brand_name')) ?> password. Click below to choose a new one.
     This link expires in 60 minutes. If you didn't request this, you can ignore this email.
 </p>
 <p style="text-align:center;margin:0 0 18px;">

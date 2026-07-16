@@ -37,12 +37,21 @@ class SeoController extends Controller
 
         $urls = [
             ['loc' => $url . '/', 'priority' => '1.0', 'changefreq' => 'weekly', 'lastmod' => $today],
+            ['loc' => $url . '/services', 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today],
+            ['loc' => $url . '/about', 'priority' => '0.6', 'changefreq' => 'monthly', 'lastmod' => $today],
+            ['loc' => $url . '/contact', 'priority' => '0.6', 'changefreq' => 'monthly', 'lastmod' => $today],
             ['loc' => $url . '/blog', 'priority' => '0.8', 'changefreq' => 'daily', 'lastmod' => $today],
             ['loc' => $url . '/terms', 'priority' => '0.2', 'changefreq' => 'yearly', 'lastmod' => $today],
             ['loc' => $url . '/privacy', 'priority' => '0.2', 'changefreq' => 'yearly', 'lastmod' => $today],
             ['loc' => $url . '/refund', 'priority' => '0.2', 'changefreq' => 'yearly', 'lastmod' => $today],
             ['loc' => $url . '/login', 'priority' => '0.3', 'changefreq' => 'monthly', 'lastmod' => $today],
         ];
+
+        // The money pages — driven off the same map the nav and routes use, so a
+        // new service page can never be missing from the sitemap.
+        foreach (array_keys(\App\Controllers\PublicSite\PageController::serviceData()) as $slug) {
+            $urls[] = ['loc' => $url . '/services/' . $slug, 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today];
+        }
 
         foreach (Blog::published() as $post) {
             $urls[] = [

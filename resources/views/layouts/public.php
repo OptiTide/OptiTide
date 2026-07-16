@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en-AU">
-<head><?php $this->insert('partials.head', ['title' => $title ?? config('app.name', 'OptiTide')]); ?></head>
+<head><?php $this->insert('partials.head', ['title' => $title ?? config('company.brand_name')]); ?></head>
 <body class="mk">
 
 <?php $this->insert('partials.site-nav'); ?>

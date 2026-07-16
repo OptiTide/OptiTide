@@ -3,7 +3,7 @@
     <div class="mk-container">
         <div class="row g-4">
             <div class="col-lg-4">
-                <div class="brand-logo--chip d-inline-block mb-3"><img src="/assets/img/logo.png" alt="OptiTide" style="height:60px"></div>
+                <div class="brand-logo--chip d-inline-block mb-3"><img src="<?= asset('img/logo.png') ?>" alt="<?= e($company['brand_name']) ?>" style="height:60px"></div>
                 <p class="mk-footer-about">Helping Australian businesses ride the digital tide with web design, SEO, marketing and hosting solutions that deliver real results.</p>
                 <?php
                 // Only render socials you've actually set in admin Settings.
@@ -52,7 +52,7 @@
                 <?php endif; ?>
                 <a href="mailto:<?= e($company['email']) ?>"><i class="bi bi-envelope"></i> <?= e($company['email']) ?></a>
                 <span class="mk-footer-note"><i class="bi bi-clock"></i> <?= e(config('company.hours')) ?></span>
-                <span class="mk-footer-note"><i class="bi bi-geo-alt"></i> Australia-wide</span>
+                <span class="mk-footer-note"><i class="bi bi-geo-alt"></i> <?= e(\App\Support\Company::addressLineOr('Australia-wide')) ?></span>
             </div>
         </div>
 

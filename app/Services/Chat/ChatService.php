@@ -25,7 +25,14 @@ final class ChatService
             'last_message_at' => now(),
         ]);
 
-        $this->postAgent($conversation['id'], 'Hi! 👋 I\'m the OptiTide AI assistant — I can answer most questions instantly, and a human teammate can jump in whenever you need. How can I help today — web design, SEO, social media or hosting?', true, null);
+        // Brand + service lines come from Settings/the catalogue, so the greeting
+        // can't drift from what's actually on sale.
+        $lines = \App\Services\Chat\ChatAiService::serviceLineList();
+        $greeting = 'Hi! 👋 I\'m the ' . (config('company.brand_name') ?: config('app.name'))
+            . ' AI assistant — I can answer most questions instantly, and a human teammate can jump in whenever you need. '
+            . 'How can I help today' . ($lines ? ' — ' . $lines . '?' : '?');
+
+        $this->postAgent($conversation['id'], $greeting, true, null);
 
         return ChatConversation::find($conversation['id']);
     }

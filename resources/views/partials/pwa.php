@@ -3,7 +3,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="OptiTide">
+<meta name="apple-mobile-web-app-title" content="<?= e(config('company.brand_name')) ?>">
 <link rel="apple-touch-icon" href="/assets/img/favicon.png">
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
 <script>(function(){var p=location.pathname;if(/^\/(admin|portal|account|t)(\/|$)/.test(p))return;try{fetch('/t?p='+encodeURIComponent(p)+'&r='+encodeURIComponent(document.referrer||''),{cache:'no-store',keepalive:true});}catch(e){}})();</script>

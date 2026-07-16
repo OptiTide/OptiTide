@@ -15,7 +15,7 @@ $cover = function (array $p) use ($appUrl): string {
 <section class="mk-section mk-blog-index">
     <div class="mk-container">
         <div class="text-center mb-5">
-            <span class="mk-eyebrow">OptiTide Blog</span>
+            <span class="mk-eyebrow"><?= e(config('company.brand_name')) ?> Blog</span>
             <h1 class="mk-h2">Insights to Grow Your Business Online</h1>
             <p class="mk-lead mx-auto">Practical, no-jargon advice on web design, SEO, social media and getting found on Google — written for Australian small businesses.</p>
         </div>

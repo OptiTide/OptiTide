@@ -99,7 +99,7 @@ class BlogController extends Controller
             'excerpt'          => $data['excerpt'] ?: null,
             'body'             => $data['body'],
             'category'         => $data['category'] ?: null,
-            'author'           => $data['author'] ?: 'OptiTide',
+            'author'           => $data['author'] ?: config('company.brand_name'),
             'keywords'         => $data['keywords'] ?: null,
             'meta_title'       => $data['meta_title'] ?: null,
             'meta_description' => $data['meta_description'] ?: null,

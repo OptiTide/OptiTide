@@ -5,14 +5,14 @@ $me = auth();
 ?>
 <!doctype html>
 <html lang="en-AU">
-<head><?php $this->insert('partials.head', ['title' => ($title ?? 'Dashboard') . ' — OptiTide']); ?></head>
+<head><?php $this->insert('partials.head', ['title' => ($title ?? 'Dashboard') . ' — ' . config('company.brand_name')]); ?></head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <div class="app">
     <aside class="sidebar" id="sidebar">
         <button type="button" class="sidebar-close btn btn-sm btn-outline-light float-end" onclick="otToggleSidebar(false)" aria-label="Close menu"><i class="bi bi-x-lg"></i></button>
-        <a href="<?= route('admin.dashboard') ?>" class="sidebar-brand" aria-label="OptiTide admin">
-            <span class="sidebar-brand-mark"><img src="/assets/img/mark-wave.png" alt="OptiTide"></span>
+        <a href="<?= route('admin.dashboard') ?>" class="sidebar-brand" aria-label="<?= e(config('company.brand_name')) ?> admin">
+            <span class="sidebar-brand-mark"><img src="/assets/img/mark-wave.png" alt="<?= e(config('company.brand_name')) ?>"></span>
             <span class="sidebar-brand-name">Opti<span style="color:var(--brand)">Tide</span></span>
         </a>
         <div class="text-secondary small mb-2" style="font-size:.72rem">Billing &amp; CRM</div>

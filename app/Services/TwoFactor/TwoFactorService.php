@@ -31,7 +31,7 @@ final class TwoFactorService
 
     public function provisioningUri(string $secret, array $user): string
     {
-        return Totp::provisioningUri($secret, $user['email'], config('app.name', 'OptiTide'));
+        return Totp::provisioningUri($secret, $user['email'], (string) config('company.brand_name'));
     }
 
     public function verifyTotp(string $secret, string $code): bool
@@ -47,7 +47,7 @@ final class TwoFactorService
         Cache::put($this->emailKey($user['id']), password_hash($code, PASSWORD_DEFAULT), 600);
 
         Mail::to($user['email'], $user['name'])
-            ->subject('Your OptiTide verification code')
+            ->subject('Your ' . config('company.brand_name') . ' verification code')
             ->view('emails.two-factor-code', ['name' => $user['name'], 'code' => $code])
             ->send();
     }

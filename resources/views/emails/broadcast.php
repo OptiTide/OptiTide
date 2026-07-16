@@ -7,5 +7,5 @@
     <a href="<?= e($ctaUrl) ?>" style="display:inline-block;background:<?= e(config('app.brand.accent', '#FF6A00')) ?>;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-weight:600;"><?= e($ctaText) ?></a>
 </p>
 <?php endif; ?>
-<p style="margin:0;color:#64748b;font-size:13px;line-height:1.6;">You're receiving this because you're a <?= e(config('company.legal_name', 'OptiTide')) ?> client. Just reply if you have any questions.</p>
+<p style="margin:0;color:#64748b;font-size:13px;line-height:1.6;">You're receiving this because you're a <?= e(config('company.brand_name')) ?> client. Just reply if you have any questions.</p>
 <?php $this->endSection(); ?>

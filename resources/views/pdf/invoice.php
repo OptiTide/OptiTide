@@ -34,7 +34,16 @@ $fmt = fn (int $cents) => money($cents, $invoice['currency'])->format();
     <table class="meta">
         <tr>
             <td>
-                <div class="brand">Opti<span>Tide</span></div>
+                <?php
+                // Two-tone wordmark, driven by the brand name in Settings. A
+                // CamelCase name ("OptiTide") splits at the hump; anything else
+                // renders whole rather than being chopped arbitrarily.
+                $brand = (string) ($company['brand_name'] ?? '');
+                $twoTone = preg_match('/^(.*[a-z])([A-Z].*)$/', $brand, $m)
+                    ? e($m[1]) . '<span>' . e($m[2]) . '</span>'
+                    : e($brand);
+                ?>
+                <div class="brand"><?= $twoTone ?></div>
                 <div style="margin-top:6px;"><strong><?= e($company['legal_name']) ?></strong></div>
                 <?php if ($company['abn']): ?><div class="muted">ABN <?= e($company['abn']) ?></div><?php endif; ?>
                 <div><?= e($company['email']) ?><?= $company['phone'] ? ' · ' . e($company['phone']) : '' ?></div>

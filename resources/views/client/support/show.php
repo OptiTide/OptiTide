@@ -22,7 +22,7 @@ $badge = ['open' => 'text-bg-primary', 'pending' => 'text-bg-warning', 'closed' 
             <?php foreach ($replies as $r): ?>
                 <div class="tk-msg <?= $r['is_staff'] ? 'tk-msg--staff' : 'tk-msg--client' ?>">
                     <div class="tk-msg-head">
-                        <span class="fw-semibold"><?= $r['is_staff'] ? 'OptiTide Support' : 'You' ?></span>
+                        <span class="fw-semibold"><?= $r['is_staff'] ? config('company.brand_name') . ' Support' : 'You' ?></span>
                         <span class="text-muted small"><?= e($r['created_at'] ? date('d M Y, g:ia', strtotime($r['created_at'])) : '') ?></span>
                     </div>
                     <div class="tk-msg-body"><?= nl2br(e($r['body'])) ?></div>

@@ -1,7 +1,7 @@
 <?php $this->extends('emails.layout'); ?>
 <?php $this->section('content'); ?>
 <p style="margin:0 0 14px;font-size:16px;">Hi <?= e($client['contact_name'] ?: ($client['business_name'] ?? 'there')) ?>,</p>
-<p style="margin:0 0 18px;line-height:1.6;">You're invited to a meeting with the <?= e(config('company.legal_name', 'OptiTide')) ?> team.</p>
+<p style="margin:0 0 18px;line-height:1.6;">You're invited to a meeting with the <?= e(config('company.brand_name')) ?> team.</p>
 
 <table role="presentation" width="100%" style="margin:8px 0 20px;border-collapse:collapse;">
     <tr><td style="padding:6px 0;color:#64748b;">What</td><td style="padding:6px 0;text-align:right;font-weight:600;"><?= e($meeting['title']) ?></td></tr>

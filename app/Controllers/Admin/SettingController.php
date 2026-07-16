@@ -18,6 +18,7 @@ class SettingController extends Controller
 {
     /** form field => config dot-path */
     protected const EDITABLE = [
+        's_brand_name'    => 'company.brand_name',
         's_legal_name'    => 'company.legal_name',
         's_abn'           => 'company.abn',
         's_email'         => 'company.email',

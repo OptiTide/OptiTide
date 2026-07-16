@@ -99,9 +99,11 @@ class PageController extends Controller
             $services[$slug]['from'] = Catalog::fromPriceCents($s['category']);
         }
 
+        $brand = config('company.brand_name');
+
         return $this->view('public.pages.services', [
-            'seoTitle' => 'Our Services — Web Design, SEO, Social Media & Hosting | OptiTide',
-            'seoDescription' => 'OptiTide\'s digital services for Australian business: web design & development, SEO, social media marketing and managed hosting — all under one roof.',
+            'seoTitle' => 'Our Services — Web Design, SEO, Social Media & Hosting | ' . $brand,
+            'seoDescription' => $brand . '\'s digital services for Australian business: web design & development, SEO, social media marketing and managed hosting — all under one roof.',
             'canonical' => rtrim(config('app.url'), '/') . '/services',
             'services' => $services,
         ]);
@@ -119,7 +121,7 @@ class PageController extends Controller
         $isAuthed = Auth::check();
 
         return $this->view('public.pages.service', [
-            'seoTitle' => $service['title'] . ' for Australian Business | OptiTide',
+            'seoTitle' => $service['title'] . ' for Australian Business | ' . config('company.brand_name'),
             'seoDescription' => $service['intro'],
             'canonical' => rtrim(config('app.url'), '/') . '/services/' . $slug,
             'slug' => $slug,
@@ -133,18 +135,22 @@ class PageController extends Controller
 
     public function about(Request $request): Response
     {
+        $brand = config('company.brand_name');
+
         return $this->view('public.pages.about', [
-            'seoTitle' => 'About OptiTide — Australian Digital Agency',
-            'seoDescription' => 'OptiTide is an Australian-owned digital agency helping small businesses grow online with web design, SEO, social media and hosting — honest advice, fixed pricing, no lock-in contracts.',
+            'seoTitle' => 'About ' . $brand . ' — Australian Digital Agency',
+            'seoDescription' => $brand . ' is an Australian-owned digital agency helping small businesses grow online with web design, SEO, social media and hosting — honest advice, fixed pricing, no lock-in contracts.',
             'canonical' => rtrim(config('app.url'), '/') . '/about',
         ]);
     }
 
     public function contact(Request $request): Response
     {
+        $brand = config('company.brand_name');
+
         return $this->view('public.pages.contact', [
-            'seoTitle' => 'Contact OptiTide — Get a Free Quote',
-            'seoDescription' => 'Get in touch with OptiTide for a free, no-obligation quote on web design, SEO, social media or hosting for your Australian business.',
+            'seoTitle' => 'Contact ' . $brand . ' — Get a Free Quote',
+            'seoDescription' => 'Get in touch with ' . $brand . ' for a free, no-obligation quote on web design, SEO, social media or hosting for your Australian business.',
             'canonical' => rtrim(config('app.url'), '/') . '/contact',
             'captcha' => Captcha::question(),
         ]);

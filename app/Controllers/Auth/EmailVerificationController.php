@@ -62,7 +62,7 @@ class EmailVerificationController extends Controller
 
         try {
             Mail::to($user['email'], $user['name'])
-                ->subject('Confirm your email — OptiTide')
+                ->subject('Confirm your email — ' . config('company.brand_name'))
                 ->view('emails.verify-email', [
                     'name' => $user['name'],
                     'url'  => url('email/verify/' . $token),

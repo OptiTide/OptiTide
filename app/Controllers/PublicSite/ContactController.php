@@ -56,7 +56,7 @@ class ContactController extends Controller
 
         Mail::to(config('company.email'), config('company.legal_name'))
             ->replyTo($data['email'])
-            ->subject('New enquiry from ' . $data['name'] . ' — OptiTide')
+            ->subject('New enquiry from ' . $data['name'] . ' — ' . config('company.brand_name'))
             ->view('emails.contact', [
                 'data' => $data,
                 'ip'   => $request->ip(),
@@ -65,7 +65,7 @@ class ContactController extends Controller
 
         // Auto-reply to the person who enquired.
         Mail::to($data['email'], $data['name'])
-            ->subject('We received your enquiry — OptiTide')
+            ->subject('We received your enquiry — ' . config('company.brand_name'))
             ->view('emails.contact-received', [
                 'name'    => $data['name'],
                 'service' => $data['service'] ?? '',
@@ -112,12 +112,12 @@ class ContactController extends Controller
 
         Mail::to(config('company.email'), config('company.legal_name'))
             ->replyTo($data['email'])
-            ->subject('New free-proposal request from ' . $data['name'] . ' — OptiTide')
+            ->subject('New free-proposal request from ' . $data['name'] . ' — ' . config('company.brand_name'))
             ->view('emails.contact', ['data' => $forTeam, 'ip' => $request->ip()])
             ->send();
 
         Mail::to($data['email'], $data['name'])
-            ->subject('We received your request — OptiTide')
+            ->subject('We received your request — ' . config('company.brand_name'))
             ->view('emails.contact-received', ['name' => $data['name'], 'service' => $data['service'] ?? '', 'message' => $data['message'] ?? ''])
             ->send();
 

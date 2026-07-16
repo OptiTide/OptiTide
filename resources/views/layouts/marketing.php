@@ -8,7 +8,7 @@
  */
 $appUrl   = rtrim(config('app.url'), '/');
 $brand    = config('app.brand.accent', '#FF6A00');
-$seoTitle = $seoTitle ?? config('app.name', 'OptiTide');
+$seoTitle = $seoTitle ?? config('company.brand_name');
 $seoDescription = $seoDescription ?? '';
 $canonical = $canonical ?? ($appUrl . '/');
 $ogImage  = $ogImage ?? ($appUrl . '/assets/img/favicon.png');
@@ -31,7 +31,7 @@ $company  = config('company');
 <meta name="geo.placename" content="Australia">
 
 <meta property="og:type" content="<?= e($ogType) ?>">
-<meta property="og:site_name" content="OptiTide">
+<meta property="og:site_name" content="<?= e(config('company.brand_name')) ?>">
 <meta property="og:locale" content="en_AU">
 <meta property="og:title" content="<?= e($seoTitle) ?>">
 <meta property="og:description" content="<?= e($seoDescription) ?>">

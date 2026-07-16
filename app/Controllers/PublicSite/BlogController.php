@@ -22,10 +22,12 @@ class BlogController extends Controller
             ));
         }
 
+        $brand = config('company.brand_name');
+
         return $this->view('public.blog.index', [
             'title'          => 'Blog',
-            'seoTitle'       => 'Blog — Web Design, SEO & Marketing Tips for Australian Business | OptiTide',
-            'seoDescription' => 'Practical web design, SEO, social media and small-business marketing advice from OptiTide, an Australian digital agency. Learn how to get found on Google and grow online.',
+            'seoTitle'       => 'Blog — Web Design, SEO & Marketing Tips for Australian Business | ' . $brand,
+            'seoDescription' => 'Practical web design, SEO, social media and small-business marketing advice from ' . $brand . ', an Australian digital agency. Learn how to get found on Google and grow online.',
             'canonical'      => $appUrl . '/blog' . ($category !== '' ? '?category=' . rawurlencode($category) : ''),
             'ogType'         => 'website',
             'posts'          => $posts,
@@ -34,7 +36,7 @@ class BlogController extends Controller
             'jsonLd'         => [
                 '@context'  => 'https://schema.org',
                 '@type'     => 'Blog',
-                'name'      => 'OptiTide Blog',
+                'name'      => $brand . ' Blog',
                 'url'       => $appUrl . '/blog',
                 'inLanguage' => 'en-AU',
                 'publisher' => ['@type' => 'Organization', 'name' => config('company.legal_name', 'OptiTide'), 'url' => $appUrl],
@@ -80,7 +82,7 @@ class BlogController extends Controller
             'image'            => $img,
             'datePublished'    => $post['published_at'] ?: null,
             'dateModified'     => $post['updated_at'] ?: ($post['published_at'] ?: null),
-            'author'           => ['@type' => 'Organization', 'name' => $post['author'] ?: 'OptiTide'],
+            'author'           => ['@type' => 'Organization', 'name' => $post['author'] ?: config('company.brand_name')],
             'publisher'        => ['@type' => 'Organization', 'name' => config('company.legal_name', 'OptiTide'), 'logo' => ['@type' => 'ImageObject', 'url' => $appUrl . '/assets/img/favicon.png']],
             'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $canonical],
             'keywords'         => $post['keywords'] ?: null,
@@ -90,7 +92,7 @@ class BlogController extends Controller
 
         return $this->view('public.blog.show', [
             'title'          => $post['title'],
-            'seoTitle'       => ($post['meta_title'] ?: $post['title']) . ' | OptiTide',
+            'seoTitle'       => ($post['meta_title'] ?: $post['title']) . ' | ' . config('company.brand_name'),
             'seoDescription' => $desc,
             'canonical'      => $canonical,
             'ogType'         => 'article',

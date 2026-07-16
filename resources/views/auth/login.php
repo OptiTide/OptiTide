@@ -3,7 +3,7 @@
 <div class="card">
     <div class="card-body p-4">
         <h1 class="h5 mb-1">Welcome Back</h1>
-        <p class="text-muted small mb-4">Sign in to your OptiTide account.</p>
+        <p class="text-muted small mb-4">Sign in to your <?= e(config('company.brand_name')) ?> account.</p>
         <form method="post" action="<?= route('login') ?>" novalidate>
             <?= csrf_field() ?>
             <div class="mb-3">

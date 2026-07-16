@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Offline — OptiTide</title>
+<title>Offline — <?= e(config('company.brand_name')) ?></title>
 <meta name="theme-color" content="#0D1530">
 <link rel="icon" href="/assets/img/favicon.png">
 <style>
@@ -23,9 +23,9 @@
 </head>
 <body>
     <div class="card">
-        <div class="chip"><img src="/assets/img/logo.png" alt="OptiTide"></div>
+        <div class="chip"><img src="/assets/img/logo.png" alt="<?= e(config('company.brand_name')) ?>"></div>
         <h1>You're offline</h1>
-        <p>It looks like you've lost your connection. Check your internet and try again — your OptiTide dashboard will be right here.</p>
+        <p>It looks like you've lost your connection. Check your internet and try again — your <?= e(config('company.brand_name')) ?> dashboard will be right here.</p>
         <button onclick="location.reload()">Try again</button>
     </div>
 </body>

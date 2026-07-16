@@ -13,5 +13,5 @@
 </table>
 <p style="margin:0 0 6px;color:#64748b;">Message</p>
 <div style="padding:14px 16px;background:#f6f8fa;border:1px solid #e2e8f0;border-radius:8px;line-height:1.6;"><?= nl2br(e($data['message'])) ?></div>
-<p style="margin:16px 0 0;color:#94a3b8;font-size:12px;">Sent from the OptiTide website · <?= e($ip) ?></p>
+<p style="margin:16px 0 0;color:#94a3b8;font-size:12px;">Sent from the <?= e(config('company.brand_name')) ?> website · <?= e($ip) ?></p>
 <?php $this->endSection(); ?>

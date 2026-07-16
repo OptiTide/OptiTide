@@ -23,7 +23,7 @@ $coverFn = function (array $p) use ($appUrl): string {
         <?php if (! empty($post['category'])): ?><span class="mk-blog-cat mb-2"><?= e($post['category']) ?></span><?php endif; ?>
         <h1 class="mk-blog-title"><?= e($post['title']) ?></h1>
         <div class="mk-blog-meta mb-4">
-            By <?= e($post['author'] ?: 'OptiTide') ?>
+            By <?= e($post['author'] ?: config('company.brand_name')) ?>
             &middot; <?= e($post['published_at'] ? date('d M Y', strtotime($post['published_at'])) : '') ?>
             &middot; <?= \App\Models\Blog::readingMinutes($post['body']) ?> min read
         </div>

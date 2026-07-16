@@ -29,7 +29,7 @@ $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/');
 <!-- Main nav -->
 <nav class="mk-nav">
     <div class="mk-container">
-        <a href="/" class="mk-nav-brand" aria-label="OptiTide home"><img class="brand-logo brand-logo--tagline" src="/assets/img/logo-tagline.png" alt="OptiTide — Ride the Digital Tide"></a>
+        <a href="/" class="mk-nav-brand" aria-label="<?= e($company['brand_name']) ?> home"><img class="brand-logo brand-logo--tagline" src="<?= asset('img/logo-tagline.png') ?>" alt="<?= e($company['brand_name']) ?> — Ride the Digital Tide"></a>
         <button class="mk-nav-toggle" type="button" aria-label="Menu" aria-expanded="false" onclick="var m=document.getElementById('mkNav');m.classList.toggle('open');this.setAttribute('aria-expanded',m.classList.contains('open'))"><i class="bi bi-list"></i></button>
         <div class="mk-nav-links" id="mkNav">
             <a href="/" class="mk-nav-link">Home</a>

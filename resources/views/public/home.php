@@ -2,8 +2,8 @@
 $company = config('company');
 $appUrl = rtrim(config('app.url'), '/');
 $brand = config('app.brand.accent', '#FF6A00');
-$title = 'OptiTide — Web Design, SEO, Social Media & Hosting in Australia';
-$description = 'OptiTide is an Australian digital agency delivering web design, SEO, social media marketing and managed hosting for small business — high-performance websites, higher Google rankings and more leads, with fixed pricing and no lock-in contracts.';
+$title = config('company.brand_name') . ' — Web Design, SEO, Social Media & Hosting in Australia';
+$description = config('company.brand_name') . ' is an Australian digital agency delivering web design, SEO, social media marketing and managed hosting for small business — high-performance websites, higher Google rankings and more leads, with fixed pricing and no lock-in contracts.';
 $ogImage = $appUrl . '/assets/img/favicon.png';
 
 // ---------------------------------------------------------------------------
@@ -67,7 +67,7 @@ $jsonLd = [
     '@context' => 'https://schema.org',
     '@graph' => [
         $org,
-        ['@type' => 'WebSite', '@id' => $appUrl . '/#website', 'url' => $appUrl, 'name' => 'OptiTide', 'publisher' => ['@id' => $appUrl . '/#organization'], 'inLanguage' => 'en-AU'],
+        ['@type' => 'WebSite', '@id' => $appUrl . '/#website', 'url' => $appUrl, 'name' => config('company.brand_name'), 'publisher' => ['@id' => $appUrl . '/#organization'], 'inLanguage' => 'en-AU'],
         ['@type' => 'FAQPage', 'mainEntity' => array_map(fn ($f) => [
             '@type' => 'Question', 'name' => $f[0],
             'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f[1]],
@@ -95,7 +95,7 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
 <meta name="geo.placename" content="Australia">
 
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="OptiTide">
+<meta property="og:site_name" content="<?= e(config('company.brand_name')) ?>">
 <meta property="og:locale" content="en_AU">
 <meta property="og:title" content="<?= e($title) ?>">
 <meta property="og:description" content="<?= e($description) ?>">
@@ -285,7 +285,7 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
 <!-- ================= WHY CHOOSE ================= -->
 <section id="about" class="mk-section">
     <div class="mk-container">
-        <div class="text-center mb-5"><h2 class="mk-h2">Why Choose OptiTide?</h2></div>
+        <div class="text-center mb-5"><h2 class="mk-h2">Why Choose <?= e(config('company.brand_name')) ?>?</h2></div>
         <div class="row g-4">
             <?php foreach ($benefits as [$icon, $bTitle, $bText]): ?>
                 <div class="col-md-6 col-lg-4">

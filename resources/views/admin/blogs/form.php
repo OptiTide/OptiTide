@@ -70,7 +70,7 @@ $pubDate = $pubDate ? date('Y-m-d', strtotime($pubDate)) : '';
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Author</label>
-                        <input type="text" name="author" value="<?= e(old('author', $post['author'] ?? 'OptiTide')) ?>" class="form-control">
+                        <input type="text" name="author" value="<?= e(old('author', $post['author'] ?? config('company.brand_name'))) ?>" class="form-control">
                     </div>
                     <div class="mb-1">
                         <label class="form-label">Slug <span class="text-muted small">(optional)</span></label>

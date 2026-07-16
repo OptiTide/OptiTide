@@ -37,27 +37,40 @@ final class ChatAiService
             }
         }
 
+        $brand = config('company.brand_name') ?: config('app.name', 'OptiTide');
+
         if ($last !== '' && (str_contains($last, 'price') || str_contains($last, 'cost') || str_contains($last, 'how much') || str_contains($last, 'quote'))) {
-            return 'Great question! Our pricing (all GST-inclusive): web design from $750, SEO from $750/month, social media from $250/month, and hosting from $25/month. Want a tailored quote? Leave your email and our team will be in touch quickly.';
+            // Real prices from the live catalogue — never hardcode, or the bot
+            // will quote figures the admin has already changed.
+            $lines = self::priceLines();
+
+            return $lines
+                ? 'Great question! Our current pricing (GST-inclusive ' . (config('company.currency') ?: 'AUD') . '): ' . implode('; ', $lines)
+                    . '. Want a tailored quote? Leave your email and our team will be in touch quickly.'
+                : 'Happy to help with pricing — leave your email and our team will send you a tailored quote quickly.';
         }
         if ($last !== '' && (str_contains($last, 'hour') || str_contains($last, 'open') || str_contains($last, 'contact') || str_contains($last, 'phone'))) {
-            return 'We\'re here to help any time. Drop your question and email here and our team will get back to you fast — or reach us at ' . config('company.email', 'Hello@OptiTide.io') . '.';
+            $reach = config('company.email');
+            if (config('company.phone')) {
+                $reach .= ' or ' . config('company.phone');
+            }
+            if (config('company.hours')) {
+                $reach .= ' (' . config('company.hours') . ')';
+            }
+
+            return 'We\'re here to help. Drop your question and email here and our team will get back to you fast — or reach us at ' . $reach . '.';
         }
 
-        return 'Thanks for reaching out to OptiTide! Tell me a little about what you need — web design, SEO, social media or hosting — and I\'ll point you in the right direction. Our team is notified too and will jump in shortly.';
+        $offer = self::serviceLineList();
+
+        return 'Thanks for reaching out to ' . $brand . '! Tell me a little about what you need'
+            . ($offer ? ' — ' . $offer . ' — ' : ' ')
+            . 'and I\'ll point you in the right direction. Our team is notified too and will jump in shortly.';
     }
 
-    /** @param array<int,array<string,mixed>> $messages */
-    /**
-     * Built from the LIVE catalogue + company settings, never hardcoded — so the
-     * bot can't quote a customer a price that's been changed in the admin.
-     */
-    private function systemPrompt(): string
+    /** "Starter Website $750.00, …" per service line, from the live catalogue. */
+    public static function priceLines(): array
     {
-        $company = config('company');
-        $name = $company['legal_name'] ?: 'OptiTide';
-
-        // Real plans, grouped by service line, straight from the DB catalogue.
         $lines = [];
         foreach (\App\Support\Catalog::grouped() as $group) {
             $plans = [];
@@ -69,6 +82,42 @@ final class ChatAiService
             }
             $lines[] = $group['line']['name'] . ': ' . implode(', ', $plans);
         }
+
+        return $lines;
+    }
+
+    /** "web design, SEO or hosting" — the real service lines, not a frozen list. */
+    public static function serviceLineList(): string
+    {
+        // Drop the trailing acronym — "Search Engine Optimisation (SEO)" reads
+        // as a mouthful mid-sentence in a chat greeting.
+        $names = array_map(
+            fn ($n) => trim(preg_replace('/\s*\([^)]*\)\s*$/', '', (string) $n)),
+            array_column(\App\Models\ServiceCategory::ordered(), 'name')
+        );
+        $names = array_values(array_filter($names));
+        if ($names === []) {
+            return '';
+        }
+        if (count($names) === 1) {
+            return $names[0];
+        }
+        $last = array_pop($names);
+
+        return implode(', ', $names) . ' or ' . $last;
+    }
+
+    /** @param array<int,array<string,mixed>> $messages */
+    /**
+     * Built from the LIVE catalogue + company settings, never hardcoded — so the
+     * bot can't quote a customer a price that's been changed in the admin.
+     */
+    private function systemPrompt(): string
+    {
+        $company = config('company');
+        $name = $company['legal_name'] ?: config('company.brand_name');
+
+        $lines = self::priceLines();
         $pricing = $lines
             ? 'Current services & pricing (GST-inclusive ' . ($company['currency'] ?: 'AUD') . ') — ' . implode(' | ', $lines) . '. '
             : 'If asked about pricing, offer to have a human send a tailored quote. ';

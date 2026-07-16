@@ -5,7 +5,7 @@
 <header class="mk-page-hero">
     <div class="mk-container">
         <nav class="mk-crumbs" aria-label="Breadcrumb"><a href="/">Home</a> <i class="bi bi-chevron-right"></i> <span>About Us</span></nav>
-        <span class="mk-eyebrow" style="color:var(--brand-bright)">About OptiTide</span>
+        <span class="mk-eyebrow" style="color:var(--brand-bright)">About <?= e(config('company.brand_name')) ?></span>
         <h1>Your Australian Digital Growth Partner</h1>
         <p class="mk-lead">We help small and growing Australian businesses get found, look professional and grow online — with web design, SEO, social media and hosting under one roof, honest advice and fixed pricing.</p>
     </div>

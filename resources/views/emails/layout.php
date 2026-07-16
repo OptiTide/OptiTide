@@ -7,7 +7,7 @@
     <tr><td align="center">
         <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="width:560px;max-width:92%;background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">
             <tr><td style="background:<?= e($accent) ?>;padding:18px 28px;">
-                <span style="color:#ffffff;font-size:20px;font-weight:800;letter-spacing:-.02em;">OptiTide</span>
+                <span style="color:#ffffff;font-size:20px;font-weight:800;letter-spacing:-.02em;"><?= e(config('company.brand_name')) ?></span>
             </td></tr>
             <tr><td style="padding:28px;">
                 <?= $this->yield('content') ?>

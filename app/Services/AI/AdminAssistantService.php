@@ -259,11 +259,14 @@ final class AdminAssistantService
 
     private function systemPrompt(string $adminName): string
     {
-        return "You are the OptiTide Admin Assistant, an expert operations copilot for staff of OptiTide, "
+        $brand = config('company.brand_name');
+        $ccy = config('company.currency') ?: 'AUD';
+
+        return "You are the {$brand} Admin Assistant, an expert operations copilot for staff of {$brand}, "
             . "an Australian digital agency (web design, SEO, social media, hosting) that also resells a white-label API. "
             . "You are talking to {$adminName}, a staff member, inside the private admin console. "
             . "Use the read tools to answer questions about clients, invoices, money and activity with real, current data — "
-            . "never guess figures; call a tool. All money is AUD and GST-inclusive. Be concise and practical, use Australian spelling.\n\n"
+            . "never guess figures; call a tool. All money is {$ccy} and GST-inclusive. Be concise and practical, use Australian spelling.\n\n"
             . "You CANNOT change anything yourself. If the admin asks you to make a change you can PROPOSE it: put a single fenced "
             . "code block at the very end of your reply, tagged `action`, containing JSON for ONE of these action types:\n"
             . "- {\"type\":\"add_account_credit\",\"client_id\":N,\"amount_cents\":N,\"summary\":\"...\"}\n"

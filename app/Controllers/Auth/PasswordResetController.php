@@ -34,7 +34,7 @@ class PasswordResetController extends Controller
             ]);
 
             Mail::to($email, $user['name'])
-                ->subject('Reset your OptiTide password')
+                ->subject('Reset your ' . config('company.brand_name') . ' password')
                 ->view('emails.password-reset', [
                     'name' => $user['name'],
                     'url'  => url('reset-password/' . $token . '?email=' . urlencode($email)),

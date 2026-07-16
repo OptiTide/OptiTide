@@ -65,7 +65,7 @@ class RegisterController extends Controller
 
         try {
             Mail::to($user['email'], $user['name'])
-                ->subject('Confirm your email — OptiTide')
+                ->subject('Confirm your email — ' . config('company.brand_name'))
                 ->view('emails.verify-email', [
                     'name' => $user['name'],
                     'url'  => url('email/verify/' . $verifyToken),
@@ -76,7 +76,7 @@ class RegisterController extends Controller
         }
 
         AuditLog::record('user.registered', 'user', $user['id'], ['email' => $user['email']]);
-        Session::flash('success', 'Welcome to OptiTide! We\'ve emailed you a link to confirm your email address.');
+        Session::flash('success', 'Welcome to ' . config('company.brand_name') . '! We\'ve emailed you a link to confirm your email address.');
 
         return $this->redirect(route('portal.dashboard'));
     }

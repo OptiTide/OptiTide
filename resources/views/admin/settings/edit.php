@@ -12,9 +12,17 @@ $addr = $company['address'];
             <div class="card mb-3">
                 <div class="card-header">Company (Tax Invoice Identity)</div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label">Legal Name</label>
-                        <input type="text" name="s_legal_name" value="<?= e($company['legal_name']) ?>" class="form-control">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Brand Name</label>
+                            <input type="text" name="s_brand_name" value="<?= e($company['brand_name'] ?? '') ?>" maxlength="60" class="form-control">
+                            <div class="form-text">Your trading name. Used for e-mail sender name, subject lines, invoice header and page titles.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Legal Name</label>
+                            <input type="text" name="s_legal_name" value="<?= e($company['legal_name']) ?>" maxlength="120" class="form-control">
+                            <div class="form-text">The entity your ABN is registered to — shown on tax invoices.</div>
+                        </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -30,6 +38,7 @@ $addr = $company['address'];
                             <label class="form-label">Company E-Mail</label>
                             <input type="email" name="s_email" value="<?= e($company['email']) ?>" class="form-control <?= has_error('s_email') ? 'is-invalid' : '' ?>">
                             <?php if (error('s_email')): ?><div class="invalid-feedback"><?= e(error('s_email')) ?></div><?php endif; ?>
+                            <div class="form-text">Shown across the site <strong>and</strong> used as the “from” address on every e-mail we send — so its domain must be verified with your mail provider.</div>
                         </div>
                     </div>
                     <hr class="my-3">

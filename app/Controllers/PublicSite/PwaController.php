@@ -16,8 +16,8 @@ class PwaController extends Controller
     public function manifest(Request $request): Response
     {
         $data = [
-            'name'             => 'OptiTide',
-            'short_name'       => 'OptiTide',
+            'name'             => config('company.brand_name'),
+            'short_name'       => config('company.brand_name'),
             'description'      => 'Web design, SEO, social media & hosting for Australian business.',
             'start_url'        => '/',
             'scope'            => '/',

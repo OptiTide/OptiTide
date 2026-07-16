@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
-<title><?= e($title ?? config('app.name', 'OptiTide')) ?></title>
+<title><?= e($title ?? config('company.brand_name')) ?></title>
 <link rel="icon" href="/assets/img/favicon.png" sizes="any">
 <link rel="apple-touch-icon" href="/assets/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">

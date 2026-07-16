@@ -1,9 +1,9 @@
-<!-- OptiTide live chat widget -->
+<!-- Live chat widget -->
 <button type="button" id="otcBubble" class="otc-bubble" aria-label="Chat with us"><i class="bi bi-chat-dots-fill"></i></button>
 <div id="otcPanel" class="otc-panel" role="dialog" aria-label="Live chat">
     <div class="otc-header">
         <div>
-            <div class="otc-title">OptiTide Assistant <span style="font-size:.62rem;background:rgba(255,255,255,.18);padding:1px 6px;border-radius:6px;vertical-align:middle">AI</span></div>
+            <div class="otc-title"><?= e(config('company.brand_name')) ?> Assistant <span style="font-size:.62rem;background:rgba(255,255,255,.18);padding:1px 6px;border-radius:6px;vertical-align:middle">AI</span></div>
             <div class="otc-sub"><span class="otc-dot"></span> AI-powered · a human can join anytime</div>
         </div>
         <button type="button" id="otcClose" class="otc-x" aria-label="Close chat"><i class="bi bi-x-lg"></i></button>
