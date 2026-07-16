@@ -28,7 +28,6 @@
             <div class="col-6 col-lg-2">
                 <h5>Company</h5>
                 <a href="/#about">About Us</a>
-                <a href="/#case-studies">Case Studies</a>
                 <a href="<?= route('blog.index') ?>">Blog</a>
                 <a href="/#contact">Contact Us</a>
             </div>

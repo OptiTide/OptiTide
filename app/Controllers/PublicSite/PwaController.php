@@ -42,7 +42,7 @@ class PwaController extends Controller
     public function serviceWorker(Request $request): Response
     {
         $js = <<<'JS'
-const CACHE = 'optitide-v9';
+const CACHE = 'optitide-v10';
 // Only static, safe-to-cache assets are precached. HTML pages are NEVER cached
 // (see the fetch handler) so a stale/auth/redirect page can never leak across
 // URLs after a login redirect.

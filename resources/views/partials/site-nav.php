@@ -44,7 +44,6 @@ $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/');
             </div>
             <a href="/#packages" class="mk-nav-link">Packages</a>
             <a href="/#about" class="mk-nav-link">About Us</a>
-            <a href="/#case-studies" class="mk-nav-link">Case Studies</a>
             <div class="dropdown mk-nav-dd">
                 <a href="<?= route('blog.index') ?>" class="mk-nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Resources</a>
                 <ul class="dropdown-menu">

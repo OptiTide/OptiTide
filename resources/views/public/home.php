@@ -7,27 +7,13 @@ $description = 'OptiTide is an Australian digital agency delivering web design, 
 $ogImage = $appUrl . '/assets/img/favicon.png';
 
 // ---------------------------------------------------------------------------
-// Marketing content. Edit these arrays to change the homepage copy.
-// NOTE: the testimonials, case-study figures and partner badges below are
-// STARTER content — replace them with your own real reviews/results, and only
-// display partner badges your business is genuinely entitled to use.
+// Marketing content — edit these arrays to change the homepage copy.
 // ---------------------------------------------------------------------------
 $services = [
     ['bi-window-desktop', 'Web Design & Development', 'Beautiful, responsive websites built to convert visitors into customers.', ['Custom Website Design', 'E-commerce Solutions', 'Mobile-First & Fast Loading', 'Ongoing Support & Updates']],
     ['bi-search', 'Search Engine Optimisation', 'Rank higher on Google and get found by more of your ideal customers.', ['On-Page SEO', 'Technical SEO Audits', 'Keyword Research', 'Local SEO & Reporting']],
     ['bi-megaphone', 'Social Media Marketing', 'Grow your brand and engage your audience across social platforms.', ['Content Creation', 'Paid Social Advertising', 'Community Management', 'Performance Reporting']],
     ['bi-hdd-network', 'Managed Hosting', 'Secure, fast and reliable hosting with expert Australian support.', ['Australian Servers', 'Daily Backups', '24/7 Monitoring', 'Free SSL & Security']],
-];
-
-$partners = ['Afterpay', 'Google Partner', 'Meta Business Partner', 'WordPress', 'SEMrush', 'Shopify Partner'];
-
-$caseStudy = [
-    'label'  => 'Tradie Business — Sunshine Coast',
-    'detail' => 'New website + local SEO campaign',
-    'stats'  => [['+210%', 'Leads Increase'], ['+165%', 'Organic Traffic'], ['+87%', 'Revenue Growth']],
-    'quote'  => 'OptiTide built us a new website and helped us rank #1 in Google. Our enquiries have never been better!',
-    'author' => 'Jake T.',
-    'role'   => 'Director, Coastal Roofing QLD',
 ];
 
 // Pricing packages. `mo` = monthly retainer, `once` = one-off project price.
@@ -53,13 +39,6 @@ $benefits = [
     ['bi-tag', 'Transparent Pricing', 'No hidden fees, just honest pricing.'],
     ['bi-headset', 'Ongoing Support', 'We\'re here when you need us most.'],
     ['bi-heart', 'Passionate Team', 'We care about your success.'],
-];
-
-$testimonials = [
-    ['Sarah M.', 'Boutique Owner, Melbourne', 'OptiTide are professional, responsive and deliver real results. Our website looks fantastic and we\'re ranking higher than ever.'],
-    ['Daniel R.', 'Plumbing Services, Perth', 'The team is amazing! They explained everything and got us more leads within weeks.'],
-    ['Melissa K.', 'E-commerce Store, Brisbane', 'Our social media and SEO results have been outstanding. Highly recommend OptiTide.'],
-    ['Chris L.', 'Manufacturing, Sydney', 'Reliable, honest and great value. Exactly what Australian businesses need.'],
 ];
 
 $faqs = [
@@ -170,9 +149,6 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
                             <a href="#packages" class="btn btn-ghost btn-lg">View Our Packages</a>
                         </div>
                     </div>
-                    <?php if ($hasMascot): ?>
-                        <img src="/assets/img/mascot.png" alt="OptiTide mascot" class="mk-hero-mascot">
-                    <?php endif; ?>
                 </div>
             </div>
             <div class="col-lg-5">
@@ -223,16 +199,6 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
     </div>
 </div>
 
-<!-- ================= PARTNERS ================= -->
-<div class="mk-partners">
-    <div class="mk-container">
-        <div class="mk-partners-title">Trusted by Australian Businesses</div>
-        <div class="mk-partner-row">
-            <?php foreach ($partners as $p): ?><span class="mk-partner"><?= e($p) ?></span><?php endforeach; ?>
-        </div>
-    </div>
-</div>
-
 <!-- ================= SERVICES ================= -->
 <section id="services" class="mk-section">
     <div class="mk-container">
@@ -254,40 +220,6 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
                     </article>
                 </div>
             <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-
-<!-- ================= RESULTS / CASE STUDY ================= -->
-<section class="mk-results" id="case-studies">
-    <div class="mk-container">
-        <div class="row g-4 align-items-center">
-            <div class="col-lg-7">
-                <div class="mk-results-head">
-                    <h2>Real Results for Real Businesses</h2>
-                    <p>We focus on what matters — measurable growth.</p>
-                </div>
-                <div class="mk-casestudy">
-                    <div class="mk-casestudy-body">
-                        <span class="mk-eyebrow" style="color:var(--brand-bright)">Case Study</span>
-                        <div class="mk-casestudy-title"><?= e($caseStudy['label']) ?></div>
-                        <div class="mk-casestudy-detail"><?= e($caseStudy['detail']) ?></div>
-                        <div class="mk-casestudy-stats">
-                            <?php foreach ($caseStudy['stats'] as [$n, $l]): ?>
-                                <div><span class="n"><?= e($n) ?></span><span class="l"><?= e($l) ?></span></div>
-                            <?php endforeach; ?>
-                        </div>
-                        <a href="#proposal" class="mk-casestudy-link">Get results like these <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-5">
-                <div class="mk-quote-card">
-                    <i class="bi bi-quote mk-quote-mark"></i>
-                    <p>“<?= e($caseStudy['quote']) ?>”</p>
-                    <div class="mk-quote-author"><?= e($caseStudy['author']) ?><span><?= e($caseStudy['role']) ?></span></div>
-                </div>
-            </div>
         </div>
     </div>
 </section>
@@ -363,24 +295,6 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
                     <div class="mk-benefit">
                         <i class="bi <?= e($icon) ?>"></i>
                         <div><h4><?= e($bTitle) ?></h4><p><?= e($bText) ?></p></div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-
-<!-- ================= TESTIMONIALS ================= -->
-<section class="mk-section mk-section--alt">
-    <div class="mk-container">
-        <div class="text-center mb-5"><h2 class="mk-h2">What Our Clients Say</h2></div>
-        <div class="row g-3">
-            <?php foreach ($testimonials as [$tName, $tRole, $tText]): ?>
-                <div class="col-md-6 col-xl-3">
-                    <div class="mk-testimonial h-100">
-                        <div class="mk-stars"><?php for ($s = 0; $s < 5; $s++): ?><i class="bi bi-star-fill"></i><?php endfor; ?></div>
-                        <p>“<?= e($tText) ?>”</p>
-                        <div class="mk-testimonial-author"><?= e($tName) ?><span><?= e($tRole) ?></span></div>
                     </div>
                 </div>
             <?php endforeach; ?>
