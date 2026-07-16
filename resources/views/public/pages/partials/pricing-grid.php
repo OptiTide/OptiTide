@@ -27,7 +27,7 @@ $startUrl = $startUrl ?? '/register';
                 ?>
                 <div class="col-sm-6 col-lg-4">
                     <div class="mk-price-card h-100 <?= $featured ? 'is-featured' : '' ?>">
-                        <?php if ($featured): ?><div class="mk-price-flag">Most popular</div><?php endif; ?>
+                        <?php if ($featured): ?><div class="mk-price-flag">Recommended</div><?php endif; ?>
                         <div class="mk-price-name"><?= e($plan['name']) ?></div>
                         <?php if (! empty($plan['description'])): ?>
                             <div class="mk-price-blurb"><?= e($plan['description']) ?></div>

@@ -65,16 +65,16 @@ $now = Company::officeNow();
     <div class="mk-container">
         <div class="text-center mb-5">
             <span class="mk-eyebrow">The Overnight Loop</span>
-            <h2 class="mk-h2">How a day actually goes</h2>
+            <h2 class="mk-h2">How a Day Actually Goes</h2>
             <p class="text-muted">It's a happy accident of where we sit on the map — and it's the difference between a project that crawls and one that moves.</p>
         </div>
         <div class="row g-4">
             <?php
             $steps = [
-                ['1', 'bi-send', 'You send feedback', 'Some time during your day you fire off a note: change this, add that, here\'s the copy you asked for.'],
-                ['2', 'bi-moon-stars', 'We work while you\'re offline', 'Your evening is our working evening. We pick it up, do the work, and push it to your staging site.'],
-                ['3', 'bi-cup-hot', 'You review it with your coffee', 'You open your laptop the next morning and it\'s already done, with a note explaining what changed.'],
-                ['4', 'bi-arrow-repeat', 'Repeat — and it adds up', 'One round-trip a day instead of one every few days. Over a project that\'s the difference between weeks and months.'],
+                ['1', 'bi-send', 'You Send Feedback', 'Some time during your day you fire off a note: change this, add that, here\'s the copy you asked for.'],
+                ['2', 'bi-moon-stars', 'We Work While You\'re Offline', 'Your evening is our working evening. We pick it up, do the work, and push it to your staging site.'],
+                ['3', 'bi-cup-hot', 'You Review It With Your Coffee', 'You open your laptop the next morning and it\'s already done, with a note explaining what changed.'],
+                ['4', 'bi-arrow-repeat', 'Repeat — And It Adds Up', 'One round-trip a day instead of one every few days. Over a project that\'s the difference between weeks and months.'],
             ];
             foreach ($steps as [$n, $icon, $title, $copy]): ?>
                 <div class="col-md-6 col-lg-3">
@@ -96,7 +96,7 @@ $now = Company::officeNow();
         <div class="row g-4 align-items-start">
             <div class="col-lg-6">
                 <span class="mk-eyebrow">Straight Up</span>
-                <h2 class="mk-h2">When this <em>doesn't</em> help you</h2>
+                <h2 class="mk-h2">When This <em>Doesn't</em> Help You</h2>
                 <p class="text-muted">We'd rather tell you than have you find out.</p>
                 <ul class="mk-checklist mt-3">
                     <li><i class="bi bi-dash-circle" style="color:var(--muted)"></i> <strong>If you're in WA too</strong>, there's no overnight magic — we're awake at the same time as you. You get something better instead: we're in your timezone, so you can just call us.</li>
@@ -106,7 +106,7 @@ $now = Company::officeNow();
             </div>
             <div class="col-lg-6">
                 <span class="mk-eyebrow">Either Way</span>
-                <h2 class="mk-h2">What you always get</h2>
+                <h2 class="mk-h2">What You Always Get</h2>
                 <ul class="mk-checklist mt-3">
                     <li><i class="bi bi-check2-circle"></i> <strong>One place for everything.</strong> Your portal has your project, invoices, files and support history — no digging through email.</li>
                     <li><i class="bi bi-check2-circle"></i> <strong>An answer any hour.</strong> Our live chat assistant answers instantly, day or night, and hands you to a human when it should.</li>
@@ -122,7 +122,7 @@ $now = Company::officeNow();
 <section class="mk-cta-band">
     <div class="mk-container d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
-            <h2>Send it tonight. Review it tomorrow.</h2>
+            <h2>Send It Tonight. Review It Tomorrow.</h2>
             <p>Tell us what you need and we'll come back with honest advice and a clear quote — usually by the time you're next at your desk.</p>
         </div>
         <a href="<?= route('pages.contact') ?>" class="btn btn-brand btn-lg">Get a Free Quote <i class="bi bi-arrow-right"></i></a>

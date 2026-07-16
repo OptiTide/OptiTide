@@ -1,7 +1,7 @@
 <?php $this->extends('emails.layout'); ?>
 <?php $this->section('content'); ?>
 <?php $a = $application; ?>
-<p style="margin:0 0 14px;font-size:16px;">New application received</p>
+<p style="margin:0 0 14px;font-size:16px;">New Application Received</p>
 <p style="margin:0 0 18px;line-height:1.6;"><strong><?= e($a['name']) ?></strong> applied for <strong><?= e($a['role_title']) ?></strong>.</p>
 
 <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;font-size:14px;line-height:1.6;margin:0 0 18px;">
@@ -17,7 +17,7 @@
 <div style="padding:14px 16px;background:#f6f8fa;border:1px solid #e2e8f0;border-radius:8px;line-height:1.6;"><?= nl2br(e($a['cover_letter'])) ?></div>
 
 <p style="text-align:center;margin:22px 0 0;">
-    <a href="<?= e($reviewUrl) ?>" style="display:inline-block;background:<?= e(config('app.brand.accent')) ?>;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-weight:600;">Review &amp; download CV</a>
+    <a href="<?= e($reviewUrl) ?>" style="display:inline-block;background:<?= e(config('app.brand.accent')) ?>;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-weight:600;">Review &amp; Download CV</a>
 </p>
 <p style="margin:14px 0 0;color:#94a3b8;font-size:12px;">The CV is only available from the admin console — it's never attached to email.</p>
 <?php $this->endSection(); ?>

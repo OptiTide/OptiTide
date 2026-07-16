@@ -7,7 +7,7 @@ $badge = ['open' => 'text-bg-success', 'closed' => 'text-bg-secondary'];
 <div class="card">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
-            <thead><tr><th>Visitor</th><th>Handled by</th><th>Status</th><th>Last activity</th></tr></thead>
+            <thead><tr><th>Visitor</th><th>Handled By</th><th>Status</th><th>Last Activity</th></tr></thead>
             <tbody>
                 <?php foreach ($conversations as $c): ?>
                     <tr onclick="window.location='<?= route('admin.chat.show', ['id' => $c['id']]) ?>'" style="cursor:pointer">

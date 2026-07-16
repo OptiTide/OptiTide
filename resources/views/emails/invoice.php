@@ -16,7 +16,7 @@ $balance = \App\Models\Invoice::balance($invoice);
 </table>
 
 <p style="text-align:center;margin:0 0 18px;">
-    <a href="<?= e($payUrl) ?>" style="display:inline-block;background:<?= e(config('app.brand.accent')) ?>;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-weight:600;">View &amp; pay invoice</a>
+    <a href="<?= e($payUrl) ?>" style="display:inline-block;background:<?= e(config('app.brand.accent')) ?>;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-weight:600;">View &amp; Pay Invoice</a>
 </p>
 <p style="margin:0;color:#64748b;font-size:13px;line-height:1.6;">
     You can pay by PayID/bank transfer or Payoneer from the invoice page. If you have any questions just reply to this email.

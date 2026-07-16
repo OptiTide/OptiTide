@@ -15,10 +15,10 @@
 <div class="row g-3 mb-4">
     <?php
     $stat = [
-        ['Total targets', $summary['total'], 'bi-link-45deg', ''],
+        ['Total Targets', $summary['total'], 'bi-link-45deg', ''],
         ['To do', $summary['prospect'] ?? 0, 'bi-list-check', 'prospect'],
         ['Submitted', $summary['submitted'] ?? 0, 'bi-hourglass-split', 'submitted'],
-        ['Live links', $summary['live'] ?? 0, 'bi-check2-circle', 'live'],
+        ['Live Links', $summary['live'] ?? 0, 'bi-check2-circle', 'live'],
     ];
     foreach ($stat as [$label, $value, $icon, $s]):
     ?>
@@ -37,7 +37,7 @@
     <div class="col-lg-4">
         <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="bi bi-building"></i> Your business details</span>
+                <span><i class="bi bi-building"></i> Your Business Details</span>
                 <button class="btn btn-sm btn-light" type="button" onclick="otCopyNap()" title="Copy all"><i class="bi bi-clipboard"></i></button>
             </div>
             <div class="card-body small" id="napBlock">
@@ -57,7 +57,7 @@
         </div>
 
         <div class="card mb-3">
-            <div class="card-header"><i class="bi bi-plus-circle"></i> Add a target</div>
+            <div class="card-header"><i class="bi bi-plus-circle"></i> Add a Target</div>
             <div class="card-body">
                 <form method="post" action="<?= route('admin.backlinks.store') ?>">
                     <?= csrf_field() ?>
@@ -69,14 +69,14 @@
                         </select>
                     </div>
                     <div class="mb-2"><label class="form-label small mb-1" for="bl_notes">Notes</label><input id="bl_notes" type="text" name="notes" class="form-control form-control-sm"></div>
-                    <button class="btn btn-sm btn-brand w-100">Add target</button>
+                    <button class="btn btn-sm btn-brand w-100">Add Target</button>
                 </form>
             </div>
         </div>
 
         <form method="post" action="<?= route('admin.backlinks.seed') ?>">
             <?= csrf_field() ?>
-            <button class="btn btn-outline-brand w-100"><i class="bi bi-cloud-download"></i> Load AU directory starter list</button>
+            <button class="btn btn-outline-brand w-100"><i class="bi bi-cloud-download"></i> Load AU Directory Starter List</button>
             <div class="form-text">Adds 20+ vetted Australian directories &amp; agency listings as "to do". Safe to click again — it never duplicates.</div>
         </form>
     </div>
@@ -84,7 +84,7 @@
     <div class="col-lg-8">
         <div class="card">
             <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
-                <span>Link profile</span>
+                <span>Link Profile</span>
                 <div class="btn-group btn-group-sm">
                     <a href="<?= route('admin.backlinks.index') ?>" class="btn <?= $filter === '' ? 'btn-brand' : 'btn-outline-secondary' ?>">All</a>
                     <?php foreach (\App\Models\Backlink::STATUSES as $k => $v): ?>
@@ -98,7 +98,7 @@
                     <tbody>
                         <?php if ($links === []): ?>
                             <tr><td colspan="5" class="text-center text-muted py-5">
-                                No targets yet. Click <strong>Load AU directory starter list</strong> to get a ready-made to-do list.
+                                No targets yet. Click <strong>Load AU Directory Starter List</strong> to get a ready-made to-do list.
                             </td></tr>
                         <?php endif; ?>
                         <?php foreach ($links as $b): ?>
@@ -106,7 +106,7 @@
                                 <td>
                                     <div class="fw-semibold"><?= e($b['site_name']) ?></div>
                                     <?php if (! empty($b['notes'])): ?><div class="small text-muted"><?= e($b['notes']) ?></div><?php endif; ?>
-                                    <?php if (! empty($b['submit_url'])): ?><a href="<?= e($b['submit_url']) ?>" target="_blank" rel="noopener nofollow" class="small">Open submit page <i class="bi bi-box-arrow-up-right"></i></a><?php endif; ?>
+                                    <?php if (! empty($b['submit_url'])): ?><a href="<?= e($b['submit_url']) ?>" target="_blank" rel="noopener nofollow" class="small">Open Submit Page <i class="bi bi-box-arrow-up-right"></i></a><?php endif; ?>
                                 </td>
                                 <td class="small text-muted"><?= e(\App\Models\Backlink::TYPES[$b['type']] ?? $b['type']) ?></td>
                                 <td class="text-center small"><?= $b['domain_authority'] ? (int) $b['domain_authority'] : '—' ?></td>

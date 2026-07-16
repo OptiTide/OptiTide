@@ -20,7 +20,7 @@
     <div class="mk-container">
         <div class="text-center mb-5">
             <span class="mk-eyebrow">What's Included</span>
-            <h2 class="mk-h2">Everything you get with <?= e($service['title']) ?></h2>
+            <h2 class="mk-h2">Everything You Get With <?= e($service['title']) ?></h2>
         </div>
         <div class="row g-4">
             <?php foreach ($service['includes'] as [$icon, $t, $d]): ?>
@@ -42,7 +42,7 @@
     <div class="mk-container">
         <div class="text-center mb-5">
             <span class="mk-eyebrow">Pricing</span>
-            <h2 class="mk-h2"><?= e($service['nav']) ?> plans</h2>
+            <h2 class="mk-h2"><?= e($service['nav']) ?> Plans</h2>
             <p class="mk-lead mx-auto">Clear, fixed pricing — GST included, no lock-in contracts. Not sure which fits? <a href="/contact">Ask us</a> and we'll recommend one honestly.</p>
         </div>
         <div class="row g-3 justify-content-center">
@@ -71,7 +71,7 @@
                 </div>
             <?php endforeach; ?>
         </div>
-        <p class="text-center text-muted small mt-4 mb-0">All prices in <?= e(config('company.currency', 'AUD')) ?> and include GST. Managed hosting, SSL and support available with every plan.</p>
+        <p class="text-center text-muted small mt-4 mb-0">All prices in <?= e(config('company.currency', 'AUD')) ?> and include GST. Hosting, SSL and support available with every plan.</p>
     </div>
 </section>
 <?php endif; ?>
@@ -81,8 +81,8 @@
     <div class="mk-container">
         <div class="row g-4 align-items-center">
             <div class="col-lg-6">
-                <span class="mk-eyebrow">Why it matters</span>
-                <h2 class="mk-h2">What this means for your business</h2>
+                <span class="mk-eyebrow">Why It Matters</span>
+                <h2 class="mk-h2">What This Means for Your Business</h2>
                 <p class="mk-lead">We don't do busywork — everything is aimed at real outcomes you can measure.</p>
             </div>
             <div class="col-lg-6">
@@ -99,7 +99,7 @@
 <!-- Other services -->
 <section class="mk-section">
     <div class="mk-container">
-        <div class="text-center mb-5"><h2 class="mk-h2">Explore our other services</h2></div>
+        <div class="text-center mb-5"><h2 class="mk-h2">Explore Our Other Services</h2></div>
         <div class="row g-3 justify-content-center">
             <?php foreach ($others as $oslug => $o): ?>
                 <div class="col-sm-6 col-lg-3">
@@ -118,7 +118,7 @@
 <section class="mk-cta-band">
     <div class="mk-container d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
-            <h2>Ready to get started?</h2>
+            <h2>Ready to Get Started?</h2>
             <p>Tell us about your business and we'll send a free, no-obligation proposal within 24 hours.</p>
         </div>
         <a href="/#proposal" class="btn btn-brand btn-lg">Get My Free Proposal <i class="bi bi-arrow-right"></i></a>

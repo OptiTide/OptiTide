@@ -9,7 +9,7 @@ $requestedCount = count(array_filter($meetings, fn ($m) => $m['status'] === 'req
 <div class="row g-3">
     <div class="col-lg-5">
         <div class="card">
-            <div class="card-header">Schedule a meeting</div>
+            <div class="card-header">Schedule a Meeting</div>
             <div class="card-body">
                 <form method="post" action="<?= route('admin.meetings.store') ?>" novalidate>
                     <?= csrf_field() ?>
@@ -36,7 +36,7 @@ $requestedCount = count(array_filter($meetings, fn ($m) => $m['status'] === 'req
                         <label class="form-label">Notes <span class="text-muted small">(optional)</span></label>
                         <textarea name="description" rows="2" class="form-control" maxlength="1000"><?= e(old('description')) ?></textarea>
                     </div>
-                    <button class="btn btn-brand"><i class="bi bi-calendar-plus"></i> Schedule &amp; invite</button>
+                    <button class="btn btn-brand"><i class="bi bi-calendar-plus"></i> Schedule &amp; Invite</button>
                 </form>
             </div>
         </div>

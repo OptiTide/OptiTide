@@ -3,7 +3,7 @@ $company = config('company');
 $appUrl = rtrim(config('app.url'), '/');
 $brand = config('app.brand.accent', '#FF6A00');
 $title = config('company.brand_name') . ' — Web Design, SEO, Social Media & Hosting in Australia';
-$description = config('company.brand_name') . ' is an Australian digital agency delivering web design, SEO, social media marketing and managed hosting for small business — high-performance websites, higher Google rankings and more leads, with fixed pricing and no lock-in contracts.';
+$description = config('company.brand_name') . ' is an Australian digital agency delivering web design, SEO, social media marketing and web hosting for small business — high-performance websites, higher Google rankings and more leads, with fixed pricing and no lock-in contracts.';
 $ogImage = $appUrl . '/assets/img/favicon.png';
 
 // ---------------------------------------------------------------------------
@@ -24,7 +24,7 @@ $process = [
 
 $benefits = [
     ['bi-award', 'Australian Experts', 'Local team, local support.'],
-    ['bi-graph-up-arrow', 'Proven Results', 'Data-driven strategies that deliver.'],
+    ['bi-graph-up-arrow', 'Clear Reporting', 'Transparent monthly reporting on what we did and what moved.'],
     ['bi-unlock', 'No Lock-in Contracts', 'Stay because you want to, not because you have to.'],
     ['bi-tag', 'Transparent Pricing', 'No hidden fees, just honest pricing.'],
     ['bi-headset', 'Ongoing Support', 'We\'re here when you need us most.'],
@@ -233,7 +233,7 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
                         </ul>
                         <?php // Goes to the actual service page — this used to point at
                               // #proposal, so "Learn More" never taught you anything. ?>
-                        <a href="/services/<?= e($sSlug) ?>" class="mk-service-more">Learn more about <?= e($s['nav']) ?> <i class="bi bi-arrow-right"></i></a>
+                        <a href="/services/<?= e($sSlug) ?>" class="mk-service-more">Learn More About <?= e($s['nav']) ?> <i class="bi bi-arrow-right"></i></a>
                     </article>
                 </div>
             <?php endforeach; ?>

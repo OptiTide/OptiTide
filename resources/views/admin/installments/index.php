@@ -6,7 +6,7 @@
 <div class="card">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
-            <thead><tr><th>Requested</th><th>Client</th><th>Service</th><th>Plan</th><th class="text-end">Order value</th><th></th></tr></thead>
+            <thead><tr><th>Requested</th><th>Client</th><th>Service</th><th>Plan</th><th class="text-end">Order Value</th><th></th></tr></thead>
             <tbody>
                 <?php foreach ($requests as $r): ?>
                     <tr>

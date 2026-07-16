@@ -177,7 +177,7 @@ foreach ($services as $s) {
                         <input type="text" name="reason" class="form-control form-control-sm" maxlength="200" placeholder="e.g. Comped API credit">
                     </div>
                     <div class="col-sm-2"><button class="btn btn-sm btn-brand w-100">Adjust</button></div>
-                    <div class="form-text">Prepaid balance for the white-label OptiTide API. Clients also top up by paying a credit invoice.</div>
+                    <div class="form-text">Prepaid balance for the white-label <?= e(config('company.brand_name')) ?> API. Clients also top up by paying a credit invoice.</div>
                 </form>
             </div>
         </div>

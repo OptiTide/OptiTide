@@ -13,7 +13,7 @@
 
 <?php if (! empty($meeting['location']) && str_starts_with((string) $meeting['location'], 'http')): ?>
     <p style="text-align:center;margin:0 0 18px;">
-        <a href="<?= e($meeting['location']) ?>" style="display:inline-block;background:<?= e(config('app.brand.accent', '#FF6A00')) ?>;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-weight:600;">Join the meeting</a>
+        <a href="<?= e($meeting['location']) ?>" style="display:inline-block;background:<?= e(config('app.brand.accent', '#FF6A00')) ?>;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-weight:600;">Join the Meeting</a>
     </p>
 <?php elseif (! empty($meeting['location'])): ?>
     <p style="margin:0 0 18px;"><strong>Where:</strong> <?= e($meeting['location']) ?></p>

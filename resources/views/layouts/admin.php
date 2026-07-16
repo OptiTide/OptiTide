@@ -13,7 +13,7 @@ $me = auth();
         <button type="button" class="sidebar-close btn btn-sm btn-outline-light float-end" onclick="otToggleSidebar(false)" aria-label="Close menu"><i class="bi bi-x-lg"></i></button>
         <a href="<?= route('admin.dashboard') ?>" class="sidebar-brand" aria-label="<?= e(config('company.brand_name')) ?> admin">
             <span class="sidebar-brand-mark"><img src="/assets/img/mark-wave.png" alt="<?= e(config('company.brand_name')) ?>"></span>
-            <span class="sidebar-brand-name">Opti<span style="color:var(--brand)">Tide</span></span>
+            <span class="sidebar-brand-name"><?= e(config('company.brand_name')) ?></span>
         </a>
         <div class="text-secondary small mb-2" style="font-size:.72rem">Billing &amp; CRM</div>
 

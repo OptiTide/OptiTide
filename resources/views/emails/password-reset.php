@@ -6,7 +6,7 @@
     This link expires in 60 minutes. If you didn't request this, you can ignore this email.
 </p>
 <p style="text-align:center;margin:0 0 18px;">
-    <a href="<?= e($url) ?>" style="display:inline-block;background:<?= e(config('app.brand.accent')) ?>;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-weight:600;">Reset password</a>
+    <a href="<?= e($url) ?>" style="display:inline-block;background:<?= e(config('app.brand.accent')) ?>;color:#ffffff;text-decoration:none;padding:12px 26px;border-radius:8px;font-weight:600;">Reset Password</a>
 </p>
 <p style="margin:0;color:#64748b;font-size:12px;word-break:break-all;"><?= e($url) ?></p>
 <?php $this->endSection(); ?>

@@ -39,7 +39,7 @@
                     </thead>
                     <tbody>
                         <?php if (! $top_outstanding): ?>
-                            <tr><td colspan="2" class="text-center text-muted py-4">No Outstanding Balances.</td></tr>
+                            <tr><td colspan="2" class="text-center text-muted py-4">No outstanding balances.</td></tr>
                         <?php endif; ?>
                         <?php foreach ($top_outstanding as $row): ?>
                             <tr>
@@ -65,7 +65,7 @@
                     </thead>
                     <tbody>
                         <?php if (! $recent_payments): ?>
-                            <tr><td colspan="4" class="text-center text-muted py-4">No Payments Yet.</td></tr>
+                            <tr><td colspan="4" class="text-center text-muted py-4">No payments yet.</td></tr>
                         <?php endif; ?>
                         <?php foreach ($recent_payments as $payment): ?>
                             <tr>

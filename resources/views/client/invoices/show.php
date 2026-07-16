@@ -52,13 +52,13 @@ $balance = \App\Models\Invoice::balance($invoice);
                         <tr><td class="text-muted">GST (<?= e(\App\Support\Gst::rateLabel()) ?>)</td><td class="text-end money"><?= e(money((int) $invoice['gst_cents'], $invoice['currency'])->format()) ?></td></tr>
                     <?php endif; ?>
                     <?php if ((int) ($invoice['late_fee_cents'] ?? 0) > 0): ?>
-                        <tr><td class="text-muted">Late payment fee</td><td class="text-end money">+<?= e(money((int) $invoice['late_fee_cents'], $invoice['currency'])->format()) ?></td></tr>
+                        <tr><td class="text-muted">Late Payment Fee</td><td class="text-end money">+<?= e(money((int) $invoice['late_fee_cents'], $invoice['currency'])->format()) ?></td></tr>
                     <?php endif; ?>
                     <tr class="fw-bold border-top"><td>Total (inc GST)</td><td class="text-end money"><?= e(\App\Models\Invoice::total($invoice)->format()) ?></td></tr>
                     <?php if ((int) $invoice['amount_paid_cents'] > 0): ?>
                         <tr><td class="text-muted">Paid</td><td class="text-end money">− <?= e(\App\Models\Invoice::amountPaid($invoice)->format()) ?></td></tr>
                     <?php endif; ?>
-                    <tr class="fw-bold text-brand"><td>Balance due</td><td class="text-end money"><?= e($balance->format()) ?></td></tr>
+                    <tr class="fw-bold text-brand"><td>Balance Due</td><td class="text-end money"><?= e($balance->format()) ?></td></tr>
                 </table>
             </div>
         </div>
@@ -72,7 +72,7 @@ $balance = \App\Models\Invoice::balance($invoice);
         <div class="card border-0 mb-3" style="background:var(--brand-soft)">
             <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div><i class="bi bi-wallet2"></i> <strong>Account credit available:</strong> <span class="money"><?= e(money($credit, $invoice['currency'])->format()) ?></span></div>
-                <form method="post" action="<?= route('portal.invoices.credit', ['id' => $invoice['id']]) ?>"><?= csrf_field() ?><button class="btn btn-sm btn-brand">Apply credit to this invoice</button></form>
+                <form method="post" action="<?= route('portal.invoices.credit', ['id' => $invoice['id']]) ?>"><?= csrf_field() ?><button class="btn btn-sm btn-brand">Apply Credit to This Invoice</button></form>
             </div>
         </div>
     <?php endif; ?>

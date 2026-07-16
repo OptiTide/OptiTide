@@ -1,6 +1,6 @@
 <?php $this->extends('emails.layout'); ?>
 <?php $this->section('content'); ?>
-<p style="margin:0 0 14px;font-size:16px;">New website enquiry</p>
+<p style="margin:0 0 14px;font-size:16px;">New Website Enquiry</p>
 <table role="presentation" width="100%" style="margin:8px 0 18px;border-collapse:collapse;">
     <tr><td style="padding:6px 0;color:#64748b;width:130px;">Name</td><td style="padding:6px 0;font-weight:600;"><?= e($data['name']) ?></td></tr>
     <tr><td style="padding:6px 0;color:#64748b;">E-Mail</td><td style="padding:6px 0;"><a href="mailto:<?= e($data['email']) ?>"><?= e($data['email']) ?></a></td></tr>

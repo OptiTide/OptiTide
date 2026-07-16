@@ -20,11 +20,11 @@
         <?php if ($method === 'email'): ?>
             <form method="post" action="<?= route('2fa.resend') ?>" class="text-center mt-3">
                 <?= csrf_field() ?>
-                <button class="btn btn-link btn-sm">Resend code</button>
+                <button class="btn btn-link btn-sm">Resend Code</button>
             </form>
         <?php endif; ?>
         <p class="text-center text-muted small mt-2 mb-0">Lost your device? Enter one of your recovery codes above.</p>
-        <p class="text-center small mt-3 mb-0"><a href="<?= route('login') ?>">Cancel and sign in again</a></p>
+        <p class="text-center small mt-3 mb-0"><a href="<?= route('login') ?>">Cancel and Sign In Again</a></p>
     </div>
 </div>
 <?php $this->endSection(); ?>

@@ -39,7 +39,7 @@
                 <input type="hidden" name="status" value="<?= e($status) ?>">
             <?php endif; ?>
             <div class="input-group input-group-sm">
-                <input type="search" name="q" value="<?= e($search) ?>" class="form-control" placeholder="Search Number Or Client" aria-label="Search Invoices">
+                <input type="search" name="q" value="<?= e($search) ?>" class="form-control" placeholder="Search number or client" aria-label="Search Invoices">
                 <button type="submit" class="btn btn-outline-brand"><i class="bi bi-search"></i></button>
                 <?php if ($search !== ''): ?>
                     <a href="<?= route('admin.invoices.index') ?><?= $status !== '' ? '?status=' . urlencode($status) : '' ?>" class="btn btn-outline-secondary" title="Clear Search"><i class="bi bi-x-lg"></i></a>

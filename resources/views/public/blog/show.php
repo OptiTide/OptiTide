@@ -46,7 +46,7 @@ $coverFn = function (array $p) use ($appUrl): string {
 
         <?php if ($related): ?>
             <div class="mt-5">
-                <h2 class="h5 fw-bold mb-3">Keep reading</h2>
+                <h2 class="h5 fw-bold mb-3">Keep Reading</h2>
                 <div class="row g-3">
                     <?php foreach ($related as $p): ?>
                         <?php $rimg = $coverFn($p); ?>

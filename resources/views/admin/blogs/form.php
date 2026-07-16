@@ -11,7 +11,7 @@ $pubDate = $pubDate ? date('Y-m-d', strtotime($pubDate)) : '';
     <?php if ($isEdit): ?><?= method_field('PUT') ?><?php endif; ?>
 
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-        <a href="<?= route('admin.blogs.index') ?>" class="btn btn-sm btn-link px-0"><i class="bi bi-arrow-left"></i> All articles</a>
+        <a href="<?= route('admin.blogs.index') ?>" class="btn btn-sm btn-link px-0"><i class="bi bi-arrow-left"></i> All Articles</a>
         <div class="d-flex gap-2">
             <?php if ($isEdit && $post['status'] === 'published'): ?>
                 <a href="<?= route('blog.show', ['slug' => $post['slug']]) ?>" target="_blank" class="btn btn-sm btn-outline-brand"><i class="bi bi-box-arrow-up-right"></i> View</a>

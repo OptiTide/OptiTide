@@ -12,10 +12,10 @@
         <nav class="mk-crumbs" aria-label="Breadcrumb">
             <a href="/">Home</a> <i class="bi bi-chevron-right"></i>
             <a href="<?= route('careers.index') ?>">Careers</a> <i class="bi bi-chevron-right"></i>
-            <span>Role closed</span>
+            <span>Role Closed</span>
         </nav>
         <span class="mk-eyebrow" style="color:var(--brand-bright)">Careers</span>
-        <h1>That role has closed</h1>
+        <h1>That Role Has Closed</h1>
         <p class="mk-lead">Thanks for your interest — this one's been filled or is no longer being advertised. Here's what else is open.</p>
     </div>
 </header>
@@ -24,7 +24,7 @@
     <div class="mk-container">
         <div class="text-center mb-5">
             <span class="mk-eyebrow">Open Roles</span>
-            <h2 class="mk-h2"><?= $roles ? 'Still open' : 'Nothing open right now' ?></h2>
+            <h2 class="mk-h2"><?= $roles ? 'Still Open' : 'Nothing Open Right Now' ?></h2>
         </div>
         <?php if ($roles): ?>
             <div class="mk-jobs">
@@ -37,14 +37,14 @@
                                 <span><i class="bi bi-clock"></i> <?= e(\App\Models\JobOpening::EMPLOYMENT_TYPES[$r['employment_type']] ?? '') ?></span>
                             </div>
                         </div>
-                        <span class="mk-job-go">View role <i class="bi bi-arrow-right"></i></span>
+                        <span class="mk-job-go">View Role <i class="bi bi-arrow-right"></i></span>
                     </a>
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
             <div class="mk-job-empty">
                 <i class="bi bi-envelope-paper"></i>
-                <h3>No roles open right now</h3>
+                <h3>No Roles Open Right Now</h3>
                 <p>We keep good applications on file — send us an expression of interest and we'll reach out when something opens up.</p>
                 <a href="<?= route('careers.index') ?>#apply" class="btn btn-brand">Send an Expression of Interest</a>
             </div>

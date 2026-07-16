@@ -4,7 +4,7 @@ $typeBadge = ['topup' => 'text-bg-success', 'usage' => 'text-bg-secondary', 'adj
 ?>
 <?php $this->section('content'); ?>
 
-<p class="text-muted mb-4">Power your own apps with the OptiTide API — buy prepaid credit, generate a key, and start building. You only pay for what you use.</p>
+<p class="text-muted mb-4">Power your own apps with the <?= e(config('company.brand_name')) ?> API — buy prepaid credit, generate a key, and start building. You only pay for what you use.</p>
 
 <div class="row g-3 mb-4">
     <div class="col-md-5">
@@ -21,7 +21,7 @@ $typeBadge = ['topup' => 'text-bg-success', 'usage' => 'text-bg-secondary', 'adj
     <div class="col-md-7">
         <div class="card h-100">
             <div class="card-body">
-                <h6 class="fw-bold mb-2">Buy credit</h6>
+                <h6 class="fw-bold mb-2">Buy Credit</h6>
                 <form method="post" action="<?= route('portal.api.buy') ?>" class="d-flex flex-wrap gap-2 align-items-end">
                     <?= csrf_field() ?>
                     <div class="btn-group flex-wrap" role="group">
@@ -42,7 +42,7 @@ $typeBadge = ['topup' => 'text-bg-success', 'usage' => 'text-bg-secondary', 'adj
 </div>
 
 <div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center"><span>Your API key</span></div>
+    <div class="card-header d-flex justify-content-between align-items-center"><span>Your API Key</span></div>
     <div class="card-body">
         <?php if ($newKey): ?>
             <div class="alert alert-success">
@@ -54,12 +54,12 @@ $typeBadge = ['topup' => 'text-bg-success', 'usage' => 'text-bg-secondary', 'adj
         <?php if ($hasKey): ?>
             <p class="mb-2">Active key: <code><?= e($maskedKey) ?></code></p>
             <div class="d-flex gap-2">
-                <form method="post" action="<?= route('portal.api.key') ?>" onsubmit="return confirm('Generate a new key? Your current key will stop working immediately.')"><?= csrf_field() ?><button class="btn btn-sm btn-outline-secondary">Rotate key</button></form>
+                <form method="post" action="<?= route('portal.api.key') ?>" onsubmit="return confirm('Generate a new key? Your current key will stop working immediately.')"><?= csrf_field() ?><button class="btn btn-sm btn-outline-secondary">Rotate Key</button></form>
                 <form method="post" action="<?= route('portal.api.key.revoke') ?>" onsubmit="return confirm('Revoke your key? API calls will stop working until you generate a new one.')"><?= csrf_field() ?><button class="btn btn-sm btn-link text-danger">Revoke</button></form>
             </div>
         <?php else: ?>
             <p class="text-muted mb-2">You don't have an API key yet.</p>
-            <form method="post" action="<?= route('portal.api.key') ?>"><?= csrf_field() ?><button class="btn btn-sm btn-brand"><i class="bi bi-key"></i> Generate API key</button></form>
+            <form method="post" action="<?= route('portal.api.key') ?>"><?= csrf_field() ?><button class="btn btn-sm btn-brand"><i class="bi bi-key"></i> Generate API Key</button></form>
         <?php endif; ?>
     </div>
 </div>
@@ -67,7 +67,7 @@ $typeBadge = ['topup' => 'text-bg-success', 'usage' => 'text-bg-secondary', 'adj
 <div class="row g-3">
     <div class="col-lg-7">
         <div class="card h-100">
-            <div class="card-header">Usage &amp; top-ups</div>
+            <div class="card-header">Usage &amp; Top-Ups</div>
             <div class="table-responsive">
                 <table class="table table-sm align-middle mb-0">
                     <thead><tr><th>When</th><th>Detail</th><th class="text-end">Amount</th><th class="text-end">Balance</th></tr></thead>
@@ -88,9 +88,9 @@ $typeBadge = ['topup' => 'text-bg-success', 'usage' => 'text-bg-secondary', 'adj
     </div>
     <div class="col-lg-5">
         <div class="card h-100">
-            <div class="card-header">Quick start</div>
+            <div class="card-header">Quick Start</div>
             <div class="card-body">
-                <p class="small text-muted mb-2">Send a request to the OptiTide API. Available models:</p>
+                <p class="small text-muted mb-2">Send a request to the <?= e(config('company.brand_name')) ?> API. Available models:</p>
                 <ul class="small mb-3">
                     <?php foreach ($models as $alias => $_real): ?>
                         <li><code><?= e($alias) ?></code><?php if (isset($pricing[$alias])): ?> — <span class="text-muted">$<?= number_format($pricing[$alias]['in'] / 100, 2) ?>/$<?= number_format($pricing[$alias]['out'] / 100, 2) ?> per M tokens (in/out)</span><?php endif; ?></li>

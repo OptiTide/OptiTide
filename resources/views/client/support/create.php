@@ -3,11 +3,11 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-8">
-        <a href="<?= route('portal.support.index') ?>" class="btn btn-sm btn-link px-0 mb-2"><i class="bi bi-arrow-left"></i> Back to support</a>
+        <a href="<?= route('portal.support.index') ?>" class="btn btn-sm btn-link px-0 mb-2"><i class="bi bi-arrow-left"></i> Back to Support</a>
         <form method="post" action="<?= route('portal.support.store') ?>" novalidate>
             <?= csrf_field() ?>
             <div class="card">
-                <div class="card-header">New support request</div>
+                <div class="card-header">New Support Request</div>
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label">Subject</label>

@@ -29,7 +29,7 @@
                         <ul>
                             <?php foreach (array_slice($s['includes'], 0, 4) as [$i, $t, $d]): ?><li><i class="bi bi-check2"></i> <?= e($t) ?></li><?php endforeach; ?>
                         </ul>
-                        <a href="/services/<?= e($slug) ?>" class="mk-service-more">Learn more about <?= e($s['nav']) ?> <i class="bi bi-arrow-right"></i></a>
+                        <a href="/services/<?= e($slug) ?>" class="mk-service-more">Learn More About <?= e($s['nav']) ?> <i class="bi bi-arrow-right"></i></a>
                     </article>
                 </div>
             <?php endforeach; ?>
@@ -61,7 +61,7 @@
 <section class="mk-cta-band">
     <div class="mk-container d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
-            <h2>Not sure what you need?</h2>
+            <h2>Not Sure What You Need?</h2>
             <p>Tell us about your business and we'll recommend the right mix — with honest advice and a clear quote.</p>
         </div>
         <a href="<?= route('pages.contact') ?>" class="btn btn-brand btn-lg">Talk to Us <i class="bi bi-arrow-right"></i></a>

@@ -6,7 +6,7 @@
         <form method="post" action="<?= route('admin.broadcast.send') ?>" novalidate onsubmit="return confirm('Send this email to the selected clients now?')">
             <?= csrf_field() ?>
             <div class="card">
-                <div class="card-header"><i class="bi bi-megaphone text-brand"></i> Compose broadcast</div>
+                <div class="card-header"><i class="bi bi-megaphone text-brand"></i> Compose Broadcast</div>
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label">Send to</label>

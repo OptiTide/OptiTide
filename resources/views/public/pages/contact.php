@@ -16,7 +16,7 @@
         <div class="row g-4">
             <div class="col-lg-5">
                 <span class="mk-eyebrow">Contact Details</span>
-                <h2 class="mk-h2">Reach us directly</h2>
+                <h2 class="mk-h2">Reach Us Directly</h2>
                 <ul class="mk-contact-info list-unstyled mt-3">
                     <?php if (! empty($company['phone'])): ?>
                         <li><i class="bi bi-telephone"></i> <a href="tel:<?= e(preg_replace('/\s+/', '', (string) $company['phone'])) ?>" class="text-decoration-none"><?= e($company['phone']) ?></a></li>
@@ -56,7 +56,12 @@
                             <div class="col-md-6"><label class="form-label" for="p_phone">Phone <span class="text-muted small">(optional)</span></label><input id="p_phone" type="text" name="phone" value="<?= e(old('phone')) ?>" class="form-control"></div>
                             <div class="col-md-6"><label class="form-label" for="p_service">I'm interested in</label>
                                 <select id="p_service" name="service" class="form-select">
-                                    <?php foreach (['Web Design', 'SEO', 'Social Media', 'Managed Hosting', 'Not sure yet'] as $opt): ?><option <?= old('service') === $opt ? 'selected' : '' ?>><?= e($opt) ?></option><?php endforeach; ?>
+                                    <?php // From the real service map — this hardcoded "Managed Hosting",
+                                          // a line we don't have (we sell Unmanaged AND Managed). ?>
+                                    <?php foreach (\App\Controllers\PublicSite\PageController::serviceData() as $svcOpt): ?>
+                                        <option <?= old('service') === $svcOpt['nav'] ? 'selected' : '' ?>><?= e($svcOpt['nav']) ?></option>
+                                    <?php endforeach; ?>
+                                    <option <?= old('service') === 'Not sure yet' ? 'selected' : '' ?>>Not sure yet</option>
                                 </select>
                             </div>
                             <div class="col-12"><label class="form-label" for="p_msg">How can we help?</label><textarea id="p_msg" name="message" rows="5" class="form-control <?= has_error('message') ? 'is-invalid' : '' ?>" required><?= e(old('message')) ?></textarea></div>

@@ -4,7 +4,7 @@
 <p class="text-muted mb-4">Your hosting accounts. Open cPanel to manage email, files, databases and more.</p>
 
 <?php if (! empty($apps)): ?>
-    <h2 class="h6 fw-bold mb-2">Your apps</h2>
+    <h2 class="h6 fw-bold mb-2">Your Apps</h2>
     <div class="row g-3 mb-4">
         <?php foreach ($apps as $app): ?>
             <div class="col-md-6">
@@ -46,7 +46,7 @@
                         <?php $pct = $a['disk_limit_mb'] ? min(100, round($a['disk_used_mb'] / max(1, $a['disk_limit_mb']) * 100)) : null; ?>
                         <div class="mt-3">
                             <div class="d-flex justify-content-between small text-muted mb-1">
-                                <span>Disk usage</span>
+                                <span>Disk Usage</span>
                                 <span><?= number_format((int) $a['disk_used_mb']) ?><?= $a['disk_limit_mb'] !== null ? ' / ' . number_format((int) $a['disk_limit_mb']) : '' ?> MB</span>
                             </div>
                             <?php if ($pct !== null): ?>

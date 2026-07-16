@@ -8,7 +8,7 @@ $a = $application;
 ?>
 
 <div class="mb-3">
-    <a href="<?= route('admin.careers.applications') ?>" class="btn btn-sm btn-link px-0"><i class="bi bi-arrow-left"></i> All applications</a>
+    <a href="<?= route('admin.careers.applications') ?>" class="btn btn-sm btn-link px-0"><i class="bi bi-arrow-left"></i> All Applications</a>
 </div>
 
 <div class="row g-3">
@@ -45,7 +45,7 @@ $a = $application;
             </div>
             <div class="card-footer d-flex justify-content-between align-items-center">
                 <button class="btn btn-brand"><i class="bi bi-check-lg"></i> Save</button>
-                <a href="mailto:<?= e(rawurlencode($a['email'])) ?>?subject=<?= rawurlencode('Your application — ' . $a['role_title']) ?>" class="btn btn-outline-brand btn-sm"><i class="bi bi-envelope"></i> Reply by email</a>
+                <a href="mailto:<?= e(rawurlencode($a['email'])) ?>?subject=<?= rawurlencode('Your application — ' . $a['role_title']) ?>" class="btn btn-outline-brand btn-sm"><i class="bi bi-envelope"></i> Reply by Email</a>
             </div>
         </form>
     </div>
@@ -108,7 +108,7 @@ $a = $application;
                 <div class="small text-muted mb-2">Deleting removes the application <strong>and</strong> their CV from the server. Use this once you no longer need to keep their personal data.</div>
                 <form method="post" action="<?= route('admin.careers.applications.destroy', ['id' => $a['id']]) ?>" onsubmit="return confirm('Permanently delete this application and their CV?')">
                     <?= csrf_field() ?><?= method_field('DELETE') ?>
-                    <button class="btn btn-sm btn-outline-danger w-100"><i class="bi bi-trash"></i> Delete application &amp; CV</button>
+                    <button class="btn btn-sm btn-outline-danger w-100"><i class="bi bi-trash"></i> Delete Application &amp; CV</button>
                 </form>
             </div>
         </div>

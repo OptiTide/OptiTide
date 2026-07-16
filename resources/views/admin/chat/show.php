@@ -1,7 +1,7 @@
 <?php $this->extends('layouts.admin'); ?>
 <?php $this->section('content'); ?>
 
-<a href="<?= route('admin.chat.index') ?>" class="btn btn-sm btn-link px-0 mb-2"><i class="bi bi-arrow-left"></i> All chats</a>
+<a href="<?= route('admin.chat.index') ?>" class="btn btn-sm btn-link px-0 mb-2"><i class="bi bi-arrow-left"></i> All Chats</a>
 
 <div class="row g-3">
     <div class="col-lg-8">
@@ -48,10 +48,10 @@
             <div class="card-header">Actions</div>
             <div class="card-body d-grid gap-2">
                 <?php if ($conversation['mode'] !== 'human'): ?>
-                    <form method="post" action="<?= route('admin.chat.takeover', ['id' => $conversation['id']]) ?>"><?= csrf_field() ?><button class="btn btn-outline-brand w-100"><i class="bi bi-person-raised-hand"></i> Take over from assistant</button></form>
+                    <form method="post" action="<?= route('admin.chat.takeover', ['id' => $conversation['id']]) ?>"><?= csrf_field() ?><button class="btn btn-outline-brand w-100"><i class="bi bi-person-raised-hand"></i> Take Over From Assistant</button></form>
                 <?php endif; ?>
                 <?php if ($conversation['status'] !== 'closed'): ?>
-                    <form method="post" action="<?= route('admin.chat.close', ['id' => $conversation['id']]) ?>"><?= csrf_field() ?><button class="btn btn-light w-100">Close chat</button></form>
+                    <form method="post" action="<?= route('admin.chat.close', ['id' => $conversation['id']]) ?>"><?= csrf_field() ?><button class="btn btn-light w-100">Close Chat</button></form>
                 <?php endif; ?>
             </div>
         </div>

@@ -1,21 +1,21 @@
 <?php
 $this->extends('layouts.portal');
 $badge = ['requested' => 'text-bg-warning', 'scheduled' => 'text-bg-primary', 'completed' => 'text-bg-success', 'cancelled' => 'text-bg-secondary'];
-$statusLabel = ['requested' => 'Awaiting confirmation'];
+$statusLabel = ['requested' => 'Awaiting Confirmation'];
 ?>
 <?php $this->section('content'); ?>
 
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
     <p class="text-muted mb-0">Your calls and meetings with our team.</p>
     <button class="btn btn-brand btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#requestMeeting">
-        <i class="bi bi-calendar-plus"></i> Request a meeting
+        <i class="bi bi-calendar-plus"></i> Request a Meeting
     </button>
 </div>
 
 <div class="collapse mb-4" id="requestMeeting">
     <div class="card">
         <div class="card-body">
-            <h6 class="fw-bold mb-1">Request a meeting</h6>
+            <h6 class="fw-bold mb-1">Request a Meeting</h6>
             <p class="small text-muted">Pick a topic and a time that suits you. We'll confirm the time (with a video link) by email and here in your portal.</p>
             <form method="post" action="<?= route('portal.meetings.request') ?>">
                 <?= csrf_field() ?>
@@ -33,14 +33,14 @@ $statusLabel = ['requested' => 'Awaiting confirmation'];
                         <textarea name="description" class="form-control" rows="2" maxlength="1000" placeholder="Add any details or questions"></textarea>
                     </div>
                 </div>
-                <div class="mt-3"><button class="btn btn-brand" type="submit"><i class="bi bi-send"></i> Send request</button></div>
+                <div class="mt-3"><button class="btn btn-brand" type="submit"><i class="bi bi-send"></i> Send Request</button></div>
             </form>
         </div>
     </div>
 </div>
 
 <?php if (! $meetings): ?>
-    <div class="card"><div class="card-body text-center text-muted py-5">No meetings yet. Use <strong>Request a meeting</strong> above to book a time, or we'll invite you here when one is scheduled.</div></div>
+    <div class="card"><div class="card-body text-center text-muted py-5">No meetings yet. Use <strong>Request a Meeting</strong> above to book a time, or we'll invite you here when one is scheduled.</div></div>
 <?php endif; ?>
 
 <div class="row g-3">
@@ -56,7 +56,7 @@ $statusLabel = ['requested' => 'Awaiting confirmation'];
                     <div class="text-muted my-2"><i class="bi bi-calendar-event"></i> <?= e(date('l j F Y, g:ia', strtotime($m['meeting_at']))) ?></div>
                     <?php if (! empty($m['description'])): ?><p class="small text-muted mb-2"><?= nl2br(e($m['description'])) ?></p><?php endif; ?>
                     <?php if ($isUpcoming && ! empty($m['location']) && str_starts_with((string) $m['location'], 'http')): ?>
-                        <a href="<?= e($m['location']) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-brand"><i class="bi bi-camera-video"></i> Join meeting</a>
+                        <a href="<?= e($m['location']) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-brand"><i class="bi bi-camera-video"></i> Join Meeting</a>
                     <?php elseif (! empty($m['location'])): ?>
                         <div class="small"><i class="bi bi-geo-alt"></i> <?= e($m['location']) ?></div>
                     <?php endif; ?>

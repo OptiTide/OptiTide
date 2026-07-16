@@ -63,7 +63,7 @@ $clientNames = array_column($clients, 'business_name', 'id');
             <form id="cardForm" method="post">
                 <?= csrf_field() ?><?= method_field('PUT') ?>
                 <div class="modal-header">
-                    <h5 class="modal-title">Card details</h5>
+                    <h5 class="modal-title">Card Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">

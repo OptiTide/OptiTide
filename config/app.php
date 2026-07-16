@@ -6,7 +6,7 @@ return [
     'debug'    => (bool) env('APP_DEBUG', false),
     'url'      => rtrim(env('APP_URL', 'http://localhost:8000'), '/'),
     'key'      => env('APP_KEY', ''),
-    'timezone' => env('APP_TIMEZONE', 'Australia/Sydney'),
+    'timezone' => env('APP_TIMEZONE', 'Australia/Perth'),
 
     'brand' => [
         'accent'      => env('BRAND_ACCENT', '#FF6A00'),

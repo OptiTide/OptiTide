@@ -15,7 +15,7 @@ $ccy = config('company.currency') ?: 'AUD';
 <div class="card">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
-            <thead><tr><th>Name</th><th>Code</th><th>Off</th><th>Applies to</th><th>Window</th><th>Used</th><th class="text-end">Given away</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th>Name</th><th>Code</th><th>Off</th><th>Applies To</th><th>Window</th><th>Used</th><th class="text-end">Given Away</th><th>Status</th><th></th></tr></thead>
             <tbody>
                 <?php foreach ($discounts as $d): ?>
                     <?php [$statusText, $statusClass] = Discount::statusLabel($d); ?>

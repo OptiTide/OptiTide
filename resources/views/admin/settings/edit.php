@@ -59,7 +59,7 @@ $addr = $company['address'];
                     <div class="row g-3 mt-1">
                         <div class="col-md-6">
                             <label class="form-label">Business hours</label>
-                            <input type="text" name="s_hours" value="<?= e($company['hours'] ?? '') ?>" maxlength="80" class="form-control <?= has_error('s_hours') ? 'is-invalid' : '' ?>" placeholder="Mon – Fri, 9am – 5pm AEST">
+                            <input type="text" name="s_hours" value="<?= e($company['hours'] ?? '') ?>" maxlength="80" class="form-control <?= has_error('s_hours') ? 'is-invalid' : '' ?>" placeholder="Mon – Fri, 9am – 9pm AWST">
                             <div class="form-text">Shown in the website top bar, footer and contact page.</div>
                         </div>
                     </div>

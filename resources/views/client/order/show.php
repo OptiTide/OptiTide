@@ -5,7 +5,7 @@ $this->extends('layouts.portal');
 
 <div class="row justify-content-center">
     <div class="col-lg-7">
-        <a href="<?= route('portal.order.index') ?>" class="btn btn-sm btn-link px-0 mb-2"><i class="bi bi-arrow-left"></i> Back to all services</a>
+        <a href="<?= route('portal.order.index') ?>" class="btn btn-sm btn-link px-0 mb-2"><i class="bi bi-arrow-left"></i> Back to All Services</a>
 
         <div class="card">
             <div class="card-header"><?= $line ? e($line['name']) : 'Order' ?></div>
@@ -42,7 +42,7 @@ $this->extends('layouts.portal');
                 </div>
 
                 <div class="border rounded p-3 mb-3" style="background:var(--brand-soft)">
-                    <div class="fw-semibold mb-2"><i class="bi bi-info-circle"></i> What happens next</div>
+                    <div class="fw-semibold mb-2"><i class="bi bi-info-circle"></i> What Happens Next</div>
                     <ol class="mb-0 ps-3 small">
                         <li>We create your order and a tax invoice for <strong><?= e($total->format()) ?></strong><?= $recurring ? ' (your first ' . e(strtolower(\App\Models\Service::INTERVALS[$service['interval']] ?? 'monthly')) . ' payment)' : '' ?>.</li>
                         <li>You pay securely by PayID or Payoneer from the invoice page.</li>

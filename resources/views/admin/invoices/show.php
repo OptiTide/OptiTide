@@ -91,12 +91,12 @@ $payUrl = url('pay/' . $invoice['public_token']);
                                 <form method="post" action="<?= route('admin.invoices.latefee.waive', ['id' => $invoice['id']]) ?>" onsubmit="return confirm('Waive and remove this late fee?')" class="d-flex gap-2">
                                     <?= csrf_field() ?>
                                     <input type="text" name="reason" class="form-control form-control-sm" placeholder="Reason (optional)" style="max-width:220px">
-                                    <button class="btn btn-sm btn-warning"><i class="bi bi-check2"></i> <?= $lfStatus === 'requested' ? 'Approve waiver' : 'Waive late fee' ?></button>
+                                    <button class="btn btn-sm btn-warning"><i class="bi bi-check2"></i> <?= $lfStatus === 'requested' ? 'Approve Waiver' : 'Waive Late Fee' ?></button>
                                 </form>
                             <?php elseif ($lfStatus === 'none'): ?>
                                 <form method="post" action="<?= route('admin.invoices.latefee.request', ['id' => $invoice['id']]) ?>">
                                     <?= csrf_field() ?>
-                                    <button class="btn btn-sm btn-outline-secondary">Request waiver</button>
+                                    <button class="btn btn-sm btn-outline-secondary">Request Waiver</button>
                                 </form>
                             <?php elseif ($lfStatus === 'requested'): ?>
                                 <span class="badge text-bg-info align-self-center">Waiver requested — awaiting admin approval</span>

@@ -27,14 +27,16 @@
                 <a href="/services/web-design">Web Design</a>
                 <a href="/services/seo">SEO</a>
                 <a href="/services/social-media">Social Media</a>
-                <a href="/services/hosting">Managed Hosting</a>
+                <a href="/services/hosting">Hosting</a>
             </div>
 
             <div class="col-6 col-lg-2 mk-footer-col">
                 <h5>Company</h5>
                 <a href="/about">About Us</a>
                 <a href="<?= route('pages.how-we-work') ?>">How We Work</a>
-                <a href="/#packages">Packages</a>
+                <?php // Was /#packages — a homepage anchor that bounced you off
+                      // whatever page you were on. Real pricing lives on /services. ?>
+                <a href="<?= route('pages.services') ?>#pricing">Pricing</a>
                 <a href="<?= route('blog.index') ?>">Blog</a>
                 <a href="<?= route('careers.index') ?>">Careers</a>
                 <a href="/contact">Contact Us</a>

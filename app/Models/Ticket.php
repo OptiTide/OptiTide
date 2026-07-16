@@ -38,7 +38,15 @@ class Ticket extends Model
         return static::query()->where('client_id', $clientId)->orderBy('last_reply_at', 'desc')->orderBy('id', 'desc')->get();
     }
 
-    /** Replies for a ticket; internal notes optionally hidden (client view). */
+    /**
+     * Replies for a ticket, NEWEST FIRST; internal notes optionally hidden
+     * (client view).
+     *
+     * The latest activity is what you want to land on — not something you scroll
+     * a long thread to reach. The opening message is itself the first reply row,
+     * so it ends up at the bottom, which is the same shape WHMCS uses. The reply
+     * box is rendered above the thread to match.
+     */
     public static function replies(int|string $ticketId, bool $includeInternal = true): array
     {
         $q = TicketReply::query()->where('ticket_id', $ticketId);
@@ -46,6 +54,6 @@ class Ticket extends Model
             $q->where('is_internal', 0);
         }
 
-        return $q->orderBy('id', 'asc')->get();
+        return $q->orderBy('id', 'desc')->get();
     }
 }

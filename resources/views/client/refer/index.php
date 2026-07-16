@@ -6,7 +6,7 @@ $badge = ['pending' => 'text-bg-warning', 'approved' => 'text-bg-info', 'paid' =
 
 <div class="card border-0 mb-4" style="background:var(--brand-soft)">
     <div class="card-body">
-        <div class="h5 fw-bold mb-1"><i class="bi bi-gift"></i> Refer &amp; earn <?= e($ratePercent) ?>%</div>
+        <div class="h5 fw-bold mb-1"><i class="bi bi-gift"></i> Refer &amp; Earn <?= e($ratePercent) ?>%</div>
         <p class="text-muted mb-3">Share your link. When someone you refer signs up and pays their first invoice, you earn <?= e($ratePercent) ?>% of that order as a commission.</p>
         <label class="form-label small fw-semibold">Your referral link</label>
         <div class="input-group">
@@ -23,11 +23,11 @@ $badge = ['pending' => 'text-bg-warning', 'approved' => 'text-bg-info', 'paid' =
     <div class="col-md-3 col-6"><div class="card stat-card h-100"><div class="card-body"><div class="stat-value"><?= count($referrals) ?></div><div class="stat-label">Referrals</div></div></div></div>
     <div class="col-md-3 col-6"><div class="card stat-card h-100"><div class="card-body"><div class="stat-value money"><?= e($summary['pending']->format()) ?></div><div class="stat-label">Pending</div></div></div></div>
     <div class="col-md-3 col-6"><div class="card stat-card h-100"><div class="card-body"><div class="stat-value money"><?= e($summary['approved']->format()) ?></div><div class="stat-label">Approved</div></div></div></div>
-    <div class="col-md-3 col-6"><div class="card stat-card h-100"><div class="card-body"><div class="stat-value money text-success"><?= e($summary['paid']->format()) ?></div><div class="stat-label">Paid to you</div></div></div></div>
+    <div class="col-md-3 col-6"><div class="card stat-card h-100"><div class="card-body"><div class="stat-value money text-success"><?= e($summary['paid']->format()) ?></div><div class="stat-label">Paid to You</div></div></div></div>
 </div>
 
 <div class="card">
-    <div class="card-header">Your commissions</div>
+    <div class="card-header">Your Commissions</div>
     <div class="table-responsive">
         <table class="table align-middle mb-0">
             <thead><tr><th>Date</th><th>Amount</th><th>Rate</th><th>Status</th></tr></thead>

@@ -76,7 +76,7 @@
         var p = document.createElement('div');
         p.className = 'mb-2 fw-semibold'; p.textContent = '⚡ ' + action.summary;
         var btn = document.createElement('button');
-        btn.className = 'btn btn-sm btn-warning'; btn.textContent = 'Confirm & apply';
+        btn.className = 'btn btn-sm btn-warning'; btn.textContent = 'Confirm & Apply';
         var cancel = document.createElement('button');
         cancel.className = 'btn btn-sm btn-link text-muted'; cancel.textContent = 'Dismiss';
         cancel.onclick = function () { card.remove(); };
@@ -90,7 +90,7 @@
             }).then(function (r) { return r.json(); }).then(function (res) {
                 card.remove();
                 bubble('ai', res.ok ? ('✅ ' + res.message) : ('⚠️ ' + (res.error || 'Could not apply.')));
-            }).catch(function () { btn.disabled = false; btn.textContent = 'Confirm & apply'; });
+            }).catch(function () { btn.disabled = false; btn.textContent = 'Confirm & Apply'; });
         };
         card.appendChild(p); card.appendChild(btn); card.appendChild(cancel);
         log.appendChild(card); log.scrollTop = log.scrollHeight;

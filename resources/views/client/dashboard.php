@@ -6,17 +6,17 @@ $companyEmail = config('company.email');
 
 <div class="card border-0 mb-4" style="background:linear-gradient(120deg,var(--navy-2),var(--navy));color:#fff">
     <div class="card-body">
-        <div class="h5 fw-bold mb-1">👋 Welcome to your client portal</div>
+        <div class="h5 fw-bold mb-1">👋 Welcome to Your Client Portal</div>
         <p class="mb-3" style="color:#cbd2e0">Everything for your project lives here. Not sure where to start? Pick one:</p>
         <div class="row g-2">
             <?php
             $guide = [
-                ['bi-bag-plus', 'Order a service', 'Web, SEO, social or hosting', route('portal.order.index')],
-                ['bi-kanban', 'Track your project', 'See progress live', route('portal.project')],
-                ['bi-receipt', 'View & pay invoices', 'PayID, PayPal, Skrill & more', route('portal.invoices.index')],
+                ['bi-bag-plus', 'Order a Service', 'Web, SEO, social or hosting', route('portal.order.index')],
+                ['bi-kanban', 'Track Your Project', 'See progress live', route('portal.project')],
+                ['bi-receipt', 'View & Pay Invoices', 'PayID, PayPal, Skrill & more', route('portal.invoices.index')],
                 ['bi-calendar-event', 'Meetings', 'Book or join a call', route('portal.meetings')],
-                ['bi-gift', 'Refer & earn', 'Get a % on every referral', route('portal.refer')],
-                ['bi-life-preserver', 'Get help', 'Support or live chat', route('portal.support.index')],
+                ['bi-gift', 'Refer & Earn', 'Get a % on every referral', route('portal.refer')],
+                ['bi-life-preserver', 'Get Help', 'Support or live chat', route('portal.support.index')],
             ];
             foreach ($guide as [$icon, $t, $d, $href]):
             ?>

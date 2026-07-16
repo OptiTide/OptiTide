@@ -24,7 +24,7 @@ $companyEmail = config('company.email');
     <div class="col-md-4">
         <div class="card h-100 border-0" style="background:var(--brand-soft)">
             <div class="card-body d-flex align-items-center justify-content-between gap-2">
-                <div><div class="fw-semibold">Need a change?</div><div class="text-muted small">Upgrade, pause or add a service.</div></div>
+                <div><div class="fw-semibold">Need a Change?</div><div class="text-muted small">Upgrade, pause or add a service.</div></div>
                 <a href="mailto:<?= e($companyEmail) ?>" class="btn btn-sm btn-brand">Contact Us</a>
             </div>
         </div>

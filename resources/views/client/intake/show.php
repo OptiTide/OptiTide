@@ -36,7 +36,7 @@
                 </div>
                 <div class="card-footer d-flex justify-content-between align-items-center">
                     <?php if (! empty($invoiceId)): ?>
-                        <a href="<?= route('portal.invoices.show', ['id' => $invoiceId]) ?>" class="btn btn-link text-muted">Skip for now</a>
+                        <a href="<?= route('portal.invoices.show', ['id' => $invoiceId]) ?>" class="btn btn-link text-muted">Skip for Now</a>
                     <?php else: ?><span></span><?php endif; ?>
                     <button class="btn btn-brand"><i class="bi bi-send"></i> Submit Brief<?= ! empty($invoiceId) ? ' &amp; Continue to Payment' : '' ?></button>
                 </div>

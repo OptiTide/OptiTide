@@ -6,7 +6,7 @@ $badge = ['pending' => 'text-bg-warning', 'approved' => 'text-bg-info', 'paid' =
 
 <div class="row g-3 mb-3">
     <div class="col-md-4"><div class="card stat-card h-100"><div class="card-body"><div class="stat-value money"><?= e(money($totals['pending'], $currency)->format()) ?></div><div class="stat-label">Pending</div></div></div></div>
-    <div class="col-md-4"><div class="card stat-card h-100"><div class="card-body"><div class="stat-value money"><?= e(money($totals['approved'], $currency)->format()) ?></div><div class="stat-label">Approved (to pay)</div></div></div></div>
+    <div class="col-md-4"><div class="card stat-card h-100"><div class="card-body"><div class="stat-value money"><?= e(money($totals['approved'], $currency)->format()) ?></div><div class="stat-label">Approved (To Pay)</div></div></div></div>
     <div class="col-md-4"><div class="card stat-card h-100"><div class="card-body"><div class="stat-value money text-success"><?= e(money($totals['paid'], $currency)->format()) ?></div><div class="stat-label">Paid</div></div></div></div>
 </div>
 

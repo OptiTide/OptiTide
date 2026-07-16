@@ -7,7 +7,7 @@ $companyEmail = config('company.email');
 <div class="card border-0 mb-4" style="background:var(--brand-soft)">
     <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-2">
         <div>
-            <div class="h5 fw-bold mb-1">Order a service</div>
+            <div class="h5 fw-bold mb-1">Order a Service</div>
             <div class="text-muted">Pick a package below and we'll set it up right away. You'll get a tax invoice you can pay by PayID or Payoneer, and we'll get started as soon as it's paid.</div>
         </div>
         <a href="<?= route('portal.services') ?>" class="btn btn-sm btn-outline-brand"><i class="bi bi-grid"></i> My Services</a>
@@ -34,7 +34,7 @@ $companyEmail = config('company.email');
                         <div class="fw-bold mb-1"><?= e($plan['name']) ?></div>
                         <div class="mb-3">
                             <?php if ($isCustom): ?>
-                                <span class="h5 fw-bold">Custom quote</span>
+                                <span class="h5 fw-bold">Custom Quote</span>
                             <?php else: ?>
                                 <span class="h4 fw-bold money"><?= e(money((int) $plan['price_cents'], $plan['currency'])->format()) ?></span>
                                 <?php if ($recurring): ?><span class="text-muted">/<?= e(substr($plan['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?>

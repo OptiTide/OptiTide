@@ -43,12 +43,12 @@ $benefits = JobOpening::lines($role['benefits'] ?? null);
         <div class="row g-4">
             <div class="col-lg-7">
                 <?php if (! empty($role['description'])): ?>
-                    <h2 class="mk-h2">About the role</h2>
+                    <h2 class="mk-h2">About the Role</h2>
                     <div class="mk-job-body"><?= nl2br(e($role['description'])) ?></div>
                 <?php endif; ?>
 
                 <?php if ($responsibilities): ?>
-                    <h2 class="mk-h2 mt-5">What you'll do</h2>
+                    <h2 class="mk-h2 mt-5">What You'll Do</h2>
                     <ul class="mk-checklist">
                         <?php foreach ($responsibilities as $item): ?>
                             <li><i class="bi bi-check2-circle"></i> <?= e($item) ?></li>
@@ -57,7 +57,7 @@ $benefits = JobOpening::lines($role['benefits'] ?? null);
                 <?php endif; ?>
 
                 <?php if ($requirements): ?>
-                    <h2 class="mk-h2 mt-5">What we're after</h2>
+                    <h2 class="mk-h2 mt-5">What We're After</h2>
                     <ul class="mk-checklist">
                         <?php foreach ($requirements as $item): ?>
                             <li><i class="bi bi-check2-circle"></i> <?= e($item) ?></li>
@@ -66,7 +66,7 @@ $benefits = JobOpening::lines($role['benefits'] ?? null);
                 <?php endif; ?>
 
                 <?php if ($benefits): ?>
-                    <h2 class="mk-h2 mt-5">What you'll get</h2>
+                    <h2 class="mk-h2 mt-5">What You'll Get</h2>
                     <ul class="mk-checklist">
                         <?php foreach ($benefits as $item): ?>
                             <li><i class="bi bi-gift"></i> <?= e($item) ?></li>
@@ -77,7 +77,7 @@ $benefits = JobOpening::lines($role['benefits'] ?? null);
 
             <div class="col-lg-5">
                 <aside class="mk-job-aside">
-                    <h3>At a glance</h3>
+                    <h3>At a Glance</h3>
                     <dl>
                         <?php if (! empty($role['department'])): ?>
                             <dt>Team</dt><dd><?= e($role['department']) ?></dd>
