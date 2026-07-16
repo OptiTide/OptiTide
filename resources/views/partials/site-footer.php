@@ -13,10 +13,10 @@
             </div>
             <div class="col-6 col-lg-2">
                 <h5>Services</h5>
-                <a href="/#services">Web Design</a>
-                <a href="/#services">SEO</a>
-                <a href="/#services">Social Media Marketing</a>
-                <a href="/#services">Managed Hosting</a>
+                <a href="/services/web-design">Web Design</a>
+                <a href="/services/seo">SEO</a>
+                <a href="/services/social-media">Social Media Marketing</a>
+                <a href="/services/hosting">Managed Hosting</a>
             </div>
             <div class="col-6 col-lg-2">
                 <h5>Packages</h5>
@@ -27,9 +27,9 @@
             </div>
             <div class="col-6 col-lg-2">
                 <h5>Company</h5>
-                <a href="/#about">About Us</a>
+                <a href="/about">About Us</a>
                 <a href="<?= route('blog.index') ?>">Blog</a>
-                <a href="/#contact">Contact Us</a>
+                <a href="/contact">Contact Us</a>
             </div>
             <div class="col-6 col-lg-2">
                 <h5>Get In Touch</h5>

@@ -41,6 +41,12 @@ $router->get('/blog', [PublicSite\BlogController::class, 'index'])->name('blog.i
 $router->get('/blog/rss.xml', [PublicSite\SeoController::class, 'rss'])->name('blog.rss');
 $router->get('/blog/{slug}', [PublicSite\BlogController::class, 'show'])->name('blog.show');
 
+// --- Marketing pages (services / about / contact) ---------------------------
+$router->get('/services', [PublicSite\PageController::class, 'services'])->name('pages.services');
+$router->get('/services/{slug}', [PublicSite\PageController::class, 'service'])->name('pages.service');
+$router->get('/about', [PublicSite\PageController::class, 'about'])->name('pages.about');
+$router->get('/contact', [PublicSite\PageController::class, 'contact'])->name('pages.contact');
+
 // --- Referral capture -------------------------------------------------------
 $router->get('/r/{code}', [PublicSite\ReferralController::class, 'capture'])->name('referral.capture');
 

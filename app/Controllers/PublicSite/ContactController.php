@@ -13,7 +13,13 @@ class ContactController extends Controller
 {
     public function submit(Request $request): Response
     {
-        $backToContact = fn () => $this->redirect(route('home') . '#contact');
+        // Return to the page the form was posted from (only ever a local path),
+        // so the dedicated /contact page doesn't bounce you back to the homepage.
+        $return = (string) $request->input('return', '');
+        if ($return === '' || $return[0] !== '/' || str_starts_with($return, '//')) {
+            $return = route('home') . '#contact';
+        }
+        $backToContact = fn () => $this->redirect($return);
 
         // Honeypot — a bot filling the hidden "website" field gets a silent OK.
         if ($request->filled('website')) {
