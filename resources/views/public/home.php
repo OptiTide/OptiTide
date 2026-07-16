@@ -269,7 +269,7 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
                 </div>
                 <div class="mk-casestudy">
                     <div class="mk-casestudy-body">
-                        <span class="mk-eyebrow">Case Study</span>
+                        <span class="mk-eyebrow" style="color:var(--brand-bright)">Case Study</span>
                         <div class="mk-casestudy-title"><?= e($caseStudy['label']) ?></div>
                         <div class="mk-casestudy-detail"><?= e($caseStudy['detail']) ?></div>
                         <div class="mk-casestudy-stats">
