@@ -35,6 +35,7 @@
                 <a href="/about">About Us</a>
                 <a href="/#packages">Packages</a>
                 <a href="<?= route('blog.index') ?>">Blog</a>
+                <a href="<?= route('careers.index') ?>">Careers</a>
                 <a href="/contact">Contact Us</a>
             </div>
 

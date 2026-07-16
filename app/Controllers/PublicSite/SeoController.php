@@ -39,6 +39,7 @@ class SeoController extends Controller
             ['loc' => $url . '/', 'priority' => '1.0', 'changefreq' => 'weekly', 'lastmod' => $today],
             ['loc' => $url . '/services', 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today],
             ['loc' => $url . '/about', 'priority' => '0.6', 'changefreq' => 'monthly', 'lastmod' => $today],
+            ['loc' => $url . '/careers', 'priority' => '0.6', 'changefreq' => 'weekly', 'lastmod' => $today],
             ['loc' => $url . '/contact', 'priority' => '0.6', 'changefreq' => 'monthly', 'lastmod' => $today],
             ['loc' => $url . '/blog', 'priority' => '0.8', 'changefreq' => 'daily', 'lastmod' => $today],
             ['loc' => $url . '/terms', 'priority' => '0.2', 'changefreq' => 'yearly', 'lastmod' => $today],
@@ -51,6 +52,17 @@ class SeoController extends Controller
         // new service page can never be missing from the sitemap.
         foreach (array_keys(\App\Controllers\PublicSite\PageController::serviceData()) as $slug) {
             $urls[] = ['loc' => $url . '/services/' . $slug, 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today];
+        }
+
+        // Only OPEN roles — a draft isn't public and a filled role must drop out
+        // of the index rather than linger as a dead JobPosting.
+        foreach (\App\Models\JobOpening::open() as $role) {
+            $urls[] = [
+                'loc'        => $url . '/careers/' . $role['slug'],
+                'priority'   => '0.7',
+                'changefreq' => 'weekly',
+                'lastmod'    => date('Y-m-d', strtotime((string) ($role['updated_at'] ?: ($role['posted_at'] ?: $today)))),
+            ];
         }
 
         foreach (Blog::published() as $post) {

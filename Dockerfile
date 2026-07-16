@@ -38,6 +38,16 @@ RUN { \
         echo 'opcache.validate_timestamps=0'; \
     } > /usr/local/etc/php/conf.d/opcache.ini
 
+# Uploads. PHP defaults to upload_max_filesize=2M, which is BELOW the CV limit
+# the careers form advertises (App\Support\Upload::MAX_BYTES = 5M) — without
+# this, a 3MB CV is rejected by PHP before our own check ever runs.
+# post_max_size must exceed upload_max_filesize to leave room for the other
+# fields, or the whole POST is discarded and $_POST arrives empty.
+RUN { \
+        echo 'upload_max_filesize=5M'; \
+        echo 'post_max_size=8M'; \
+    } > /usr/local/etc/php/conf.d/uploads.ini
+
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 

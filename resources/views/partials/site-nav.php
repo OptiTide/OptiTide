@@ -44,12 +44,13 @@ $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/');
                 </ul>
             </div>
             <a href="/#packages" class="mk-nav-link">Packages</a>
-            <a href="<?= route('pages.about') ?>" class="mk-nav-link">About Us</a>
             <div class="dropdown mk-nav-dd">
-                <a href="<?= route('blog.index') ?>" class="mk-nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Resources</a>
+                <a href="<?= route('pages.about') ?>" class="mk-nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Company</a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="<?= route('blog.index') ?>">Blog</a></li>
-                    <li><a class="dropdown-item" href="/#faq">FAQs</a></li>
+                    <li><a class="dropdown-item" href="<?= route('pages.about') ?>"><i class="bi bi-people me-1"></i> About Us</a></li>
+                    <li><a class="dropdown-item" href="<?= route('careers.index') ?>"><i class="bi bi-briefcase me-1"></i> Careers</a></li>
+                    <li><a class="dropdown-item" href="<?= route('blog.index') ?>"><i class="bi bi-journal-text me-1"></i> Blog</a></li>
+                    <li><a class="dropdown-item" href="/#faq"><i class="bi bi-question-circle me-1"></i> FAQs</a></li>
                 </ul>
             </div>
             <a href="<?= route('pages.contact') ?>" class="mk-nav-link">Contact</a>

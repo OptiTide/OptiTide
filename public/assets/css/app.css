@@ -566,3 +566,56 @@ a:hover { color: var(--brand); }
 .mk-price-group { margin-bottom: 2.5rem; }
 .mk-price-group:last-of-type { margin-bottom: 0; }
 .mk-price-group-title { font-size: 1.05rem; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); }
+
+/* ---------------------------------------------------------------------------
+   Careers — job list, role page, empty state
+   --------------------------------------------------------------------------- */
+.mk-jobs { display: grid; gap: 1rem; }
+.mk-job {
+    display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 1.4rem 1.6rem; text-decoration: none; color: var(--ink);
+    transition: box-shadow .18s, transform .18s, border-color .18s;
+}
+.mk-job:hover { box-shadow: 0 12px 32px rgba(13,21,48,.10); transform: translateY(-2px); border-color: var(--brand-soft); color: var(--ink); }
+.mk-job-main { flex: 1 1 20rem; min-width: 0; }
+.mk-job-title { font-size: 1.2rem; font-weight: 800; margin: 0 0 .3rem; }
+.mk-job-summary { color: var(--muted); font-size: .93rem; line-height: 1.55; margin: 0 0 .6rem; }
+.mk-job-meta { display: flex; flex-wrap: wrap; gap: .45rem .9rem; font-size: .82rem; color: var(--muted); font-weight: 600; }
+.mk-job-meta span { display: inline-flex; align-items: center; gap: .35rem; }
+.mk-job-meta i { color: var(--brand-ink); }
+.mk-job-salary { color: #15803d; }
+.mk-job-salary i { color: #15803d; }
+.mk-job-go { display: inline-flex; align-items: center; gap: .4rem; font-weight: 700; color: var(--brand-ink); white-space: nowrap; }
+.mk-job:hover .mk-job-go { color: var(--brand); }
+
+/* Hero variant sits on the dark page-hero, so it needs light-on-dark colours */
+.mk-job-meta--hero { margin-top: 1rem; color: rgba(255,255,255,.82); font-size: .88rem; }
+.mk-job-meta--hero i { color: var(--brand-bright); }
+.mk-job-meta--hero .mk-job-salary,
+.mk-job-meta--hero .mk-job-salary i { color: #6ee7a8; }
+
+.mk-job-body { color: #334155; font-size: 1rem; line-height: 1.75; }
+
+.mk-job-aside { position: sticky; top: 1.5rem; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 1.5rem; }
+.mk-job-aside h3 { font-size: 1rem; font-weight: 800; margin: 0 0 1rem; }
+.mk-job-aside dl { display: grid; grid-template-columns: auto 1fr; gap: .55rem 1rem; margin: 0 0 1.25rem; font-size: .9rem; }
+.mk-job-aside dt { color: var(--muted); font-weight: 600; }
+.mk-job-aside dd { margin: 0; font-weight: 700; text-align: right; }
+
+.mk-job-empty { text-align: center; max-width: 44rem; margin: 0 auto; background: #fff; border: 1px dashed var(--line); border-radius: 16px; padding: 2.5rem 1.75rem; }
+.mk-job-empty i { font-size: 2.25rem; color: var(--brand); }
+.mk-job-empty h3 { font-size: 1.25rem; font-weight: 800; margin: .9rem 0 .5rem; }
+.mk-job-empty p { color: var(--muted); line-height: 1.6; margin: 0 0 1.25rem; }
+
+/* The aside is col-lg-5, so it stops sitting beside the body at lg (992px) —
+   not 768px. Un-stick and left-align it where the columns actually stack, or
+   between 768 and 992 it reads as a right-aligned orphan under the body copy. */
+@media (max-width: 991.98px) {
+    .mk-job-aside { position: static; }
+    .mk-job-aside dd { text-align: left; }
+}
+
+@media (max-width: 767.98px) {
+    .mk-job { padding: 1.15rem 1.2rem; }
+}

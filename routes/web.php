@@ -47,6 +47,13 @@ $router->get('/services/{slug}', [PublicSite\PageController::class, 'service'])-
 $router->get('/about', [PublicSite\PageController::class, 'about'])->name('pages.about');
 $router->get('/contact', [PublicSite\PageController::class, 'contact'])->name('pages.contact');
 
+// --- Careers (public, indexable — JobPosting schema feeds Google Jobs) -------
+// The apply POST is declared before the {slug} GET to match the /blog ordering
+// convention, though the differing methods mean they can't collide.
+$router->get('/careers', [PublicSite\CareerController::class, 'index'])->name('careers.index');
+$router->post('/careers/apply', [PublicSite\CareerController::class, 'apply'])->name('careers.apply')->middleware('csrf');
+$router->get('/careers/{slug}', [PublicSite\CareerController::class, 'show'])->name('careers.show');
+
 // --- Referral capture -------------------------------------------------------
 $router->get('/r/{code}', [PublicSite\ReferralController::class, 'capture'])->name('referral.capture');
 
@@ -140,6 +147,21 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->get('/blogs/{id}/edit', [Admin\BlogController::class, 'edit'])->name('admin.blogs.edit');
     $router->put('/blogs/{id}', [Admin\BlogController::class, 'update'])->name('admin.blogs.update');
     $router->delete('/blogs/{id}', [Admin\BlogController::class, 'destroy'])->name('admin.blogs.destroy');
+
+    // Careers. The literal /careers/applications* paths are declared BEFORE
+    // /careers/{id}/edit so an "applications" segment can never be captured as
+    // a role id.
+    $router->get('/careers', [Admin\CareerController::class, 'index'])->name('admin.careers.index');
+    $router->get('/careers/create', [Admin\CareerController::class, 'create'])->name('admin.careers.create');
+    $router->get('/careers/applications', [Admin\CareerController::class, 'applications'])->name('admin.careers.applications');
+    $router->get('/careers/applications/{id}', [Admin\CareerController::class, 'application'])->name('admin.careers.application');
+    $router->put('/careers/applications/{id}', [Admin\CareerController::class, 'updateApplication'])->name('admin.careers.applications.update');
+    $router->get('/careers/applications/{id}/resume', [Admin\CareerController::class, 'resume'])->name('admin.careers.applications.resume');
+    $router->delete('/careers/applications/{id}', [Admin\CareerController::class, 'destroyApplication'])->name('admin.careers.applications.destroy');
+    $router->post('/careers', [Admin\CareerController::class, 'store'])->name('admin.careers.store');
+    $router->get('/careers/{id}/edit', [Admin\CareerController::class, 'edit'])->name('admin.careers.edit');
+    $router->put('/careers/{id}', [Admin\CareerController::class, 'update'])->name('admin.careers.update');
+    $router->delete('/careers/{id}', [Admin\CareerController::class, 'destroy'])->name('admin.careers.destroy');
 
     // Project boards (Trello-style, per service line)
     $router->get('/boards', [Admin\BoardController::class, 'index'])->name('admin.boards.index');
