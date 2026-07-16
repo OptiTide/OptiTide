@@ -16,15 +16,6 @@ $services = [
     ['bi-hdd-network', 'Managed Hosting', 'Secure, fast and reliable hosting with expert Australian support.', ['Australian Servers', 'Daily Backups', '24/7 Monitoring', 'Free SSL & Security']],
 ];
 
-// Pricing packages. `mo` = monthly retainer, `once` = one-off project price.
-// Adjust prices/features to your real packages; set `once` to '' to hide it.
-$plans = [
-    ['name' => 'Starter', 'blurb' => 'Perfect for small businesses getting online.', 'mo' => 149, 'once' => 1499, 'features' => ['5 Page Website', 'Mobile Responsive', 'Basic SEO Setup', 'Contact Form'], 'cta' => 'Get Started', 'popular' => false],
-    ['name' => 'Growth', 'blurb' => 'Great for growing businesses seeking more leads.', 'mo' => 299, 'once' => 2999, 'features' => ['Up to 10 Pages', 'Technical SEO', 'Google Business Profile', 'Monthly Performance Report'], 'cta' => 'Get Started', 'popular' => false],
-    ['name' => 'Pro', 'blurb' => 'Our best value for established businesses.', 'mo' => 599, 'once' => 5999, 'features' => ['Up to 20 Pages', 'Advanced SEO & Content', 'Social Media Management', 'Monthly Strategy Call'], 'cta' => 'Get Started', 'popular' => true],
-    ['name' => 'Business', 'blurb' => 'Custom solutions for larger businesses.', 'mo' => 0, 'once' => 0, 'features' => ['Custom Website', 'Full SEO Campaign', 'Paid Advertising', 'Dedicated Account Manager'], 'cta' => 'Contact Us', 'popular' => false],
-];
-
 $process = [
     ['Discover', 'We learn about your business, goals and target audience.'],
     ['Plan', 'We create a tailored strategy and roadmap for success.'],
@@ -86,7 +77,8 @@ $jsonLd = [
 
 $isAuthed = \App\Core\Auth::check();
 $dashUrl = $isAuthed ? (\App\Core\Auth::isStaff() ? route('admin.dashboard') : route('portal.dashboard')) : route('login');
-$startUrl = $isAuthed ? $dashUrl : route('register');
+$startUrl = $isAuthed ? route('portal.order.index') : route('register');
+$canOrder = $isAuthed && \App\Core\Auth::isClient();
 $hasMascot = is_file(public_path('assets/img/mascot.png'));
 ?>
 <!doctype html>
@@ -224,48 +216,53 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
     </div>
 </section>
 
-<!-- ================= PRICING ================= -->
+<!-- ================= PRICING (real catalogue, managed in /admin) ============ -->
+<?php if (! empty($packages)): ?>
 <section id="packages" class="mk-section mk-section--alt">
     <div class="mk-container">
-        <div class="text-center mb-4">
+        <div class="text-center mb-5">
             <h2 class="mk-h2">Simple, Transparent Pricing</h2>
-            <p class="mk-lead mx-auto">Choose a package that fits your goals and budget.</p>
-            <div class="mk-price-toggle" role="group" aria-label="Billing period">
-                <button type="button" class="is-active" data-period="mo" onclick="otSetPeriod('mo', this)">Monthly</button>
-                <button type="button" data-period="once" onclick="otSetPeriod('once', this)">One-off</button>
-            </div>
+            <p class="mk-lead mx-auto">Real prices, GST included, no lock-in contracts — the price you see is the price you pay.</p>
             <?php if (\App\Support\Currency::isConverted()): ?>
                 <p class="small text-muted mx-auto mt-2" style="max-width:640px"><i class="bi bi-info-circle"></i> Prices shown in <?= e(\App\Support\Currency::current()) ?> are indicative, converted from AUD. Invoices are issued in AUD.</p>
             <?php endif; ?>
         </div>
-        <div class="row g-3 justify-content-center">
-            <?php foreach ($plans as $plan): ?>
-                <?php $isContact = (int) $plan['mo'] === 0 && (int) $plan['once'] === 0; ?>
-                <div class="col-sm-6 col-xl-3">
-                    <div class="mk-price-card <?= $plan['popular'] ? 'mk-price-card--popular' : '' ?> h-100">
-                        <?php if ($plan['popular']): ?><div class="mk-price-badge">Most Popular</div><?php endif; ?>
-                        <div class="mk-price-name"><?= e($plan['name']) ?></div>
-                        <div class="mk-price-blurb"><?= e($plan['blurb']) ?></div>
-                        <div class="mk-price-amount">
-                            <?php if ($isContact): ?>
-                                <span class="mk-price-num">Let's talk</span>
-                            <?php else: ?>
-                                <span class="mk-price-num"
-                                      data-mo="<?= e(\App\Support\Currency::display((int) $plan['mo'] * 100)) ?>"
-                                      data-once="<?= $plan['once'] ? e(\App\Support\Currency::display((int) $plan['once'] * 100)) : 'Custom' ?>"><?= e(\App\Support\Currency::display((int) $plan['mo'] * 100)) ?></span><span class="mk-price-per" data-mo="/mo" data-once=" once">/mo</span>
-                            <?php endif; ?>
+
+        <?php foreach ($packages as $group): ?>
+            <div class="mk-price-group">
+                <h3 class="mk-price-group-title"><?= e($group['line']['name']) ?></h3>
+                <div class="row g-3">
+                    <?php foreach ($group['plans'] as $plan): ?>
+                        <?php $isQuote = (int) $plan['price_cents'] === 0; ?>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="mk-price-card h-100">
+                                <div class="mk-price-name"><?= e($plan['name']) ?></div>
+                                <?php if (! empty($plan['description'])): ?><div class="mk-price-blurb"><?= e($plan['description']) ?></div><?php endif; ?>
+                                <div class="mk-price-amount">
+                                    <?php if ($isQuote): ?>
+                                        <span class="mk-price-num" style="font-size:1.4rem">Custom quote</span>
+                                    <?php else: ?>
+                                        <span class="mk-price-num"><?= e(\App\Support\Currency::display((int) $plan['price_cents'])) ?></span><span class="mk-price-per"><?= e(\App\Support\Catalog::suffix($plan)) ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="mk-price-terms"><?= $plan['billing_type'] === 'recurring' ? 'Ongoing monthly — cancel any time' : 'One-off project fee' ?></div>
+                                <?php if ($isQuote): ?>
+                                    <a href="/contact" class="btn btn-outline-brand w-100 mt-auto">Get a Quote</a>
+                                <?php elseif ($canOrder): ?>
+                                    <a href="<?= route('portal.order.show', ['service' => $plan['id']]) ?>" class="btn btn-brand w-100 mt-auto">Order Now</a>
+                                <?php else: ?>
+                                    <a href="<?= e($startUrl) ?>" class="btn btn-brand w-100 mt-auto">Get Started</a>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                        <ul class="mk-price-features">
-                            <?php foreach ($plan['features'] as $f): ?><li><i class="bi bi-check-circle-fill"></i> <?= e($f) ?></li><?php endforeach; ?>
-                        </ul>
-                        <a href="<?= $isContact ? '#contact' : $startUrl ?>" class="btn <?= $plan['popular'] ? 'btn-brand' : 'btn-outline-brand' ?> w-100 mt-auto"><?= e($plan['cta']) ?></a>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
-        </div>
-        <p class="text-center text-muted small mt-4 mb-0">All plans include Australian hosting, SSL certificate &amp; ongoing support.</p>
+            </div>
+        <?php endforeach; ?>
+        <p class="text-center text-muted small mt-4 mb-0">All prices in <?= e(config('company.currency', 'AUD')) ?> and include GST. Every plan comes with Australian support.</p>
     </div>
 </section>
+<?php endif; ?>
 
 <!-- ================= PROCESS ================= -->
 <section id="process" class="mk-process-section">
@@ -392,13 +389,6 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
 <?php $this->insert('partials.site-footer'); ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-function otSetPeriod(period, btn) {
-    document.querySelectorAll('.mk-price-toggle button').forEach(function (b) { b.classList.toggle('is-active', b === btn); });
-    document.querySelectorAll('.mk-price-num[data-' + period + ']').forEach(function (el) { el.textContent = el.getAttribute('data-' + period); });
-    document.querySelectorAll('.mk-price-per[data-' + period + ']').forEach(function (el) { el.textContent = el.getAttribute('data-' + period); });
-}
-</script>
 <?php $this->insert('partials.chat-widget'); ?>
 </body>
 </html>

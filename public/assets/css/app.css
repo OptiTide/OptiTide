@@ -557,3 +557,12 @@ a:hover { color: var(--brand); }
 .mk-topbar-login { color: #fff !important; font-weight: 600; margin-right: 0 !important; }
 .mk-topbar-login i { color: var(--brand-bright); }
 .mk-topbar-login:hover { color: var(--brand-bright) !important; }
+
+/* Real-catalogue pricing bits on service pages */
+.mk-price-terms { color: var(--muted); font-size: .8rem; text-align: center; margin-bottom: 1rem; }
+.mk-service-from { display: inline-block; background: var(--brand-soft); color: var(--brand-dark); font-size: .82rem; font-weight: 700; padding: .15rem .6rem; border-radius: 999px; margin-bottom: .6rem; }
+
+/* Pricing grouped by service line (real catalogue) */
+.mk-price-group { margin-bottom: 2.5rem; }
+.mk-price-group:last-of-type { margin-bottom: 0; }
+.mk-price-group-title { font-size: 1.05rem; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); }

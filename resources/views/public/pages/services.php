@@ -22,6 +22,9 @@
                     <article class="mk-service h-100">
                         <div class="mk-service-icon"><i class="bi <?= e($s['icon']) ?>"></i></div>
                         <h3><?= e($s['title']) ?></h3>
+                        <?php if (! empty($s['from'])): ?>
+                            <div class="mk-service-from">From <strong><?= e(\App\Support\Currency::display((int) $s['from'])) ?></strong></div>
+                        <?php endif; ?>
                         <p><?= e($s['intro']) ?></p>
                         <ul>
                             <?php foreach (array_slice($s['includes'], 0, 4) as [$i, $t, $d]): ?><li><i class="bi bi-check2"></i> <?= e($t) ?></li><?php endforeach; ?>

@@ -2,10 +2,12 @@
 
 namespace App\Controllers\PublicSite;
 
+use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Request;
 use App\Core\Response;
 use App\Support\Captcha;
+use App\Support\Catalog;
 
 /**
  * Standalone marketing pages (Services overview, per-service detail, About,
@@ -19,6 +21,7 @@ class PageController extends Controller
     {
         return [
             'web-design' => [
+                'category' => 'web-design',   // matches the service_categories slug
                 'icon' => 'bi-window-desktop',
                 'nav' => 'Web Design',
                 'title' => 'Web Design & Development',
@@ -35,6 +38,7 @@ class PageController extends Controller
                 'benefits' => ['Convert more visitors into leads and sales', 'Rank better on Google from launch', 'Look professional and trustworthy', 'A site you actually own and control'],
             ],
             'seo' => [
+                'category' => 'seo',
                 'icon' => 'bi-search',
                 'nav' => 'SEO',
                 'title' => 'Search Engine Optimisation',
@@ -51,6 +55,7 @@ class PageController extends Controller
                 'benefits' => ['More qualified organic traffic', 'Higher rankings for terms that convert', 'Show up in Google Maps locally', 'Compounding results that build over time'],
             ],
             'social-media' => [
+                'category' => 'smm',   // the DB line is slugged "smm"
                 'icon' => 'bi-megaphone',
                 'nav' => 'Social Media',
                 'title' => 'Social Media Marketing',
@@ -67,6 +72,7 @@ class PageController extends Controller
                 'benefits' => ['Stay top-of-mind with your audience', 'Build brand trust and recognition', 'Reach new customers with paid campaigns', 'Save hours every week'],
             ],
             'hosting' => [
+                'category' => 'hosting',
                 'icon' => 'bi-hdd-network',
                 'nav' => 'Managed Hosting',
                 'title' => 'Managed Web Hosting',
@@ -87,11 +93,17 @@ class PageController extends Controller
 
     public function services(Request $request): Response
     {
+        // Real "from" prices straight out of the admin-managed catalogue.
+        $services = self::serviceData();
+        foreach ($services as $slug => $s) {
+            $services[$slug]['from'] = Catalog::fromPriceCents($s['category']);
+        }
+
         return $this->view('public.pages.services', [
             'seoTitle' => 'Our Services — Web Design, SEO, Social Media & Hosting | OptiTide',
             'seoDescription' => 'OptiTide\'s digital services for Australian business: web design & development, SEO, social media marketing and managed hosting — all under one roof.',
             'canonical' => rtrim(config('app.url'), '/') . '/services',
-            'services' => self::serviceData(),
+            'services' => $services,
         ]);
     }
 
@@ -103,12 +115,18 @@ class PageController extends Controller
         }
         $service = $all[$slug];
 
+        // Real plans + prices for this line, straight from the admin catalogue.
+        $isAuthed = Auth::check();
+
         return $this->view('public.pages.service', [
             'seoTitle' => $service['title'] . ' for Australian Business | OptiTide',
             'seoDescription' => $service['intro'],
             'canonical' => rtrim(config('app.url'), '/') . '/services/' . $slug,
             'slug' => $slug,
             'service' => $service,
+            'plans' => Catalog::plansForSlug($service['category']),
+            'canOrder' => $isAuthed && Auth::isClient(),
+            'startUrl' => $isAuthed ? route('portal.order.index') : route('register'),
             'others' => array_diff_key($all, [$slug => true]),
         ]);
     }
