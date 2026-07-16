@@ -48,6 +48,7 @@ $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/');
                 <a href="<?= route('pages.about') ?>" class="mk-nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Company</a>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="<?= route('pages.about') ?>"><i class="bi bi-people me-1"></i> About Us</a></li>
+                    <li><a class="dropdown-item" href="<?= route('pages.how-we-work') ?>"><i class="bi bi-clock-history me-1"></i> How We Work</a></li>
                     <li><a class="dropdown-item" href="<?= route('careers.index') ?>"><i class="bi bi-briefcase me-1"></i> Careers</a></li>
                     <li><a class="dropdown-item" href="<?= route('blog.index') ?>"><i class="bi bi-journal-text me-1"></i> Blog</a></li>
                     <li><a class="dropdown-item" href="/#faq"><i class="bi bi-question-circle me-1"></i> FAQs</a></li>

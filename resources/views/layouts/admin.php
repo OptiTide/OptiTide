@@ -26,6 +26,7 @@ $me = auth();
             <a class="nav-link <?= $active('/admin/invoices') ?>" href="<?= route('admin.invoices.index') ?>"><i class="bi bi-receipt"></i> Invoices</a>
             <a class="nav-link <?= $active('/admin/installments') ?>" href="<?= route('admin.installments.index') ?>"><i class="bi bi-hourglass-split"></i> Payment Plans</a>
             <a class="nav-link <?= $active('/admin/services') ?>" href="<?= route('admin.services.index') ?>"><i class="bi bi-grid"></i> Services</a>
+            <a class="nav-link <?= $active('/admin/discounts') ?>" href="<?= route('admin.discounts.index') ?>"><i class="bi bi-tags"></i> Discounts &amp; Sales</a>
 
             <div class="nav-section">Support &amp; Sales</div>
             <a class="nav-link <?= $active('/admin/tickets') ?>" href="<?= route('admin.tickets.index') ?>"><i class="bi bi-life-preserver"></i> Helpdesk</a>

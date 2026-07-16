@@ -138,20 +138,28 @@ final class InvoiceService
     public function recomputeTotals(int|string $invoiceId): array
     {
         $invoice = Invoice::findOrFail($invoiceId);
-        $totalCents = InvoiceItem::query()->where('invoice_id', $invoiceId)->sum('line_total_cents');
+        $grossCents = InvoiceItem::query()->where('invoice_id', $invoiceId)->sum('line_total_cents');
 
-        $total = new Money($totalCents, $invoice['currency']);
-        $gst = Gst::component($total);
-        $subtotal = $total->subtract($gst);
+        // The discount comes off the GST-INCLUSIVE figure and GST is then
+        // re-derived from what's left. Discounting the ex-GST subtotal instead
+        // would remit GST on money we never collected. Clamped to the gross so
+        // a stale/oversized discount can never produce a negative invoice.
+        $discount = max(0, min((int) ($invoice['discount_cents'] ?? 0), $grossCents));
+        $netCents = $grossCents - $discount;
+
+        $net = new Money($netCents, $invoice['currency']);
+        $gst = Gst::component($net);
+        $subtotal = $net->subtract($gst);
 
         // Any active late fee (GST-free) rides on top of the line-item total, so
         // re-editing an overdue invoice never silently drops the penalty.
         $lateFee = (int) ($invoice['late_fee_cents'] ?? 0);
 
         Invoice::updateById($invoiceId, [
+            'discount_cents' => $discount,
             'subtotal_cents' => $subtotal->minorUnits,
             'gst_cents'      => $gst->minorUnits,
-            'total_cents'    => $total->minorUnits + $lateFee,
+            'total_cents'    => $net->minorUnits + $lateFee,
         ]);
 
         return Invoice::find($invoiceId);

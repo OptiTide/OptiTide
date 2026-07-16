@@ -59,6 +59,7 @@ $payUrl = url('pay/' . $invoice['public_token']);
                 <div class="row justify-content-end">
                     <div class="col-sm-6">
                         <table class="table table-sm">
+                            <?php $this->insert("partials.invoice-discount-rows", ["invoice" => $invoice]); ?>
                             <tr><td class="text-muted">Subtotal (ex GST)</td><td class="text-end money"><?= e(money((int) $invoice['subtotal_cents'], $invoice['currency'])->format()) ?></td></tr>
                             <?php if ((int) $invoice['gst_cents'] > 0): ?>
                                 <tr><td class="text-muted">GST (<?= e(\App\Support\Gst::rateLabel()) ?>)</td><td class="text-end money"><?= e(money((int) $invoice['gst_cents'], $invoice['currency'])->format()) ?></td></tr>

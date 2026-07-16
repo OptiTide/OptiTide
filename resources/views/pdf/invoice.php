@@ -97,6 +97,20 @@ $fmt = fn (int $cents) => money($cents, $invoice['currency'])->format();
         <td style="width:55%;"></td>
         <td>
             <table class="totals">
+                <?php
+                // A discount is shown against the full items total, then GST is
+                // struck on the discounted amount — so the tax invoice reads as
+                // a true record of what was charged and what GST was collected.
+                $discountCents = (int) ($invoice['discount_cents'] ?? 0);
+                if ($discountCents > 0):
+                    $grossCents = (int) $invoice['subtotal_cents'] + (int) $invoice['gst_cents'] + $discountCents;
+                ?>
+                    <tr><td class="muted">Items total</td><td class="right"><?= e($fmt($grossCents)) ?></td></tr>
+                    <tr>
+                        <td class="muted"><?= e($invoice['discount_label'] ?: 'Discount') ?></td>
+                        <td class="right">− <?= e($fmt($discountCents)) ?></td>
+                    </tr>
+                <?php endif; ?>
                 <tr><td class="muted">Subtotal (ex GST)</td><td class="right"><?= e($fmt((int) $invoice['subtotal_cents'])) ?></td></tr>
                 <?php if ((int) $invoice['gst_cents'] > 0): ?>
                     <tr><td class="muted">GST (<?= e(\App\Support\Gst::rateLabel()) ?>)</td><td class="right"><?= e($fmt((int) $invoice['gst_cents'])) ?></td></tr>

@@ -144,6 +144,23 @@ class PageController extends Controller
         ]);
     }
 
+    /**
+     * How We Work — the timezone story. The office clock and the visitor
+     * comparison are computed live (server for ours, browser for theirs), so the
+     * page can't go stale and can't claim an advantage for someone who shares
+     * our clock.
+     */
+    public function howWeWork(Request $request): Response
+    {
+        $brand = config('company.brand_name');
+
+        return $this->view('public.pages.how-we-work', [
+            'seoTitle'       => 'How We Work — ' . $brand . ' | ' . \App\Support\Company::timezoneAbbr() . ' hours, overnight turnaround',
+            'seoDescription' => 'We work ' . \App\Support\Company::timezoneAbbr() . ' hours from Western Australia and often late into the evening — so you send feedback, we work while you sleep, and you review it the next morning.',
+            'canonical'      => rtrim(config('app.url'), '/') . '/how-we-work',
+        ]);
+    }
+
     public function contact(Request $request): Response
     {
         $brand = config('company.brand_name');

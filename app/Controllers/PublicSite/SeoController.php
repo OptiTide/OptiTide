@@ -39,6 +39,7 @@ class SeoController extends Controller
             ['loc' => $url . '/', 'priority' => '1.0', 'changefreq' => 'weekly', 'lastmod' => $today],
             ['loc' => $url . '/services', 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today],
             ['loc' => $url . '/about', 'priority' => '0.6', 'changefreq' => 'monthly', 'lastmod' => $today],
+            ['loc' => $url . '/how-we-work', 'priority' => '0.6', 'changefreq' => 'monthly', 'lastmod' => $today],
             ['loc' => $url . '/careers', 'priority' => '0.6', 'changefreq' => 'weekly', 'lastmod' => $today],
             ['loc' => $url . '/contact', 'priority' => '0.6', 'changefreq' => 'monthly', 'lastmod' => $today],
             ['loc' => $url . '/blog', 'priority' => '0.8', 'changefreq' => 'daily', 'lastmod' => $today],

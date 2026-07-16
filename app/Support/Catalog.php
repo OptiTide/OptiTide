@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Service;
 use App\Models\ServiceCategory;
+use App\Services\Billing\DiscountService;
 
 /**
  * The real, admin-managed service catalogue (service_categories + services).
@@ -86,5 +87,38 @@ final class Catalog
         }
 
         return '/' . substr((string) ($plan['interval'] ?: 'month'), 0, 2);
+    }
+
+    /**
+     * The live sale on a plan, or null: ['sale' => row, 'amount_cents' => int,
+     * 'was_cents' => int, 'now_cents' => int].
+     *
+     * Public pricing reads this so a sale shows struck-through everywhere at
+     * once, and the advertised price is always the one checkout will charge.
+     * Returns null when nothing is on sale, so callers render as normal.
+     */
+    public static function sale(array $plan): ?array
+    {
+        // Quote-based plans have no price to discount.
+        if ((int) ($plan['price_cents'] ?? 0) <= 0) {
+            return null;
+        }
+
+        $sale = (new DiscountService())->saleForService($plan);
+        if (! $sale) {
+            return null;
+        }
+
+        $amount = (new DiscountService())->amountFor($sale, (int) $plan['price_cents']);
+        if ($amount <= 0) {
+            return null;
+        }
+
+        return [
+            'sale'         => $sale,
+            'amount_cents' => $amount,
+            'was_cents'    => (int) $plan['price_cents'],
+            'now_cents'    => (int) $plan['price_cents'] - $amount,
+        ];
     }
 }

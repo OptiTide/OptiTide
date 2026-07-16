@@ -45,6 +45,7 @@ $router->get('/blog/{slug}', [PublicSite\BlogController::class, 'show'])->name('
 $router->get('/services', [PublicSite\PageController::class, 'services'])->name('pages.services');
 $router->get('/services/{slug}', [PublicSite\PageController::class, 'service'])->name('pages.service');
 $router->get('/about', [PublicSite\PageController::class, 'about'])->name('pages.about');
+$router->get('/how-we-work', [PublicSite\PageController::class, 'howWeWork'])->name('pages.how-we-work');
 $router->get('/contact', [PublicSite\PageController::class, 'contact'])->name('pages.contact');
 
 // --- Careers (public, indexable — JobPosting schema feeds Google Jobs) -------
@@ -162,6 +163,14 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->get('/careers/{id}/edit', [Admin\CareerController::class, 'edit'])->name('admin.careers.edit');
     $router->put('/careers/{id}', [Admin\CareerController::class, 'update'])->name('admin.careers.update');
     $router->delete('/careers/{id}', [Admin\CareerController::class, 'destroy'])->name('admin.careers.destroy');
+
+    // Discounts & sales.
+    $router->get('/discounts', [Admin\DiscountController::class, 'index'])->name('admin.discounts.index');
+    $router->get('/discounts/create', [Admin\DiscountController::class, 'create'])->name('admin.discounts.create');
+    $router->post('/discounts', [Admin\DiscountController::class, 'store'])->name('admin.discounts.store');
+    $router->get('/discounts/{id}/edit', [Admin\DiscountController::class, 'edit'])->name('admin.discounts.edit');
+    $router->put('/discounts/{id}', [Admin\DiscountController::class, 'update'])->name('admin.discounts.update');
+    $router->delete('/discounts/{id}', [Admin\DiscountController::class, 'destroy'])->name('admin.discounts.destroy');
 
     // Project boards (Trello-style, per service line)
     $router->get('/boards', [Admin\BoardController::class, 'index'])->name('admin.boards.index');

@@ -33,6 +33,7 @@
             <div class="col-6 col-lg-2 mk-footer-col">
                 <h5>Company</h5>
                 <a href="/about">About Us</a>
+                <a href="<?= route('pages.how-we-work') ?>">How We Work</a>
                 <a href="/#packages">Packages</a>
                 <a href="<?= route('blog.index') ?>">Blog</a>
                 <a href="<?= route('careers.index') ?>">Careers</a>

@@ -22,8 +22,18 @@ $this->extends('layouts.portal');
                         </div>
                     </div>
                     <div class="text-end">
-                        <div class="h3 fw-bold money mb-0"><?= e($total->format()) ?><?php if ($recurring): ?><span class="text-muted fs-6">/<?= e(substr($service['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?></div>
-                        <div class="text-muted small">includes GST of <?= e($gst->format()) ?></div>
+                        <?php if ($sale && $saleAmount->minorUnits > 0): ?>
+                            <?php $sale_net = new \App\Support\Money($total->minorUnits - $saleAmount->minorUnits, $total->currency); ?>
+                            <div class="h3 fw-bold money mb-0 text-success">
+                                <span class="text-muted fs-5 fw-normal text-decoration-line-through me-2"><?= e($total->format()) ?></span>
+                                <?= e($sale_net->format()) ?><?php if ($recurring): ?><span class="text-muted fs-6">/<?= e(substr($service['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?>
+                            </div>
+                            <div class="small text-success fw-semibold"><i class="bi bi-tag-fill"></i> <?= e($sale['name']) ?> — save <?= e($saleAmount->format()) ?></div>
+                            <div class="text-muted small">includes GST of <?= e(\App\Support\Gst::component($sale_net)->format()) ?></div>
+                        <?php else: ?>
+                            <div class="h3 fw-bold money mb-0"><?= e($total->format()) ?><?php if ($recurring): ?><span class="text-muted fs-6">/<?= e(substr($service['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?></div>
+                            <div class="text-muted small">includes GST of <?= e($gst->format()) ?></div>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -49,6 +59,15 @@ $this->extends('layouts.portal');
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="discount_code">Discount code <span class="text-muted small fw-normal">(optional)</span></label>
+                        <input type="text" name="discount_code" id="discount_code" value="<?= e(old('discount_code')) ?>" class="form-control text-uppercase" style="max-width:16rem" placeholder="Have a code?" maxlength="40" autocomplete="off">
+                        <?php if ($sale && $saleAmount->minorUnits > 0): ?>
+                            <div class="form-text text-success"><?= e($sale['name']) ?> is already applied — you don't need a code. If yours saves you more, we'll use that instead.</div>
+                        <?php endif; ?>
+                    </div>
+
                     <div class="d-flex flex-wrap gap-2">
                         <button type="submit" class="btn btn-brand"><i class="bi bi-bag-check"></i> Confirm Order &amp; Continue to Payment</button>
                         <a href="<?= route('portal.order.index') ?>" class="btn btn-light">Cancel</a>

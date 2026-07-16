@@ -619,3 +619,26 @@ a:hover { color: var(--brand); }
 @media (max-width: 767.98px) {
     .mk-job { padding: 1.15rem 1.2rem; }
 }
+
+/* ---------------------------------------------------------------------------
+   How We Work — live office clock + visitor timezone comparison
+   --------------------------------------------------------------------------- */
+.mk-clock-card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 1.75rem; box-shadow: 0 12px 32px rgba(13,21,48,.06); }
+.mk-clock-row { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+.mk-clock { flex: 1 1 12rem; text-align: center; min-width: 0; }
+.mk-clock-label { font-size: .78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; display: flex; align-items: center; justify-content: center; gap: .35rem; }
+.mk-clock-label i { color: var(--brand-ink); }
+.mk-clock-time { font-size: clamp(1.9rem, 5vw, 2.6rem); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; margin-top: .3rem; font-variant-numeric: tabular-nums; }
+.mk-clock-day { font-size: .85rem; color: var(--muted); }
+.mk-clock-vs { color: var(--brand); font-size: 1.4rem; flex: 0 0 auto; }
+.mk-clock-verdict { margin: 1.5rem 0 0; padding: 1rem 1.15rem; border-radius: 12px; line-height: 1.6; font-size: .95rem; text-align: center; background: #f6f7f9; border: 1px solid var(--line); }
+.mk-clock-verdict.is-diff { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+.mk-clock-verdict.is-diff i { color: #059669; }
+.mk-clock-verdict.is-same { background: var(--brand-soft); border-color: #fed7aa; color: #7c2d12; }
+.mk-clock-verdict.is-same i { color: var(--brand-ink); }
+.mk-clock-verdict:empty { display: none; }
+
+@media (max-width: 575.98px) {
+    .mk-clock-card { padding: 1.25rem; }
+    .mk-clock-vs { transform: rotate(90deg); }
+}

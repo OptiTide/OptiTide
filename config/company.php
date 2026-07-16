@@ -31,7 +31,15 @@ return [
     ],
 
     // Shown in the top bar, footer and contact pages. Editable in admin Settings.
-    'hours' => env('COMPANY_HOURS') ?: 'Mon – Fri, 9am – 5pm AEST',
+    'hours' => env('COMPANY_HOURS') ?: 'Mon – Fri, 9am – 9pm AWST',
+
+    /*
+    | Where the team actually sits. Drives the "How We Work" page's live office
+    | clock and its comparison against the visitor's own timezone — so the
+    | overnight-turnaround pitch is computed, never hardcoded and never stale.
+    | Must be a valid IANA identifier (Australia/Perth = AWST, UTC+8, no DST).
+    */
+    'timezone' => env('COMPANY_TIMEZONE') ?: 'Australia/Perth',
 
     // Footer social links — each is hidden entirely when left blank.
     'social' => [
