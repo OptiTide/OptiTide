@@ -103,7 +103,16 @@ class ContactController extends Controller
             'business_type' => 'nullable|max:80',
             'service'       => 'nullable|max:80',
             'message'       => 'nullable|max:4000',
+            'captcha'       => 'required',
         ]);
+
+        // Verified after field validation so a field error never silently
+        // consumes the single-use challenge.
+        if (! \App\Support\Captcha::verify($request->input('captcha'))) {
+            Session::flash('error', 'The quick-check answer was incorrect — please try again.');
+
+            return $back();
+        }
 
         RateLimiter::hit($key, 3600);
 

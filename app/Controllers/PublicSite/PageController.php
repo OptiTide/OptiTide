@@ -23,70 +23,77 @@ class PageController extends Controller
             'web-design' => [
                 'category' => 'web-design',   // matches the service_categories slug
                 'icon' => 'bi-window-desktop',
+                'blurb' => 'Beautiful, responsive websites built to convert visitors into customers.',
                 'nav' => 'Web Design',
                 'title' => 'Web Design & Development',
                 'h1' => 'Websites That Win You Customers',
                 'intro' => 'Your website is often the first impression a customer has of your business. We design and build fast, modern, mobile-first websites that look professional and turn visitors into enquiries and sales — built around your brand and your goals, never a generic template.',
                 'includes' => [
-                    ['bi-brush', 'Custom design', 'A unique design built around your brand — not a template every other business is using.'],
-                    ['bi-phone', 'Mobile-first & fast', 'Looks and works perfectly on every device, and loads fast so visitors don\'t bounce.'],
-                    ['bi-search', 'SEO-ready build', 'Clean, search-friendly code so you can rank on Google from day one.'],
-                    ['bi-pencil-square', 'Easy to edit', 'A simple content manager so you can update text and images yourself.'],
-                    ['bi-cart', 'E-commerce & bookings', 'Sell products or take bookings online with secure payments.'],
-                    ['bi-shield-check', 'Ongoing care', 'Managed hosting, security, backups and updates so your site stays healthy.'],
+                    ['bi-brush', 'Custom Design', 'A unique design built around your brand — not a template every other business is using.'],
+                    ['bi-phone', 'Mobile-First & Fast', 'Looks and works perfectly on every device, and loads fast so visitors don\'t bounce.'],
+                    ['bi-search', 'SEO-Ready Build', 'Clean, search-friendly code so you can rank on Google from day one.'],
+                    ['bi-pencil-square', 'Easy to Edit', 'A simple content manager so you can update text and images yourself.'],
+                    ['bi-cart', 'E-Commerce & Bookings', 'Sell products or take bookings online with secure payments.'],
+                    ['bi-shield-check', 'Ongoing Care', 'Hosting, security, backups and updates so your site stays healthy.'],
                 ],
                 'benefits' => ['Convert more visitors into leads and sales', 'Rank better on Google from launch', 'Look professional and trustworthy', 'A site you actually own and control'],
             ],
             'seo' => [
                 'category' => 'seo',
                 'icon' => 'bi-search',
+                'blurb' => 'Rank higher on Google and get found by more of your ideal customers.',
                 'nav' => 'SEO',
                 'title' => 'Search Engine Optimisation',
                 'h1' => 'Get Found by Customers Searching for You',
                 'intro' => 'Most buying journeys start on Google. We combine technical SEO, on-page optimisation, local search and content to grow your qualified organic traffic over time — so the right customers find you instead of your competitors.',
                 'includes' => [
-                    ['bi-clipboard-data', 'Technical SEO audit', 'We find and fix the technical issues holding your rankings back.'],
-                    ['bi-file-earmark-text', 'On-page optimisation', 'Titles, content and structure optimised for the terms your customers search.'],
+                    ['bi-clipboard-data', 'Technical SEO Audit', 'We find and fix the technical issues holding your rankings back.'],
+                    ['bi-file-earmark-text', 'On-Page Optimisation', 'Titles, content and structure optimised for the terms your customers search.'],
                     ['bi-geo-alt', 'Local SEO', 'Google Business Profile and local citations so you show up in the map pack.'],
-                    ['bi-key', 'Keyword & content strategy', 'A plan targeting the searches most likely to bring you business.'],
-                    ['bi-link-45deg', 'Links & citations', 'Building your authority with quality, relevant backlinks and listings.'],
-                    ['bi-graph-up-arrow', 'Transparent reporting', 'Clear monthly reports on rankings, traffic and what we did.'],
+                    ['bi-key', 'Keyword & Content Strategy', 'A plan targeting the searches most likely to bring you business.'],
+                    ['bi-link-45deg', 'Links & Citations', 'Building your authority with quality, relevant backlinks and listings.'],
+                    ['bi-graph-up-arrow', 'Transparent Reporting', 'Clear monthly reports on rankings, traffic and what we did.'],
                 ],
                 'benefits' => ['More qualified organic traffic', 'Higher rankings for terms that convert', 'Show up in Google Maps locally', 'Compounding results that build over time'],
             ],
             'social-media' => [
                 'category' => 'smm',   // the DB line is slugged "smm"
                 'icon' => 'bi-megaphone',
+                'blurb' => 'Grow your brand and engage your audience across social platforms.',
                 'nav' => 'Social Media',
                 'title' => 'Social Media Marketing',
                 'h1' => 'Show Up Where Your Customers Are',
                 'intro' => 'A consistent, on-brand social presence builds awareness, engagement and trust. We plan, create and manage content across your channels — and run paid campaigns when you want to reach more people, faster.',
                 'includes' => [
-                    ['bi-calendar-week', 'Content calendar', 'A planned monthly calendar so you\'re always posting with purpose.'],
-                    ['bi-palette', 'On-brand content', 'Scroll-stopping graphics and copy that sound like you.'],
-                    ['bi-send', 'Scheduling & publishing', 'We handle posting across the platforms that matter for your business.'],
-                    ['bi-chat-dots', 'Community management', 'Replying to comments and messages so no lead goes cold.'],
-                    ['bi-badge-ad', 'Paid social advertising', 'Targeted ad campaigns to reach and convert new audiences.'],
-                    ['bi-bar-chart', 'Performance reporting', 'Regular reporting on reach, engagement and results.'],
+                    ['bi-calendar-week', 'Content Calendar', 'A planned monthly calendar so you\'re always posting with purpose.'],
+                    ['bi-palette', 'On-Brand Content', 'Scroll-stopping graphics and copy that sound like you.'],
+                    ['bi-send', 'Scheduling & Publishing', 'We handle posting across the platforms that matter for your business.'],
+                    ['bi-chat-dots', 'Community Management', 'Replying to comments and messages so no lead goes cold.'],
+                    ['bi-badge-ad', 'Paid Social Advertising', 'Targeted ad campaigns to reach and convert new audiences.'],
+                    ['bi-bar-chart', 'Performance Reporting', 'Regular reporting on reach, engagement and results.'],
                 ],
                 'benefits' => ['Stay top-of-mind with your audience', 'Build brand trust and recognition', 'Reach new customers with paid campaigns', 'Save hours every week'],
             ],
+            // We sell BOTH Unmanaged and Managed hosting, so nothing here may
+            // pre-name the line "Managed" — that would misdescribe half the
+            // catalogue. Anything managed-only is labelled as such.
             'hosting' => [
                 'category' => 'hosting',
                 'icon' => 'bi-hdd-network',
-                'nav' => 'Managed Hosting',
-                'title' => 'Managed Web Hosting',
-                'h1' => 'Fast, Secure, Fully-Managed Hosting',
-                'intro' => 'Reliable Australian hosting so your website is always fast, safe and online. We handle the servers, security, backups and monitoring — you focus on your business, and we\'re here the moment you need us.',
+                'blurb' => 'Secure, fast and reliable hosting with expert Australian support.',
+                'nav' => 'Hosting',
+                'title' => 'Web Hosting',
+                'h1' => 'Fast, Secure Australian Hosting',
+                'intro' => 'Reliable Australian hosting so your website is always fast, safe and online — with two ways to run it. Take the Unmanaged plan if you\'re happy handling your own updates, or the Managed plan and we\'ll look after the platform for you.',
                 'includes' => [
-                    ['bi-server', 'Australian servers', 'Fast, local hosting for great performance for your Australian visitors.'],
-                    ['bi-lock', 'Free SSL & security', 'SSL certificates and security hardening included as standard.'],
-                    ['bi-clock-history', 'Daily backups', 'Automated daily backups so your site can always be restored.'],
-                    ['bi-activity', 'Uptime monitoring', 'We watch your site around the clock and act on issues fast.'],
-                    ['bi-arrow-repeat', 'Managed updates', 'We keep the platform patched, secure and up to date.'],
-                    ['bi-headset', 'Priority support', 'A real person to help — not a ticket queue in another timezone.'],
+                    ['bi-server', 'Australian Servers', 'Fast, local hosting for great performance for your Australian visitors.'],
+                    ['bi-lock', 'Free SSL & Security', 'SSL certificates and security hardening included as standard.'],
+                    ['bi-clock-history', 'Daily Backups', 'Automated daily backups so your site can always be restored.'],
+                    ['bi-activity', 'Uptime Monitoring', 'We watch your site around the clock and act on issues fast.'],
+                    ['bi-arrow-repeat', 'Managed Updates', 'On the Managed plan we keep the platform patched, secure and up to date.'],
+                    ['bi-headset', 'Support in Your Timezone', 'A real person to help — not a ticket queue in another hemisphere.'],
                 ],
-                'benefits' => ['Peace of mind — it just works', 'Fast load times that help SEO', 'Protected against data loss', 'Local support in your timezone'],
+                'benefits' => ['Choose self-managed or fully managed', 'Fast load times that help SEO', 'Protected against data loss', 'Local support in your timezone'],
             ],
         ];
     }
@@ -100,12 +107,18 @@ class PageController extends Controller
         }
 
         $brand = config('company.brand_name');
+        $isAuthed = Auth::check();
 
         return $this->view('public.pages.services', [
-            'seoTitle' => 'Our Services — Web Design, SEO, Social Media & Hosting | ' . $brand,
-            'seoDescription' => $brand . '\'s digital services for Australian business: web design & development, SEO, social media marketing and managed hosting — all under one roof.',
+            'seoTitle' => 'Our Services & Pricing — Web Design, SEO, Social Media & Hosting | ' . $brand,
+            'seoDescription' => $brand . '\'s digital services for Australian business: web design & development, SEO, social media marketing and web hosting — real pricing, GST included, no lock-in contracts.',
             'canonical' => rtrim(config('app.url'), '/') . '/services',
             'services' => $services,
+            // The same real catalogue the homepage prices from, so /services can
+            // show every plan and be ordered from directly.
+            'packages' => Catalog::grouped(),
+            'canOrder' => $isAuthed && Auth::isClient(),
+            'startUrl' => $isAuthed ? route('portal.order.index') : route('register'),
         ]);
     }
 

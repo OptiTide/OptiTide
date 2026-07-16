@@ -32,31 +32,38 @@ $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/');
         <a href="/" class="mk-nav-brand" aria-label="<?= e($company['brand_name']) ?> home"><img class="brand-logo brand-logo--tagline" src="<?= asset('img/logo-tagline.png') ?>" alt="<?= e($company['brand_name']) ?> — Ride the Digital Tide"></a>
         <button class="mk-nav-toggle" type="button" aria-label="Menu" aria-expanded="false" onclick="var m=document.getElementById('mkNav');m.classList.toggle('open');this.setAttribute('aria-expanded',m.classList.contains('open'))"><i class="bi bi-list"></i></button>
         <div class="mk-nav-links" id="mkNav">
-            <a href="/" class="mk-nav-link">Home</a>
+            <?php
+            // Every item points at a real page. Homepage-anchor links (#packages,
+            // #faq) used to sit here and threw you back to the homepage from any
+            // other page — and "Packages" just duplicated "Services".
+            $svcNav = \App\Controllers\PublicSite\PageController::serviceData();
+            $here = strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
+            $on = fn (string $path) => $here === $path || ($path !== '/' && str_starts_with($here, $path . '/'));
+            ?>
+            <a href="/" class="mk-nav-link <?= $on('/') ? 'is-active' : '' ?>">Home</a>
             <div class="dropdown mk-nav-dd">
-                <a href="<?= route('pages.services') ?>" class="mk-nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Services</a>
+                <a href="<?= route('pages.services') ?>" class="mk-nav-link dropdown-toggle <?= $on('/services') ? 'is-active' : '' ?>" data-bs-toggle="dropdown" role="button" aria-expanded="false">Services</a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="<?= route('pages.services') ?>"><i class="bi bi-grid me-1"></i> All Services</a></li>
+                    <li><a class="dropdown-item" href="<?= route('pages.services') ?>"><i class="bi bi-grid me-1"></i> All Services &amp; Pricing</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <?php foreach (\App\Controllers\PublicSite\PageController::serviceData() as $slug => $s): ?>
-                        <li><a class="dropdown-item" href="/services/<?= e($slug) ?>"><i class="bi <?= e($s['icon']) ?> me-1"></i> <?= e($s['title']) ?></a></li>
+                    <?php foreach ($svcNav as $slug => $s): ?>
+                        <li><a class="dropdown-item" href="/services/<?= e($slug) ?>"><i class="bi <?= e($s['icon']) ?> me-1"></i> <?= e($s['nav']) ?></a></li>
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <a href="/#packages" class="mk-nav-link">Packages</a>
+            <a href="<?= route('pages.services') ?>#pricing" class="mk-nav-link">Pricing</a>
             <div class="dropdown mk-nav-dd">
-                <a href="<?= route('pages.about') ?>" class="mk-nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Company</a>
+                <a href="<?= route('pages.about') ?>" class="mk-nav-link dropdown-toggle <?= ($on('/about') || $on('/how-we-work') || $on('/careers')) ? 'is-active' : '' ?>" data-bs-toggle="dropdown" role="button" aria-expanded="false">Company</a>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="<?= route('pages.about') ?>"><i class="bi bi-people me-1"></i> About Us</a></li>
                     <li><a class="dropdown-item" href="<?= route('pages.how-we-work') ?>"><i class="bi bi-clock-history me-1"></i> How We Work</a></li>
                     <li><a class="dropdown-item" href="<?= route('careers.index') ?>"><i class="bi bi-briefcase me-1"></i> Careers</a></li>
-                    <li><a class="dropdown-item" href="<?= route('blog.index') ?>"><i class="bi bi-journal-text me-1"></i> Blog</a></li>
-                    <li><a class="dropdown-item" href="/#faq"><i class="bi bi-question-circle me-1"></i> FAQs</a></li>
                 </ul>
             </div>
-            <a href="<?= route('pages.contact') ?>" class="mk-nav-link">Contact</a>
+            <a href="<?= route('blog.index') ?>" class="mk-nav-link <?= $on('/blog') ? 'is-active' : '' ?>">Blog</a>
+            <a href="<?= route('pages.contact') ?>" class="mk-nav-link <?= $on('/contact') ? 'is-active' : '' ?>">Contact</a>
             <a href="<?= $dashUrl ?>" class="mk-nav-link d-lg-none"><?= $isAuthed ? 'My Dashboard' : 'Login' ?></a>
-            <a href="/#proposal" class="btn btn-brand mk-nav-cta">Get My Free Proposal</a>
+            <a href="<?= route('pages.contact') ?>" class="btn btn-brand mk-nav-cta">Get My Free Proposal</a>
         </div>
     </div>
 </nav>

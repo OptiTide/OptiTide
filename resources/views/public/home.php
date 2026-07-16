@@ -9,12 +9,11 @@ $ogImage = $appUrl . '/assets/img/favicon.png';
 // ---------------------------------------------------------------------------
 // Marketing content — edit these arrays to change the homepage copy.
 // ---------------------------------------------------------------------------
-$services = [
-    ['bi-window-desktop', 'Web Design & Development', 'Beautiful, responsive websites built to convert visitors into customers.', ['Custom Website Design', 'E-commerce Solutions', 'Mobile-First & Fast Loading', 'Ongoing Support & Updates']],
-    ['bi-search', 'Search Engine Optimisation', 'Rank higher on Google and get found by more of your ideal customers.', ['On-Page SEO', 'Technical SEO Audits', 'Keyword Research', 'Local SEO & Reporting']],
-    ['bi-megaphone', 'Social Media Marketing', 'Grow your brand and engage your audience across social platforms.', ['Content Creation', 'Paid Social Advertising', 'Community Management', 'Performance Reporting']],
-    ['bi-hdd-network', 'Managed Hosting', 'Secure, fast and reliable hosting with expert Australian support.', ['Australian Servers', 'Daily Backups', '24/7 Monitoring', 'Free SSL & Security']],
-];
+// The four service lines come from PageController::serviceData() — the SAME map
+// the nav, the hero chips and the service pages use. This section used to keep
+// its own hardcoded copy, which is how "Managed Hosting" and "E-commerce" drifted
+// back in after being fixed on the service pages.
+$services = \App\Controllers\PublicSite\PageController::serviceData();
 
 $process = [
     ['Discover', 'We learn about your business, goals and target audience.'],
@@ -128,8 +127,17 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
             <div class="col-lg-7">
                 <div class="mk-hero-inner">
                     <div class="mk-hero-copy">
-                        <h1>Web Design, SEO &amp; Digital Marketing That Drives Real Results for <span class="mk-orange">Australian Businesses</span>.</h1>
-                        <p>We build high-performance websites, rank you on Google, and grow your brand online — so you get more leads, more customers, and more revenue.</p>
+                        <h1>Web Design, SEO, Social Media &amp; Hosting That Drive Real Results for <span class="mk-orange">Australian Businesses</span>.</h1>
+                        <p>We build high-performance websites, rank you on Google, grow your brand online and keep it all running — so you get more leads, more customers, and more revenue.</p>
+                        <?php // All four lines, from the same map the nav and pages use — so
+                              // the hero can never advertise a service we don't list. ?>
+                        <div class="mk-hero-services">
+                            <?php foreach (\App\Controllers\PublicSite\PageController::serviceData() as $svcSlug => $svc): ?>
+                                <a class="mk-hero-service" href="/services/<?= e($svcSlug) ?>">
+                                    <i class="bi <?= e($svc['icon']) ?>"></i> <?= e($svc['nav']) ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
                         <ul class="mk-hero-checks">
                             <li><i class="bi bi-check-circle-fill"></i> More Traffic &amp; Leads</li>
                             <li><i class="bi bi-check-circle-fill"></i> Higher Rankings on Google</li>
@@ -137,7 +145,7 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
                             <li><i class="bi bi-check-circle-fill"></i> Clear Pricing, No Lock-in Contracts</li>
                         </ul>
                         <div class="mk-hero-cta">
-                            <a href="#proposal" class="btn btn-brand btn-lg">Get Your Free Proposal</a>
+                            <a href="#get-proposal" class="btn btn-brand btn-lg">Get Your Free Proposal</a>
                             <a href="#packages" class="btn btn-ghost btn-lg">View Our Packages</a>
                         </div>
                     </div>
@@ -160,16 +168,25 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
                             <div class="col-sm-6">
                                 <select name="business_type" class="form-select">
                                     <option value="">Business Type</option>
-                                    <?php foreach (['Trades & Services', 'Retail / E-commerce', 'Hospitality', 'Professional Services', 'Health & Fitness', 'Other'] as $bt): ?><option><?= e($bt) ?></option><?php endforeach; ?>
+                                    <?php foreach (['Trades & Services', 'Retail / E-Commerce', 'Hospitality', 'Professional Services', 'Health & Fitness', 'Other'] as $bt): ?><option><?= e($bt) ?></option><?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="col-12">
                                 <select name="service" class="form-select">
                                     <option value="">What do you need help with?</option>
-                                    <?php foreach (['Web Design', 'SEO', 'Social Media', 'Managed Hosting', 'Everything / Not sure'] as $sv): ?><option><?= e($sv) ?></option><?php endforeach; ?>
+                                    <?php // Driven off the real service map, so this can never offer
+                                          // a line we don't sell (it used to say "Managed Hosting"). ?>
+                                    <?php foreach (\App\Controllers\PublicSite\PageController::serviceData() as $sv): ?><option><?= e($sv['nav']) ?></option><?php endforeach; ?>
+                                    <option>Everything / Not sure</option>
                                 </select>
                             </div>
                             <div class="col-12"><textarea name="message" rows="3" class="form-control" placeholder="Tell us a bit about your business…"></textarea></div>
+                            <div class="col-12">
+                                <?php // Same session challenge as the contact form below — the
+                                      // controller calls Captcha::question() once, so both forms
+                                      // share one answer and neither invalidates the other. ?>
+                                <?php $this->insert('partials.captcha-field', ['captcha' => $captcha ?? null, 'captchaId' => 'p_captcha', 'captchaCompact' => true]); ?>
+                            </div>
                         </div>
                         <button class="btn btn-brand w-100 mt-3">Send My Free Proposal <i class="bi bi-arrow-right"></i></button>
                         <div class="mk-hero-form-note"><i class="bi bi-check-circle-fill"></i> 100% FREE · No Obligation · Fast Response</div>
@@ -199,16 +216,24 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
             <p class="mk-lead mx-auto">Everything you need to grow your business online.</p>
         </div>
         <div class="row g-4">
-            <?php foreach ($services as [$icon, $sTitle, $blurb, $points]): ?>
+            <?php foreach ($services as $sSlug => $s): ?>
+                <?php $sFrom = \App\Support\Catalog::fromPriceCents($s['category']); ?>
                 <div class="col-md-6 col-xl-3">
                     <article class="mk-service h-100">
-                        <div class="mk-service-icon"><i class="bi <?= e($icon) ?>"></i></div>
-                        <h3><?= e($sTitle) ?></h3>
-                        <p><?= e($blurb) ?></p>
+                        <div class="mk-service-icon"><i class="bi <?= e($s['icon']) ?>"></i></div>
+                        <h3><?= e($s['title']) ?></h3>
+                        <?php if ($sFrom): ?>
+                            <div class="mk-service-from">From <strong><?= e(\App\Support\Currency::display($sFrom)) ?></strong></div>
+                        <?php endif; ?>
+                        <p><?= e($s['blurb']) ?></p>
                         <ul>
-                            <?php foreach ($points as $point): ?><li><i class="bi bi-check2"></i> <?= e($point) ?></li><?php endforeach; ?>
+                            <?php foreach (array_slice($s['includes'], 0, 4) as [$pIcon, $pTitle, $pDesc]): ?>
+                                <li><i class="bi bi-check2"></i> <?= e($pTitle) ?></li>
+                            <?php endforeach; ?>
                         </ul>
-                        <a href="#proposal" class="mk-service-more">Learn More <i class="bi bi-arrow-right"></i></a>
+                        <?php // Goes to the actual service page — this used to point at
+                              // #proposal, so "Learn More" never taught you anything. ?>
+                        <a href="/services/<?= e($sSlug) ?>" class="mk-service-more">Learn more about <?= e($s['nav']) ?> <i class="bi bi-arrow-right"></i></a>
                     </article>
                 </div>
             <?php endforeach; ?>
@@ -228,33 +253,9 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
             <?php endif; ?>
         </div>
 
-        <?php foreach ($packages as $group): ?>
-            <div class="mk-price-group">
-                <h3 class="mk-price-group-title"><?= e($group['line']['name']) ?></h3>
-                <div class="row g-3">
-                    <?php foreach ($group['plans'] as $plan): ?>
-                        <?php $isQuote = (int) $plan['price_cents'] === 0; ?>
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="mk-price-card h-100">
-                                <div class="mk-price-name"><?= e($plan['name']) ?></div>
-                                <?php if (! empty($plan['description'])): ?><div class="mk-price-blurb"><?= e($plan['description']) ?></div><?php endif; ?>
-                                <div class="mk-price-amount">
-                                    <?php $this->insert('public.pages.partials.plan-price', ['plan' => $plan]); ?>
-                                </div>
-                                <div class="mk-price-terms"><?= $plan['billing_type'] === 'recurring' ? 'Ongoing monthly — cancel any time' : 'One-off project fee' ?></div>
-                                <?php if ($isQuote): ?>
-                                    <a href="/contact" class="btn btn-outline-brand w-100 mt-auto">Get a Quote</a>
-                                <?php elseif ($canOrder): ?>
-                                    <a href="<?= route('portal.order.show', ['service' => $plan['id']]) ?>" class="btn btn-brand w-100 mt-auto">Order Now</a>
-                                <?php else: ?>
-                                    <a href="<?= e($startUrl) ?>" class="btn btn-brand w-100 mt-auto">Get Started</a>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        <?php endforeach; ?>
+        <?php $this->insert('public.pages.partials.pricing-grid', [
+            'packages' => $packages, 'canOrder' => $canOrder, 'startUrl' => $startUrl,
+        ]); ?>
         <p class="text-center text-muted small mt-4 mb-0">All prices in <?= e(config('company.currency', 'AUD')) ?> and include GST. Every plan comes with Australian support.</p>
     </div>
 </section>

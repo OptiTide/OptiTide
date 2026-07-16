@@ -8,8 +8,8 @@
         <h1>Everything Your Business Needs Online</h1>
         <p class="mk-lead">Four core services that work together — so your website, your search rankings, your social presence and your hosting all pull in the same direction. One Australian team, fixed pricing, no lock-in contracts.</p>
         <div class="mk-hero-cta">
-            <a href="/#proposal" class="btn btn-brand btn-lg">Get a Free Proposal</a>
-            <a href="/#packages" class="btn btn-ghost btn-lg">View Pricing</a>
+            <a href="<?= route('pages.contact') ?>" class="btn btn-brand btn-lg">Get a Free Proposal</a>
+            <a href="#pricing" class="btn btn-ghost btn-lg">View Pricing</a>
         </div>
     </div>
 </header>
@@ -37,13 +37,34 @@
     </div>
 </section>
 
+<!-- Real pricing, straight from the admin catalogue — same grid as the homepage
+     so the two can never disagree, and you can order right from here. -->
+<section id="pricing" class="mk-section mk-section--alt">
+    <div class="mk-container">
+        <div class="text-center mb-5">
+            <span class="mk-eyebrow">Pricing</span>
+            <h2 class="mk-h2">Simple, Transparent Pricing</h2>
+            <p class="mk-lead mx-auto">Real prices, GST included, no lock-in contracts — the price you see is the price you pay.</p>
+            <?php if (\App\Support\Currency::isConverted()): ?>
+                <p class="small text-muted mx-auto mt-2" style="max-width:640px"><i class="bi bi-info-circle"></i> Prices shown in <?= e(\App\Support\Currency::current()) ?> are indicative, converted from AUD. Invoices are issued in AUD.</p>
+            <?php endif; ?>
+        </div>
+
+        <?php $this->insert('public.pages.partials.pricing-grid', [
+            'packages' => $packages, 'canOrder' => $canOrder, 'startUrl' => $startUrl,
+        ]); ?>
+
+        <p class="text-center text-muted small mt-4 mb-0">All prices in <?= e(config('company.currency', 'AUD')) ?> and include GST. Every plan comes with Australian support.</p>
+    </div>
+</section>
+
 <section class="mk-cta-band">
     <div class="mk-container d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
             <h2>Not sure what you need?</h2>
             <p>Tell us about your business and we'll recommend the right mix — with honest advice and a clear quote.</p>
         </div>
-        <a href="/contact" class="btn btn-brand btn-lg">Talk to Us <i class="bi bi-arrow-right"></i></a>
+        <a href="<?= route('pages.contact') ?>" class="btn btn-brand btn-lg">Talk to Us <i class="bi bi-arrow-right"></i></a>
     </div>
 </section>
 <?php $this->endSection(); ?>

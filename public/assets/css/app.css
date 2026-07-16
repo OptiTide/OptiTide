@@ -654,3 +654,36 @@ a:hover { color: var(--brand); }
 }
 .mk-sale-badge i { font-size: .65rem; }
 .mk-price-note { display: block; font-size: .72rem; color: var(--muted); margin-top: .3rem; font-weight: 600; }
+
+/* Featured "most popular" pricing tier */
+.mk-price-card { position: relative; }
+.mk-price-card.is-featured { border-color: var(--brand); box-shadow: 0 12px 30px rgba(255,106,0,.16); }
+.mk-price-flag {
+    position: absolute; top: -.7rem; left: 50%; transform: translateX(-50%);
+    background: var(--brand); color: #fff; font-size: .66rem; font-weight: 800;
+    letter-spacing: .06em; text-transform: uppercase; padding: .2rem .6rem;
+    border-radius: 999px; white-space: nowrap;
+}
+
+/* A step label ("Step 1") — distinct from .mk-step-num, which is a 44px circle
+   sized for a single digit and would clip a word. */
+.mk-step-label {
+    display: inline-block; font-size: .68rem; font-weight: 800; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--brand-ink); background: var(--brand-soft);
+    padding: .15rem .5rem; border-radius: 999px;
+}
+
+/* Hero service chips — all four lines, on the navy hero */
+.mk-hero-services { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.4rem; }
+.mk-hero-service {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .4rem .8rem; border-radius: 999px;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16);
+    color: #eef1f7; text-decoration: none; font-weight: 600; font-size: .85rem;
+    transition: background .15s, border-color .15s, transform .15s;
+}
+.mk-hero-service i { color: var(--brand-bright); font-size: .95rem; }
+.mk-hero-service:hover {
+    background: rgba(255,106,0,.16); border-color: var(--brand);
+    color: #fff; transform: translateY(-1px);
+}

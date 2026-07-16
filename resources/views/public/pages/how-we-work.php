@@ -66,7 +66,7 @@ $now = Company::officeNow();
         <div class="text-center mb-5">
             <span class="mk-eyebrow">The Overnight Loop</span>
             <h2 class="mk-h2">How a day actually goes</h2>
-            <p class="text-muted">This is the bit clients tell us they like most — and it's just a happy accident of where we sit on the map.</p>
+            <p class="text-muted">It's a happy accident of where we sit on the map — and it's the difference between a project that crawls and one that moves.</p>
         </div>
         <div class="row g-4">
             <?php
@@ -80,7 +80,7 @@ $now = Company::officeNow();
                 <div class="col-md-6 col-lg-3">
                     <article class="mk-feature h-100">
                         <div class="mk-feature-icon"><i class="bi <?= e($icon) ?>"></i></div>
-                        <div class="mk-step-num mb-2">Step <?= e($n) ?></div>
+                        <div class="mk-step-label mb-2">Step <?= e($n) ?></div>
                         <h3><?= e($title) ?></h3>
                         <p><?= e($copy) ?></p>
                     </article>

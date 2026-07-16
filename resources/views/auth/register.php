@@ -36,6 +36,11 @@
                     <input type="password" name="password_confirmation" class="form-control" required>
                 </div>
             </div>
+            <?php // Honeypot — a bot filling this hidden field is dropped silently. ?>
+            <div style="position:absolute;left:-9999px" aria-hidden="true">
+                <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+            </div>
+            <?php $this->insert('partials.captcha-field', ['captcha' => $captcha ?? null, 'captchaId' => 'r_captcha']); ?>
             <div class="form-check mb-3">
                 <input type="checkbox" name="accept_terms" value="1" id="accept_terms" class="form-check-input <?= has_error('accept_terms') ? 'is-invalid' : '' ?>" <?= old('accept_terms') ? 'checked' : '' ?> required>
                 <label class="form-check-label small" for="accept_terms">
