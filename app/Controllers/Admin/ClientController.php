@@ -96,39 +96,96 @@ class ClientController extends Controller
     public function show(Request $request, string $id): Response
     {
         $client = Client::findOrFail($id);
+        $apps = ClientApp::forClient($id);
 
         return $this->view('admin.clients.show', [
-            'title'       => $client['business_name'],
-            'client'      => $client,
-            'engagements' => ClientService::forClient($id),
-            'invoices'    => Invoice::query()->where('client_id', $id)->orderBy('id', 'desc')->get(),
-            'services'    => Service::active(),
-            'intakes'     => \App\Models\ProjectIntake::forClient($id),
-            'credit_txns' => CreditTransaction::forClient($id),
-            'apps'        => ClientApp::forClient($id),
+            'title'            => $client['business_name'],
+            'client'           => $client,
+            'engagements'      => ClientService::forClient($id),
+            'invoices'         => Invoice::query()->where('client_id', $id)->orderBy('id', 'desc')->get(),
+            'services'         => Service::active(),
+            'intakes'          => \App\Models\ProjectIntake::forClient($id),
+            'credit_txns'      => CreditTransaction::forClient($id),
+            'apps'             => $apps,
+            'app_engagements'  => ClientApp::engagementMap($apps),
         ]);
     }
 
     public function storeApp(Request $request, string $id): Response
     {
         Client::findOrFail($id);
-        $data = $this->validate($request, [
-            'name'        => 'required|max:120',
-            'url'         => 'required|url|max:300',
-            'environment' => 'nullable|max:40',
-        ]);
 
-        ClientApp::create([
-            'client_id'   => $id,
-            'name'        => $data['name'],
-            'url'         => $data['url'],
-            'environment' => $data['environment'] ?: null,
-            'status'      => 'live',
+        ClientApp::create($this->appData($request, $id) + [
+            'client_id' => $id,
+            'status'    => 'live',
         ]);
         AuditLog::record('client.app_linked', 'client', $id);
         Session::flash('success', 'App linked to client.');
 
         return $this->redirect(route('admin.clients.show', ['id' => $id]) . '#apps');
+    }
+
+    public function updateApp(Request $request, string $id): Response
+    {
+        $app = ClientApp::findOrFail($id);
+        $data = $this->appData($request, (string) $app['client_id']);
+        ClientApp::updateById($id, $data);
+        AuditLog::record('client.app_updated', 'client', $app['client_id'], [
+            'app_id'       => $id,
+            'billing_type' => $data['billing_type'],
+        ]);
+        Session::flash('success', 'App updated.');
+
+        return $this->redirect(route('admin.clients.show', ['id' => $app['client_id']]) . '#apps');
+    }
+
+    /**
+     * Validated app fields, billing included. An app never bills itself: a
+     * recurring app must name the engagement RecurringBiller already invoices,
+     * and only a one-off carries its own price. Anything else is dropped to
+     * NULL so a stale figure can't survive a billing-type change and show the
+     * client a price nothing will invoice.
+     */
+    protected function appData(Request $request, string $clientId): array
+    {
+        $data = $this->validate($request, [
+            'name'          => 'required|max:120',
+            'url'           => 'required|url|max:300',
+            'environment'   => 'nullable|max:40',
+            'billing_type'  => 'required|in:none,one_off,recurring',
+            'price'         => 'nullable|numeric|min:0',
+            'engagement_id' => 'nullable|exists:client_services,id',
+        ], ['engagement_id' => 'Engagement', 'billing_type' => 'Billing']);
+
+        $type = $data['billing_type'];
+        $engagementId = ! empty($data['engagement_id']) ? (int) $data['engagement_id'] : null;
+
+        // The engagement must belong to this client — otherwise a tampered id
+        // would show one client another client's price.
+        if ($engagementId !== null) {
+            $engagement = ClientService::find($engagementId);
+            if (! $engagement || (string) $engagement['client_id'] !== $clientId) {
+                $this->abort(404, 'Engagement not found.');
+            }
+        }
+
+        if ($type === ClientApp::BILLING_RECURRING && $engagementId === null) {
+            $this->abort(422, 'Pick the engagement this app is billed under, or set it to not billed.');
+        }
+
+        return [
+            'name'          => $data['name'],
+            'url'           => $data['url'],
+            'environment'   => $data['environment'] ?: null,
+            'billing_type'  => $type,
+            'price_cents'   => $type === ClientApp::BILLING_ONE_OFF
+                ? Money::fromDollars($data['price'] ?? 0)->minorUnits
+                : null,
+            'currency'      => config('company.currency', 'AUD'),
+            // client_apps.interval is intentionally never written — the linked
+            // engagement owns the interval, so the column stays NULL.
+            'engagement_id' => $type === ClientApp::BILLING_RECURRING ? $engagementId : null,
+        ];
     }
 
     public function destroyApp(Request $request, string $id): Response

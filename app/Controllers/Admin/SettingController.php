@@ -19,6 +19,19 @@ class SettingController extends Controller
     /** form field => config dot-path */
     protected const EDITABLE = [
         's_brand_name'    => 'company.brand_name',
+
+        // Feature toggles. The settings form posts a hidden 0 alongside each
+        // switch — an unchecked box submits nothing, and the bootstrap skips empty
+        // values, so the config default would silently win.
+        's_feat_live_chat'         => 'features.live_chat',
+        's_feat_ai_chat'           => 'features.ai_chat',
+        's_feat_careers'           => 'features.careers',
+        's_feat_blog'              => 'features.blog',
+        's_feat_affiliate'         => 'features.affiliate',
+        's_feat_api_credits'       => 'features.api_credits',
+        's_feat_meetings'          => 'features.meetings',
+        's_feat_currency_switcher' => 'features.currency_switcher',
+        's_feat_quotes'            => 'features.quotes',
         's_legal_name'    => 'company.legal_name',
         's_abn'           => 'company.abn',
         's_email'         => 'company.email',

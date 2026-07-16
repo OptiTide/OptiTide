@@ -8,6 +8,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Models\ChatConversation;
 use App\Services\Chat\ChatService;
+use App\Support\Features;
 
 /**
  * Public live-chat endpoints (JSON). The 48-char conversation token is the
@@ -18,6 +19,8 @@ class ChatController extends Controller
 {
     public function start(Request $request): Response
     {
+        $this->guard();
+
         $conversation = (new ChatService())->start(
             Auth::clientId(),
             trim((string) $request->input('name', '')) ?: null,
@@ -41,6 +44,8 @@ class ChatController extends Controller
 
     public function message(Request $request): Response
     {
+        $this->guard();
+
         $conversation = $this->resolve($request);
         $body = trim((string) $request->input('body', ''));
         if ($body === '') {
@@ -60,6 +65,8 @@ class ChatController extends Controller
 
     public function poll(Request $request): Response
     {
+        $this->guard();
+
         $conversation = $this->resolve($request);
         $after = (int) $request->query('after', 0);
 
@@ -69,6 +76,17 @@ class ChatController extends Controller
         ));
 
         return $this->json(['messages' => $this->format($new)]);
+    }
+
+    /**
+     * Hiding the widget only stops the honest caller — these endpoints are public
+     * JSON and stay reachable by anyone holding a token, so they close too.
+     */
+    protected function guard(): void
+    {
+        if (! Features::enabled('live_chat')) {
+            $this->abort(404, 'Live chat is not available.');
+        }
     }
 
     protected function resolve(Request $request): array

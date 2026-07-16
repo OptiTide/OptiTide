@@ -27,15 +27,24 @@ $me = auth();
             <a class="nav-link <?= $active('/portal/hosting') ?>" href="<?= route('portal.hosting') ?>"><i class="bi bi-hdd-network"></i> Hosting</a>
 
             <div class="nav-section">Billing</div>
+            <?php if (\App\Support\Features::enabled('quotes')): ?>
+                <a class="nav-link <?= $active('/portal/quotes') ?>" href="<?= route('portal.quotes.index') ?>"><i class="bi bi-file-earmark-text"></i> Quotes</a>
+            <?php endif; ?>
             <a class="nav-link <?= $active('/portal/invoices') ?>" href="<?= route('portal.invoices.index') ?>"><i class="bi bi-receipt"></i> Invoices</a>
-            <a class="nav-link <?= $active('/portal/api-credits') ?>" href="<?= route('portal.api.index') ?>"><i class="bi bi-cpu"></i> API Credits</a>
+            <?php if (\App\Support\Features::enabled('api_credits')): ?>
+                <a class="nav-link <?= $active('/portal/api-credits') ?>" href="<?= route('portal.api.index') ?>"><i class="bi bi-cpu"></i> API Credits</a>
+            <?php endif; ?>
 
             <div class="nav-section">Support</div>
-            <a class="nav-link <?= $active('/portal/meetings') ?>" href="<?= route('portal.meetings') ?>"><i class="bi bi-calendar-event"></i> Meetings</a>
+            <?php if (\App\Support\Features::enabled('meetings')): ?>
+                <a class="nav-link <?= $active('/portal/meetings') ?>" href="<?= route('portal.meetings') ?>"><i class="bi bi-calendar-event"></i> Meetings</a>
+            <?php endif; ?>
             <a class="nav-link <?= $active('/portal/support') ?>" href="<?= route('portal.support.index') ?>"><i class="bi bi-life-preserver"></i> Support</a>
 
             <div class="nav-section">Account</div>
-            <a class="nav-link <?= $active('/portal/refer') ?>" href="<?= route('portal.refer') ?>"><i class="bi bi-gift"></i> Refer &amp; Earn</a>
+            <?php if (\App\Support\Features::enabled('affiliate')): ?>
+                <a class="nav-link <?= $active('/portal/refer') ?>" href="<?= route('portal.refer') ?>"><i class="bi bi-gift"></i> Refer &amp; Earn</a>
+            <?php endif; ?>
             <a class="nav-link <?= $active('/portal/profile') ?>" href="<?= route('portal.profile.edit') ?>"><i class="bi bi-person"></i> Profile</a>
         </nav>
     </aside>

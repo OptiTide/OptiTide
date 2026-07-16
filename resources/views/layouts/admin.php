@@ -23,6 +23,9 @@ $me = auth();
             <a class="nav-link <?= $active('/admin/clients') ?>" href="<?= route('admin.clients.index') ?>"><i class="bi bi-people"></i> Clients</a>
 
             <div class="nav-section">Billing</div>
+            <?php if (\App\Support\Features::enabled('quotes')): ?>
+                <a class="nav-link <?= $active('/admin/quotes') ?>" href="<?= route('admin.quotes.index') ?>"><i class="bi bi-file-earmark-text"></i> Quotes</a>
+            <?php endif; ?>
             <a class="nav-link <?= $active('/admin/invoices') ?>" href="<?= route('admin.invoices.index') ?>"><i class="bi bi-receipt"></i> Invoices</a>
             <a class="nav-link <?= $active('/admin/installments') ?>" href="<?= route('admin.installments.index') ?>"><i class="bi bi-hourglass-split"></i> Payment Plans</a>
             <a class="nav-link <?= $active('/admin/services') ?>" href="<?= route('admin.services.index') ?>"><i class="bi bi-grid"></i> Services</a>
@@ -30,11 +33,19 @@ $me = auth();
 
             <div class="nav-section">Support &amp; Sales</div>
             <a class="nav-link <?= $active('/admin/tickets') ?>" href="<?= route('admin.tickets.index') ?>"><i class="bi bi-life-preserver"></i> Helpdesk</a>
-            <a class="nav-link <?= $active('/admin/chat') ?>" href="<?= route('admin.chat.index') ?>"><i class="bi bi-chat-dots"></i> Live Chat</a>
-            <a class="nav-link <?= $active('/admin/meetings') ?>" href="<?= route('admin.meetings.index') ?>"><i class="bi bi-calendar-event"></i> Meetings</a>
-            <a class="nav-link <?= $active('/admin/blogs') ?>" href="<?= route('admin.blogs.index') ?>"><i class="bi bi-newspaper"></i> Blog</a>
+            <?php if (\App\Support\Features::enabled('live_chat')): ?>
+                <a class="nav-link <?= $active('/admin/chat') ?>" href="<?= route('admin.chat.index') ?>"><i class="bi bi-chat-dots"></i> Live Chat</a>
+            <?php endif; ?>
+            <?php if (\App\Support\Features::enabled('meetings')): ?>
+                <a class="nav-link <?= $active('/admin/meetings') ?>" href="<?= route('admin.meetings.index') ?>"><i class="bi bi-calendar-event"></i> Meetings</a>
+            <?php endif; ?>
+            <?php if (\App\Support\Features::enabled('blog')): ?>
+                <a class="nav-link <?= $active('/admin/blogs') ?>" href="<?= route('admin.blogs.index') ?>"><i class="bi bi-newspaper"></i> Blog</a>
+            <?php endif; ?>
             <a class="nav-link <?= $active('/admin/backlinks') ?>" href="<?= route('admin.backlinks.index') ?>"><i class="bi bi-link-45deg"></i> Backlinks</a>
-            <a class="nav-link <?= $active('/admin/careers') ?>" href="<?= route('admin.careers.index') ?>"><i class="bi bi-briefcase"></i> Careers</a>
+            <?php if (\App\Support\Features::enabled('careers')): ?>
+                <a class="nav-link <?= $active('/admin/careers') ?>" href="<?= route('admin.careers.index') ?>"><i class="bi bi-briefcase"></i> Careers</a>
+            <?php endif; ?>
 
             <div class="nav-section">Delivery Boards</div>
             <a class="nav-link <?= $active('/admin/boards/web-design') ?>" href="<?= route('admin.boards.show', ['key' => 'web-design']) ?>"><i class="bi bi-palette"></i> Web Design</a>
@@ -44,10 +55,14 @@ $me = auth();
 
             <?php if (\App\Core\Auth::isAdmin()): ?>
                 <div class="nav-section">Admin</div>
-                <a class="nav-link <?= $active('/admin/assistant') ?>" href="<?= route('admin.assistant.index') ?>"><i class="bi bi-stars"></i> AI Assistant</a>
+                <?php if (\App\Support\Features::enabled('ai_chat')): ?>
+                    <a class="nav-link <?= $active('/admin/assistant') ?>" href="<?= route('admin.assistant.index') ?>"><i class="bi bi-stars"></i> AI Assistant</a>
+                <?php endif; ?>
                 <a class="nav-link <?= $active('/admin/broadcast') ?>" href="<?= route('admin.broadcast.index') ?>"><i class="bi bi-envelope-paper"></i> Mass Email</a>
                 <a class="nav-link <?= $active('/admin/visitors') ?>" href="<?= route('admin.visitors.index') ?>"><i class="bi bi-people-fill"></i> Visitors</a>
-                <a class="nav-link <?= $active('/admin/commissions') ?>" href="<?= route('admin.commissions.index') ?>"><i class="bi bi-cash-stack"></i> Commissions</a>
+                <?php if (\App\Support\Features::enabled('affiliate')): ?>
+                    <a class="nav-link <?= $active('/admin/commissions') ?>" href="<?= route('admin.commissions.index') ?>"><i class="bi bi-cash-stack"></i> Commissions</a>
+                <?php endif; ?>
                 <a class="nav-link <?= $active('/admin/users') ?>" href="<?= route('admin.users.index') ?>"><i class="bi bi-person-badge"></i> Users</a>
                 <a class="nav-link <?= $active('/admin/audit-log') ?>" href="<?= route('admin.audit.index') ?>"><i class="bi bi-journal-text"></i> Audit Log</a>
                 <a class="nav-link <?= $active('/admin/settings') ?>" href="<?= route('admin.settings.edit') ?>"><i class="bi bi-gear"></i> Settings</a>

@@ -11,11 +11,25 @@ use App\Models\Client;
 use App\Models\Meeting;
 use App\Services\Audit\AuditLog;
 use App\Services\Mail\Mail;
+use App\Support\Features;
 
 class MeetingController extends Controller
 {
+    /**
+     * Meetings are switched off — clients can no longer request one, so the
+     * queue here has nothing to confirm. Booked meetings are retained.
+     */
+    protected function guard(): void
+    {
+        if (! Features::enabled('meetings')) {
+            $this->abort(404, 'Meetings are switched off.');
+        }
+    }
+
     public function index(Request $request): Response
     {
+        $this->guard();
+
         return $this->view('admin.meetings.index', [
             'title'        => 'Meetings',
             'meetings'     => Meeting::all(),
@@ -26,6 +40,8 @@ class MeetingController extends Controller
 
     public function store(Request $request): Response
     {
+        $this->guard();
+
         $data = $this->validate($request, [
             'client_id'   => 'required|exists:clients,id',
             'title'       => 'required|max:160',
@@ -69,6 +85,8 @@ class MeetingController extends Controller
     /** Confirm a client-requested meeting: optionally reschedule, add a link, and invite. */
     public function confirm(Request $request, string $id): Response
     {
+        $this->guard();
+
         $meeting = Meeting::findOrFail($id);
 
         $data = $this->validate($request, [
@@ -112,6 +130,8 @@ class MeetingController extends Controller
 
     public function cancel(Request $request, string $id): Response
     {
+        $this->guard();
+
         Meeting::findOrFail($id);
         Meeting::updateById($id, ['status' => Meeting::STATUS_CANCELLED]);
         AuditLog::record('meeting.cancelled', 'meeting', $id);

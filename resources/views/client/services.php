@@ -43,7 +43,7 @@ $companyEmail = config('company.email');
                     <tr><td colspan="7" class="text-center text-muted py-4">No active services yet.</td></tr>
                 <?php endif; ?>
                 <?php foreach ($engagements as $e): ?>
-                    <tr>
+                    <tr id="engagement-<?= (int) $e['id'] ?>">
                         <td class="fw-semibold"><?= e($e['label']) ?><?php if (! empty($e['reference'])): ?><div class="text-muted small"><?= e($e['reference']) ?></div><?php endif; ?></td>
                         <td>
                             <?php if ($e['billing_type'] === 'recurring'): ?>

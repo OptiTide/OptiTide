@@ -143,6 +143,33 @@ $addr = $company['address'];
         </div>
 
         <div class="col-12">
+            <div class="card mb-3">
+                <div class="card-header d-flex align-items-center gap-2"><i class="bi bi-toggles text-brand"></i><span>Feature Toggles</span></div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">Switch parts of the product off. A switched-off feature disappears from the menus <strong>and</strong> its pages stop responding — nothing is deleted, so switching it back on brings it straight back.</p>
+                    <div class="row g-3">
+                        <?php foreach (\App\Support\Features::all() as $fKey => $fMeta): ?>
+                            <div class="col-md-6 col-xl-4">
+                                <div class="form-check form-switch">
+                                    <?php /* The hidden 0 is load-bearing: an unchecked box submits
+                                             nothing, and the settings loader skips empty values — so
+                                             without it the config default would win and the switch
+                                             would silently do nothing. */ ?>
+                                    <input type="hidden" name="s_feat_<?= e($fKey) ?>" value="0">
+                                    <input class="form-check-input" type="checkbox" role="switch" value="1"
+                                           id="s_feat_<?= e($fKey) ?>" name="s_feat_<?= e($fKey) ?>"
+                                           <?= \App\Support\Features::enabled($fKey) ? 'checked' : '' ?>>
+                                    <label class="form-check-label fw-semibold" for="s_feat_<?= e($fKey) ?>"><?= e($fMeta['label']) ?></label>
+                                    <div class="form-text"><?= e($fMeta['help']) ?></div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center gap-2"><i class="bi bi-sliders text-brand"></i><span>Invoicing Defaults</span></div>
                 <div class="card-body">

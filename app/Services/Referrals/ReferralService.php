@@ -4,6 +4,7 @@ namespace App\Services\Referrals;
 
 use App\Models\Referral;
 use App\Models\User;
+use App\Support\Features;
 
 final class ReferralService
 {
@@ -45,6 +46,12 @@ final class ReferralService
     /** First-touch attribution: link a newly-registered user to their referrer. */
     public function attach(array $newUser, ?string $code): void
     {
+        // A cookie set before the program was switched off must not keep minting
+        // relationships that would later earn a commission nobody agreed to.
+        if (! Features::enabled('affiliate')) {
+            return;
+        }
+
         $referrer = self::referrerByCode($code);
         if (! $referrer) {
             return;

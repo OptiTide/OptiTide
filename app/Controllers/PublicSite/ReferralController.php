@@ -7,12 +7,19 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
 use App\Services\Referrals\ReferralService;
+use App\Support\Features;
 
 class ReferralController extends Controller
 {
     /** /r/{code} — set the first-touch referral cookie, then land on the site. */
     public function capture(Request $request, string $code): Response
     {
+        // Referral links already in the wild must still land the visitor on the
+        // site — just without attribution, and without a promise we won't honour.
+        if (! Features::enabled('affiliate')) {
+            return $this->redirect(route('home'));
+        }
+
         $referrer = ReferralService::referrerByCode($code);
 
         if ($referrer) {

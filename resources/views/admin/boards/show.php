@@ -20,19 +20,39 @@ $clientNames = array_column($clients, 'business_name', 'id');
             </div>
             <div class="kb-list" data-column-id="<?= $col['id'] ?>">
                 <?php foreach ($cards as $card): ?>
-                    <div class="kb-card" draggable="true" data-id="<?= $card['id'] ?>"
-                         data-title="<?= e($card['title']) ?>"
-                         data-notes="<?= e($card['notes'] ?? '') ?>"
-                         data-client="<?= e($card['client_id'] ?? '') ?>"
-                         data-due="<?= e($card['due_date'] ? date('Y-m-d', strtotime($card['due_date'])) : '') ?>">
-                        <button type="button" class="kb-card-edit" title="Edit"><i class="bi bi-pencil"></i></button>
+                    <?php
+                    $priority = $card['priority'] ?? \App\Models\BoardCard::PRIORITY_NORMAL;
+                    $bar = $progress[$card['id']] ?? ['done' => 0, 'total' => 0, 'pct' => 0];
+                    $comments = $commentCounts[$card['id']] ?? 0;
+                    $hidden = ! ($card['client_visible'] ?? 1);
+                    ?>
+                    <div class="kb-card kb-card--p-<?= e($priority) ?>" draggable="true" data-id="<?= $card['id'] ?>">
+                        <a href="<?= route('admin.cards.show', ['id' => $card['id']]) ?>" class="kb-card-edit" title="Open card" draggable="false"><i class="bi bi-pencil"></i></a>
                         <div class="kb-card-title"><?= e($card['title']) ?></div>
                         <div class="kb-card-meta">
+                            <?php if ($priority !== \App\Models\BoardCard::PRIORITY_NORMAL): ?>
+                                <span class="badge <?= e(\App\Models\BoardCard::priorityBadge($priority)) ?>"><?= e(\App\Models\BoardCard::priorityLabel($priority)) ?></span>
+                            <?php endif; ?>
+                            <?php if ($hidden): ?>
+                                <span class="kb-tag kb-tag--hidden" title="Hidden from the client"><i class="bi bi-eye-slash"></i> Internal</span>
+                            <?php endif; ?>
+                            <?php if (! empty($card['completed_at'])): ?>
+                                <span class="kb-tag kb-tag--done"><i class="bi bi-check-circle-fill"></i> Complete</span>
+                            <?php endif; ?>
                             <?php if (! empty($card['client_id']) && isset($clientNames[$card['client_id']])): ?>
                                 <span class="kb-tag"><i class="bi bi-building"></i> <?= e($clientNames[$card['client_id']]) ?></span>
                             <?php endif; ?>
+                            <?php if (! empty($card['assigned_to']) && isset($staffNames[$card['assigned_to']])): ?>
+                                <span class="kb-tag"><i class="bi bi-person"></i> <?= e($staffNames[$card['assigned_to']]) ?></span>
+                            <?php endif; ?>
                             <?php if (! empty($card['due_date'])): ?>
                                 <span class="kb-tag kb-tag--due"><i class="bi bi-calendar-event"></i> <?= e(date('d M', strtotime($card['due_date']))) ?></span>
+                            <?php endif; ?>
+                            <?php if ($bar['total'] > 0): ?>
+                                <span class="kb-tag <?= $bar['pct'] === 100 ? 'kb-tag--done' : '' ?>"><i class="bi bi-check2-square"></i> <?= $bar['done'] ?>/<?= $bar['total'] ?></span>
+                            <?php endif; ?>
+                            <?php if ($comments > 0): ?>
+                                <span class="kb-tag"><i class="bi bi-chat-left-text"></i> <?= (int) $comments ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -55,51 +75,6 @@ $clientNames = array_column($clients, 'business_name', 'id');
         </form>
     </div>
 </div>
-
-<!-- Edit card modal -->
-<div class="modal fade" id="cardModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="cardForm" method="post">
-                <?= csrf_field() ?><?= method_field('PUT') ?>
-                <div class="modal-header">
-                    <h5 class="modal-title">Card Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Title</label>
-                        <input type="text" name="title" id="cf_title" class="form-control" maxlength="200" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Notes</label>
-                        <textarea name="notes" id="cf_notes" rows="4" class="form-control" maxlength="2000"></textarea>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-md-7">
-                            <label class="form-label">Client</label>
-                            <select name="client_id" id="cf_client" class="form-select">
-                                <option value="">— None —</option>
-                                <?php foreach ($clients as $c): ?>
-                                    <option value="<?= $c['id'] ?>"><?= e($c['business_name']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-5">
-                            <label class="form-label">Due date</label>
-                            <input type="date" name="due_date" id="cf_due" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="submit" class="btn btn-outline-danger btn-sm" form="cardDeleteForm"><i class="bi bi-trash"></i> Delete</button>
-                    <button type="submit" class="btn btn-brand">Save Card</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<form id="cardDeleteForm" method="post" class="d-none"><?= csrf_field() ?><?= method_field('DELETE') ?></form>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -155,23 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (badge) badge.textContent = col.querySelectorAll('.kb-card').length;
         });
     }
-
-    var modalEl = document.getElementById('cardModal');
-    var modal = (modalEl && window.bootstrap) ? new bootstrap.Modal(modalEl) : null;
-    document.querySelectorAll('.kb-card-edit').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            var card = btn.closest('.kb-card');
-            document.getElementById('cardForm').action = '<?= url('admin/cards') ?>/' + card.dataset.id;
-            document.getElementById('cardDeleteForm').action = '<?= url('admin/cards') ?>/' + card.dataset.id;
-            document.getElementById('cf_title').value = card.dataset.title || '';
-            document.getElementById('cf_notes').value = card.dataset.notes || '';
-            document.getElementById('cf_due').value = card.dataset.due || '';
-            var sel = document.getElementById('cf_client');
-            if (sel) sel.value = card.dataset.client || '';
-            if (modal) modal.show();
-        });
-    });
 });
 </script>
 <?php $this->endSection(); ?>

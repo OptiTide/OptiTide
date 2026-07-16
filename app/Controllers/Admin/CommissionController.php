@@ -12,11 +12,25 @@ use App\Models\Commission;
 use App\Models\User;
 use App\Services\Audit\AuditLog;
 use App\Services\Referrals\CommissionService;
+use App\Support\Features;
 
 class CommissionController extends Controller
 {
+    /**
+     * Commissions are part of the referral program. Existing rows are retained —
+     * switch the program back on to finish paying anything already earned.
+     */
+    protected function guard(): void
+    {
+        if (! Features::enabled('affiliate')) {
+            $this->abort(404, 'The referral program is switched off.');
+        }
+    }
+
     public function index(Request $request): Response
     {
+        $this->guard();
+
         $this->authorize(Auth::isAdmin(), 'Only administrators can manage commissions.');
 
         $commissions = Commission::query()->orderBy('id', 'desc')->get();
@@ -40,6 +54,8 @@ class CommissionController extends Controller
 
     public function approve(Request $request, string $id): Response
     {
+        $this->guard();
+
         $this->authorize(Auth::isAdmin(), 'Only administrators can action commissions.');
         (new CommissionService())->approve($id);
         AuditLog::record('commission.approved', 'commission', $id);
@@ -50,6 +66,8 @@ class CommissionController extends Controller
 
     public function markPaid(Request $request, string $id): Response
     {
+        $this->guard();
+
         $this->authorize(Auth::isAdmin(), 'Only administrators can action commissions.');
         (new CommissionService())->markPaid($id);
         AuditLog::record('commission.paid', 'commission', $id);

@@ -39,6 +39,13 @@ final class Currency
     /** The currency the visitor is currently viewing prices in. */
     public static function current(): string
     {
+        // Switching the picker off has to bite visitors who already chose USD in
+        // an earlier session, otherwise they keep seeing converted prices with no
+        // control left to change them back.
+        if (! Features::enabled('currency_switcher')) {
+            return self::default();
+        }
+
         $code = strtoupper((string) Session::get(self::SESSION_KEY, self::default()));
 
         return self::isSupported($code) ? $code : self::default();

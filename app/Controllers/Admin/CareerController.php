@@ -9,6 +9,7 @@ use App\Core\Session;
 use App\Models\JobApplication;
 use App\Models\JobOpening;
 use App\Services\Audit\AuditLog;
+use App\Support\Features;
 use App\Support\Upload;
 
 /**
@@ -20,10 +21,23 @@ use App\Support\Upload;
  */
 class CareerController extends Controller
 {
+    /**
+     * Careers is switched off — the public pages are gone, so managing roles here
+     * would publish to nowhere. Roles and applications are retained.
+     */
+    protected function guard(): void
+    {
+        if (! Features::enabled('careers')) {
+            $this->abort(404, 'Careers is switched off.');
+        }
+    }
+
     // --- Openings -----------------------------------------------------------
 
     public function index(Request $request): Response
     {
+        $this->guard();
+
         $roles = JobOpening::ordered();
 
         // Application counts per role, so the list shows where the interest is.
@@ -44,6 +58,8 @@ class CareerController extends Controller
 
     public function create(Request $request): Response
     {
+        $this->guard();
+
         return $this->view('admin.careers.form', [
             'title' => 'New Role',
             'role'  => null,
@@ -52,6 +68,8 @@ class CareerController extends Controller
 
     public function store(Request $request): Response
     {
+        $this->guard();
+
         $role = JobOpening::create($this->roleData($request, null));
         AuditLog::record('job_opening.created', 'job_opening', $role['id'], ['title' => $role['title']]);
         Session::flash('success', 'Role created. It stays hidden until you set it to Open.');
@@ -61,6 +79,8 @@ class CareerController extends Controller
 
     public function edit(Request $request, string $id): Response
     {
+        $this->guard();
+
         return $this->view('admin.careers.form', [
             'title' => 'Edit Role',
             'role'  => JobOpening::findOrFail($id),
@@ -69,6 +89,8 @@ class CareerController extends Controller
 
     public function update(Request $request, string $id): Response
     {
+        $this->guard();
+
         $existing = JobOpening::findOrFail($id);
         JobOpening::updateById($id, $this->roleData($request, $existing));
         AuditLog::record('job_opening.updated', 'job_opening', $id, ['title' => $existing['title']]);
@@ -79,6 +101,8 @@ class CareerController extends Controller
 
     public function destroy(Request $request, string $id): Response
     {
+        $this->guard();
+
         $role = JobOpening::findOrFail($id);
         // The FK is ON DELETE SET NULL, so applications survive with their
         // role_title snapshot intact rather than vanishing with the role.
@@ -93,6 +117,8 @@ class CareerController extends Controller
 
     public function applications(Request $request): Response
     {
+        $this->guard();
+
         $jobId = $request->input('role', '');
         $status = (string) $request->input('status', '');
 
@@ -111,6 +137,8 @@ class CareerController extends Controller
 
     public function application(Request $request, string $id): Response
     {
+        $this->guard();
+
         return $this->view('admin.careers.application', [
             'title'       => 'Application',
             'application' => JobApplication::findOrFail($id),
@@ -119,6 +147,8 @@ class CareerController extends Controller
 
     public function updateApplication(Request $request, string $id): Response
     {
+        $this->guard();
+
         $application = JobApplication::findOrFail($id);
 
         $data = $this->validate($request, [
@@ -147,6 +177,8 @@ class CareerController extends Controller
      */
     public function resume(Request $request, string $id): Response
     {
+        $this->guard();
+
         $application = JobApplication::findOrFail($id);
 
         $path = Upload::path($application['resume_path'] ?? null);
@@ -175,6 +207,8 @@ class CareerController extends Controller
 
     public function destroyApplication(Request $request, string $id): Response
     {
+        $this->guard();
+
         $application = JobApplication::findOrFail($id);
 
         // Delete the CV too — leaving someone's personal data on disk after

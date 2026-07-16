@@ -6,6 +6,7 @@ use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Request;
 use App\Core\Response;
+use App\Models\ClientApp;
 use App\Models\HostingAccount;
 use App\Services\Whm\WhmClientFactory;
 
@@ -19,12 +20,15 @@ class HostingController extends Controller
     public function index(Request $request): Response
     {
         $clientId = Auth::clientId();
+        $apps = $clientId ? ClientApp::forClient($clientId) : [];
 
         return $this->view('client.hosting.index', [
-            'title'     => 'Hosting & Apps',
-            'accounts'  => $clientId ? HostingAccount::forClient($clientId) : [],
-            'apps'      => $clientId ? \App\Models\ClientApp::forClient($clientId) : [],
-            'connected' => WhmClientFactory::make()->available(),
+            'title'            => 'Hosting & Apps',
+            'accounts'         => $clientId ? HostingAccount::forClient($clientId) : [],
+            'apps'             => $apps,
+            // A billed app's price lives on its engagement, never mirrored here.
+            'app_engagements'  => ClientApp::engagementMap($apps),
+            'connected'        => WhmClientFactory::make()->available(),
         ]);
     }
 

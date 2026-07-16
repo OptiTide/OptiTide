@@ -9,11 +9,26 @@ use App\Core\Response;
 use App\Core\Session;
 use App\Models\ChatConversation;
 use App\Services\Chat\ChatService;
+use App\Support\Features;
 
 class ChatController extends Controller
 {
+    /**
+     * With live chat off the visitor's widget and poll endpoint are both gone, so
+     * a reply typed here could never be delivered. Existing transcripts are not
+     * deleted — switching the feature back on restores the inbox.
+     */
+    protected function guard(): void
+    {
+        if (! Features::enabled('live_chat')) {
+            $this->abort(404, 'Live chat is switched off.');
+        }
+    }
+
     public function index(Request $request): Response
     {
+        $this->guard();
+
         return $this->view('admin.chat.index', [
             'title'         => 'Live Chat',
             'conversations' => ChatConversation::queue(),
@@ -22,6 +37,7 @@ class ChatController extends Controller
 
     public function show(Request $request, string $id): Response
     {
+        $this->guard();
         $conversation = ChatConversation::findOrFail($id);
 
         return $this->view('admin.chat.show', [
@@ -33,6 +49,7 @@ class ChatController extends Controller
 
     public function reply(Request $request, string $id): Response
     {
+        $this->guard();
         ChatConversation::findOrFail($id);
         $data = $this->validate($request, ['body' => 'required|max:2000']);
 
@@ -45,6 +62,7 @@ class ChatController extends Controller
 
     public function takeover(Request $request, string $id): Response
     {
+        $this->guard();
         ChatConversation::findOrFail($id);
         (new ChatService())->takeOver($id);
         Session::flash('success', 'You\'ve taken over this chat — the assistant will stay quiet.');
@@ -54,6 +72,7 @@ class ChatController extends Controller
 
     public function close(Request $request, string $id): Response
     {
+        $this->guard();
         ChatConversation::findOrFail($id);
         (new ChatService())->setStatus($id, ChatConversation::STATUS_CLOSED);
         Session::flash('status', 'Chat closed.');

@@ -17,9 +17,11 @@ $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/');
             <span class="d-none d-lg-inline"><i class="bi bi-geo-alt-fill"></i> Australian Owned &amp; Operated</span>
         </div>
         <div class="mk-topbar-right">
+            <?php if (\App\Support\Features::enabled('currency_switcher')): ?>
             <span class="mk-ccy" title="Choose the currency prices are shown in">
                 <?php foreach (\App\Support\Currency::supported() as $code): ?><a class="mk-ccy-link <?= $ccyNow === $code ? 'is-active' : '' ?>" href="<?= route('currency.set') ?>?c=<?= e($code) ?>&amp;return=<?= $ccyReturn ?>"><?= e($code) ?></a><?php endforeach; ?>
             </span>
+            <?php endif; ?>
             <span class="mk-topbar-hours d-none d-md-inline"><i class="bi bi-clock"></i> <?= e(config('company.hours')) ?></span>
             <a href="<?= $dashUrl ?>" class="mk-topbar-login"><i class="bi bi-person-circle"></i> <?= $isAuthed ? 'My Dashboard' : 'Client &amp; Staff Login' ?></a>
         </div>
@@ -57,10 +59,14 @@ $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/');
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="<?= route('pages.about') ?>"><i class="bi bi-people me-1"></i> About Us</a></li>
                     <li><a class="dropdown-item" href="<?= route('pages.how-we-work') ?>"><i class="bi bi-clock-history me-1"></i> How We Work</a></li>
+                    <?php if (\App\Support\Features::enabled('careers')): ?>
                     <li><a class="dropdown-item" href="<?= route('careers.index') ?>"><i class="bi bi-briefcase me-1"></i> Careers</a></li>
+                    <?php endif; ?>
                 </ul>
             </div>
+            <?php if (\App\Support\Features::enabled('blog')): ?>
             <a href="<?= route('blog.index') ?>" class="mk-nav-link <?= $on('/blog') ? 'is-active' : '' ?>">Blog</a>
+            <?php endif; ?>
             <a href="<?= route('pages.contact') ?>" class="mk-nav-link <?= $on('/contact') ? 'is-active' : '' ?>">Contact</a>
             <a href="<?= $dashUrl ?>" class="mk-nav-link d-lg-none"><?= $isAuthed ? 'My Dashboard' : 'Login' ?></a>
             <a href="<?= route('pages.contact') ?>" class="btn btn-brand mk-nav-cta">Get My Free Proposal</a>

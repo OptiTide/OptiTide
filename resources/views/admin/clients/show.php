@@ -184,21 +184,43 @@ foreach ($services as $s) {
         <div class="card mt-3" id="apps">
             <div class="card-header"><i class="bi bi-window-stack"></i> Client Apps</div>
             <div class="card-body">
-                <form method="post" action="<?= route('admin.clients.apps.store', ['id' => $client['id']]) ?>" class="row g-2 align-items-end mb-3">
-                    <?= csrf_field() ?>
-                    <div class="col-sm-4"><label class="form-label small">Name</label><input type="text" name="name" class="form-control form-control-sm" required placeholder="Client Dashboard"></div>
-                    <div class="col-sm-5"><label class="form-label small">URL</label><input type="url" name="url" class="form-control form-control-sm" placeholder="https://app.client.com" required></div>
-                    <div class="col-sm-3"><label class="form-label small">Environment</label><input type="text" name="environment" class="form-control form-control-sm" placeholder="Production"></div>
-                    <div class="col-12"><button class="btn btn-sm btn-brand">Link App</button> <span class="text-muted small">A Coolify-hosted app the client can open from their portal.</span></div>
-                </form>
+                <?php $this->insert('partials.client-app-form', [
+                    'action'      => route('admin.clients.apps.store', ['id' => $client['id']]),
+                    'app'         => null,
+                    'engagements' => $engagements,
+                ]); ?>
                 <?php foreach ($apps as $app): ?>
+                    <?php $engagement = $app_engagements[$app['engagement_id']] ?? null; ?>
+                    <?php $price = \App\Models\ClientApp::priceLabel($app, $engagement); ?>
                     <div class="d-flex justify-content-between align-items-center border-bottom py-2">
                         <div>
                             <span class="fw-semibold"><?= e($app['name']) ?></span>
                             <?php if ($app['environment']): ?><span class="badge badge-soft ms-1"><?= e($app['environment']) ?></span><?php endif; ?>
                             <div class="text-muted small"><?= e($app['url']) ?></div>
+                            <?php if ($price !== ''): ?>
+                                <div class="small">
+                                    <span class="money fw-semibold"><?= e($price) ?></span>
+                                    <?php if ($engagement): ?>
+                                        <span class="text-muted">— billed under <?= e($engagement['label']) ?><?= ! empty($engagement['reference']) ? ' (' . e($engagement['reference']) . ')' : '' ?></span>
+                                    <?php else: ?>
+                                        <span class="text-muted">— one-off, invoice by hand</span>
+                                    <?php endif; ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="text-muted small">Not billed</div>
+                            <?php endif; ?>
                         </div>
-                        <form method="post" action="<?= route('admin.apps.destroy', ['id' => $app['id']]) ?>" onsubmit="return confirm('Unlink this app?')"><?= csrf_field() ?><button class="btn btn-sm btn-link text-danger">Remove</button></form>
+                        <div class="d-flex align-items-center gap-1">
+                            <button class="btn btn-sm btn-light" data-bs-toggle="collapse" data-bs-target="#appEdit<?= (int) $app['id'] ?>">Edit</button>
+                            <form method="post" action="<?= route('admin.apps.destroy', ['id' => $app['id']]) ?>" onsubmit="return confirm('Unlink this app?')"><?= csrf_field() ?><button class="btn btn-sm btn-link text-danger">Remove</button></form>
+                        </div>
+                    </div>
+                    <div class="collapse py-2 border-bottom" id="appEdit<?= (int) $app['id'] ?>">
+                        <?php $this->insert('partials.client-app-form', [
+                            'action'      => route('admin.apps.update', ['id' => $app['id']]),
+                            'app'         => $app,
+                            'engagements' => $engagements,
+                        ]); ?>
                     </div>
                 <?php endforeach; ?>
                 <?php if ($apps === []): ?><div class="text-muted small">No apps linked yet.</div><?php endif; ?>
@@ -310,6 +332,17 @@ document.getElementById('engService').addEventListener('change', function () {
         document.getElementById('engBilling').value = s.billing;
         if (s.interval) document.getElementById('engInterval').value = s.interval;
     }
+});
+
+// App billing: only a one-off takes a price of its own; a recurring app must
+// name the engagement that already bills it. Delegated — the app form partial
+// is rendered once per app plus once for the add row.
+document.addEventListener('change', function (ev) {
+    const select = ev.target.closest('[data-app-billing]');
+    if (!select) return;
+    const form = select.closest('[data-app-form]');
+    form.querySelector('[data-app-engagement]').hidden = select.value !== 'recurring';
+    form.querySelector('[data-app-price]').hidden = select.value !== 'one_off';
 });
 </script>
 <?php $this->endSection(); ?>

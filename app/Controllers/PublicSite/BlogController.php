@@ -6,11 +6,20 @@ use App\Core\Controller;
 use App\Core\Request;
 use App\Core\Response;
 use App\Models\Blog;
+use App\Support\Features;
 
 class BlogController extends Controller
 {
+    protected function guard(): void
+    {
+        if (! Features::enabled('blog')) {
+            $this->abort(404, 'Page not found.');
+        }
+    }
+
     public function index(Request $request): Response
     {
+        $this->guard();
         $appUrl = rtrim(config('app.url'), '/');
         $category = trim((string) $request->query('category', ''));
 
@@ -46,6 +55,7 @@ class BlogController extends Controller
 
     public function show(Request $request, string $slug): Response
     {
+        $this->guard();
         $post = Blog::livePost($slug);
         if (! $post) {
             $this->abort(404, 'Article not found.');

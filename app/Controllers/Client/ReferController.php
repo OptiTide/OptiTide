@@ -12,11 +12,18 @@ use App\Models\Referral;
 use App\Models\User;
 use App\Services\Referrals\CommissionService;
 use App\Services\Referrals\ReferralService;
+use App\Support\Features;
 
 class ReferController extends Controller
 {
     public function index(Request $request): Response
     {
+        // Handing a client a referral link that no longer earns them anything is
+        // worse than not offering one.
+        if (! Features::enabled('affiliate')) {
+            $this->abort(404, 'The referral program is not available.');
+        }
+
         $user = Auth::user();
         $code = ReferralService::ensureCode($user);
         $currency = config('company.currency', 'AUD');

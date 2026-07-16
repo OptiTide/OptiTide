@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Core\Request;
 use App\Core\Response;
 use App\Models\Blog;
+use App\Support\Features;
 
 class SeoController extends Controller
 {
@@ -13,10 +14,10 @@ class SeoController extends Controller
     {
         $url = rtrim(config('app.url'), '/');
 
-        $body = implode("\n", [
+        $body = implode("\n", array_filter([
             'User-agent: *',
             'Allow: /$',
-            'Allow: /blog',
+            Features::enabled('blog') ? 'Allow: /blog' : null,
             'Allow: /login',
             'Allow: /register',
             'Disallow: /admin',
@@ -25,7 +26,7 @@ class SeoController extends Controller
             '',
             'Sitemap: ' . $url . '/sitemap.xml',
             '',
-        ]);
+        ], fn ($line) => $line !== null));
 
         return Response::make($body, 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
     }
@@ -35,19 +36,29 @@ class SeoController extends Controller
         $url = rtrim(config('app.url'), '/');
         $today = today();
 
+        // A switched-off feature 404s, and a sitemap that advertises 404s costs
+        // crawl budget and trust — so those URLs drop out with the feature.
+        $blog = Features::enabled('blog');
+        $careers = Features::enabled('careers');
+
         $urls = [
             ['loc' => $url . '/', 'priority' => '1.0', 'changefreq' => 'weekly', 'lastmod' => $today],
             ['loc' => $url . '/services', 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => $today],
             ['loc' => $url . '/about', 'priority' => '0.6', 'changefreq' => 'monthly', 'lastmod' => $today],
             ['loc' => $url . '/how-we-work', 'priority' => '0.6', 'changefreq' => 'monthly', 'lastmod' => $today],
-            ['loc' => $url . '/careers', 'priority' => '0.6', 'changefreq' => 'weekly', 'lastmod' => $today],
             ['loc' => $url . '/contact', 'priority' => '0.6', 'changefreq' => 'monthly', 'lastmod' => $today],
-            ['loc' => $url . '/blog', 'priority' => '0.8', 'changefreq' => 'daily', 'lastmod' => $today],
             ['loc' => $url . '/terms', 'priority' => '0.2', 'changefreq' => 'yearly', 'lastmod' => $today],
             ['loc' => $url . '/privacy', 'priority' => '0.2', 'changefreq' => 'yearly', 'lastmod' => $today],
             ['loc' => $url . '/refund', 'priority' => '0.2', 'changefreq' => 'yearly', 'lastmod' => $today],
             ['loc' => $url . '/login', 'priority' => '0.3', 'changefreq' => 'monthly', 'lastmod' => $today],
         ];
+
+        if ($careers) {
+            $urls[] = ['loc' => $url . '/careers', 'priority' => '0.6', 'changefreq' => 'weekly', 'lastmod' => $today];
+        }
+        if ($blog) {
+            $urls[] = ['loc' => $url . '/blog', 'priority' => '0.8', 'changefreq' => 'daily', 'lastmod' => $today];
+        }
 
         // The money pages — driven off the same map the nav and routes use, so a
         // new service page can never be missing from the sitemap.
@@ -57,7 +68,7 @@ class SeoController extends Controller
 
         // Only OPEN roles — a draft isn't public and a filled role must drop out
         // of the index rather than linger as a dead JobPosting.
-        foreach (\App\Models\JobOpening::open() as $role) {
+        foreach ($careers ? \App\Models\JobOpening::open() : [] as $role) {
             $urls[] = [
                 'loc'        => $url . '/careers/' . $role['slug'],
                 'priority'   => '0.7',
@@ -66,7 +77,7 @@ class SeoController extends Controller
             ];
         }
 
-        foreach (Blog::published() as $post) {
+        foreach ($blog ? Blog::published() : [] as $post) {
             $urls[] = [
                 'loc'        => $url . '/blog/' . $post['slug'],
                 'priority'   => '0.7',
@@ -93,6 +104,11 @@ class SeoController extends Controller
     /** RSS 2.0 feed of the most recent published posts. */
     public function rss(Request $request): Response
     {
+        // The feed is the blog — every item links to a /blog URL that is now gone.
+        if (! Features::enabled('blog')) {
+            $this->abort(404, 'Page not found.');
+        }
+
         $url = rtrim(config('app.url'), '/');
         $posts = Blog::published(30);
 

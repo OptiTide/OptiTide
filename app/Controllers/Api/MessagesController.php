@@ -8,6 +8,7 @@ use App\Core\Response;
 use App\Services\Api\ApiCreditService;
 use App\Services\Api\ApiKeyService;
 use App\Services\Api\WhitelabelClaudeClient;
+use App\Support\Features;
 
 /**
  * The white-label OptiTide API (POST /api/v1/messages). Bearer-authenticated
@@ -16,8 +17,24 @@ use App\Services\Api\WhitelabelClaudeClient;
  */
 class MessagesController extends Controller
 {
+    /**
+     * Machine callers get a JSON 503 rather than the HTML 404 the browser-facing
+     * controllers raise — an integration parses this, so it has to stay in shape.
+     * Checked before the API key so a switched-off product never authenticates.
+     */
+    private function unavailable(): ?Response
+    {
+        return Features::enabled('api_credits')
+            ? null
+            : $this->error(503, 'service_unavailable', 'The OptiTide API is not currently available.');
+    }
+
     public function create(Request $request): Response
     {
+        if ($stop = $this->unavailable()) {
+            return $stop;
+        }
+
         $client = (new ApiKeyService())->resolveClient($request->bearerToken() ?: $request->header('X-API-Key'));
         if (! $client) {
             return $this->error(401, 'invalid_api_key', 'Missing or invalid API key.');
@@ -96,6 +113,10 @@ class MessagesController extends Controller
     /** GET /api/v1/credit — the caller's current prepaid balance. */
     public function credit(Request $request): Response
     {
+        if ($stop = $this->unavailable()) {
+            return $stop;
+        }
+
         $client = (new ApiKeyService())->resolveClient($request->bearerToken() ?: $request->header('X-API-Key'));
         if (! $client) {
             return $this->error(401, 'invalid_api_key', 'Missing or invalid API key.');

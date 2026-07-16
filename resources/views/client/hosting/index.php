@@ -7,12 +7,27 @@
     <h2 class="h6 fw-bold mb-2">Your Apps</h2>
     <div class="row g-3 mb-4">
         <?php foreach ($apps as $app): ?>
+            <?php
+            $engagement = $app_engagements[$app['engagement_id']] ?? null;
+            // Empty whenever nothing bills this app — we show no price at all
+            // rather than a misleading "$0.00".
+            $price = \App\Models\ClientApp::priceLabel($app, $engagement);
+            ?>
             <div class="col-md-6">
                 <div class="card h-100">
                     <div class="card-body d-flex justify-content-between align-items-center gap-2">
                         <div>
                             <div class="fw-bold"><?= e($app['name']) ?><?php if ($app['environment']): ?> <span class="badge badge-soft"><?= e($app['environment']) ?></span><?php endif; ?></div>
                             <div class="text-muted small"><?= e($app['url']) ?></div>
+                            <?php if ($price !== ''): ?>
+                                <div class="small mt-1">
+                                    <span class="money fw-semibold"><?= e($price) ?></span>
+                                    <?php if ($engagement): ?>
+                                        <span class="text-muted">as part of</span>
+                                        <a href="<?= route('portal.services') ?>#engagement-<?= (int) $engagement['id'] ?>"><?= e($engagement['label']) ?></a>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                         <a href="<?= e($app['url']) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-brand"><i class="bi bi-box-arrow-up-right"></i> Open</a>
                     </div>

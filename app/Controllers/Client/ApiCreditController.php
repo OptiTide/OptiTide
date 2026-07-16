@@ -13,11 +13,25 @@ use App\Services\Api\ApiCreditService;
 use App\Services\Api\ApiKeyService;
 use App\Services\Audit\AuditLog;
 use App\Services\Invoices\InvoiceService;
+use App\Support\Features;
 
 class ApiCreditController extends Controller
 {
+    /**
+     * Existing credit balances are untouched — switching the feature back on
+     * restores access to them.
+     */
+    protected function guard(): void
+    {
+        if (! Features::enabled('api_credits')) {
+            $this->abort(404, 'The API is not available.');
+        }
+    }
+
     public function index(Request $request): Response
     {
+        $this->guard();
+
         $client = Client::findOrFail(Auth::clientId());
         $credits = new ApiCreditService();
 
@@ -39,6 +53,8 @@ class ApiCreditController extends Controller
     /** Issue or rotate the client's API key (plaintext shown once). */
     public function issueKey(Request $request): Response
     {
+        $this->guard();
+
         $clientId = Auth::clientId();
         $rotating = ApiKeyService::hasKey(Client::findOrFail($clientId));
 
@@ -52,6 +68,10 @@ class ApiCreditController extends Controller
 
     public function revokeKey(Request $request): Response
     {
+        // Safe to close: with the API off the endpoint rejects every key anyway,
+        // so there is no live credential left to revoke.
+        $this->guard();
+
         $clientId = Auth::clientId();
         (new ApiKeyService())->revoke($clientId);
         AuditLog::record('api_key.revoked', 'client', $clientId);
@@ -63,6 +83,9 @@ class ApiCreditController extends Controller
     /** Buy credit: raise a payable invoice tagged as a top-up. */
     public function buy(Request $request): Response
     {
+        // Invoicing someone for credit they could not spend must be impossible.
+        $this->guard();
+
         $clientId = Auth::clientId();
 
         $min = (int) config('api_credits.min_topup_cents', 1000);

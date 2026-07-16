@@ -37,8 +37,8 @@
                 <?php // Was /#packages — a homepage anchor that bounced you off
                       // whatever page you were on. Real pricing lives on /services. ?>
                 <a href="<?= route('pages.services') ?>#pricing">Pricing</a>
-                <a href="<?= route('blog.index') ?>">Blog</a>
-                <a href="<?= route('careers.index') ?>">Careers</a>
+                <?php if (\App\Support\Features::enabled('blog')): ?><a href="<?= route('blog.index') ?>">Blog</a><?php endif; ?>
+                <?php if (\App\Support\Features::enabled('careers')): ?><a href="<?= route('careers.index') ?>">Careers</a><?php endif; ?>
                 <a href="/contact">Contact Us</a>
             </div>
 

@@ -12,6 +12,7 @@ use App\Models\JobApplication;
 use App\Models\JobOpening;
 use App\Services\Mail\Mail;
 use App\Support\Captcha;
+use App\Support\Features;
 use App\Support\Upload;
 use App\Support\UploadException;
 
@@ -25,8 +26,16 @@ use App\Support\UploadException;
  */
 class CareerController extends Controller
 {
+    protected function guard(): void
+    {
+        if (! Features::enabled('careers')) {
+            $this->abort(404, 'Page not found.');
+        }
+    }
+
     public function index(Request $request): Response
     {
+        $this->guard();
         $brand = config('company.brand_name');
         $roles = JobOpening::open();
 
@@ -43,6 +52,7 @@ class CareerController extends Controller
 
     public function show(Request $request, string $slug): Response
     {
+        $this->guard();
         $role = JobOpening::liveRole($slug);
         if (! $role) {
             // A filled role is a dead link people still reach from job boards, so
@@ -73,6 +83,10 @@ class CareerController extends Controller
      */
     public function apply(Request $request): Response
     {
+        // Gated before the honeypot/rate-limit branches below, all of which
+        // return a success flash — a POST here must not look like it worked.
+        $this->guard();
+
         $slug = trim((string) $request->input('role', ''));
         $role = $slug !== '' ? JobOpening::liveRole($slug) : null;
         $return = $role ? route('careers.show', ['slug' => $role['slug']]) : route('careers.index');

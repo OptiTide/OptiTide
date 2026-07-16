@@ -4,6 +4,7 @@ namespace App\Services\Chat;
 
 use App\Models\ChatConversation;
 use App\Models\ChatMessage;
+use App\Support\Features;
 
 /**
  * The single write path for live chat. A visitor's message triggers an instant
@@ -28,10 +29,22 @@ final class ChatService
         // Brand + service lines come from Settings/the catalogue, so the greeting
         // can't drift from what's actually on sale.
         $lines = \App\Services\Chat\ChatAiService::serviceLineList();
-        $greeting = 'Hi! 👋 I\'m the ' . (config('company.brand_name') ?: config('app.name'))
-            . ' AI assistant — I can answer most questions instantly, and a human teammate can jump in whenever you need. '
-            . 'How can I help today' . ($lines ? ' — ' . $lines . '?' : '?');
+        $brand = config('company.brand_name') ?: config('app.name');
 
+        // The greeting is the one message that isn't a reply, so it states who is
+        // about to answer. With AI off, promising an instant answer would be a
+        // lie — the visitor is waiting on a person.
+        $greeting = Features::enabled('ai_chat')
+            ? 'Hi! 👋 I\'m the ' . $brand
+                . ' AI assistant — I can answer most questions instantly, and a human teammate can jump in whenever you need. '
+                . 'How can I help today' . ($lines ? ' — ' . $lines . '?' : '?')
+            : 'Hi! 👋 Thanks for getting in touch with ' . $brand
+                . '. Leave your question here and a teammate will reply in this window'
+                . ($lines ? ' — we can help with ' . $lines . '.' : '.');
+
+        // Stays flagged is_ai even with AI off: nobody typed it, and is_ai = 0
+        // renders as "You / team" in the admin thread — i.e. it would credit a
+        // teammate with a message they never sent.
         $this->postAgent($conversation['id'], $greeting, true, null);
 
         return ChatConversation::find($conversation['id']);
@@ -49,7 +62,12 @@ final class ChatService
         // Instant assistant reply only while no human has taken over. The reply is
         // stored now but delivered to the visitor via the SAME poll channel as a
         // human reply — so a visitor can't tell AI from human by how it arrives.
-        if (($conversation['mode'] ?? ChatConversation::MODE_AI) === ChatConversation::MODE_AI) {
+        //
+        // The ai_chat gate belongs HERE, at the dispatch, not in ChatAiService:
+        // reply() always returns something (it falls back to a canned responder
+        // when there's no API key), so gating it there would still auto-answer.
+        if (Features::enabled('ai_chat')
+            && ($conversation['mode'] ?? ChatConversation::MODE_AI) === ChatConversation::MODE_AI) {
             $reply = (new ChatAiService())->reply(ChatConversation::messages($conversation['id']));
             $this->postAgent($conversation['id'], $reply, true, null);
         }

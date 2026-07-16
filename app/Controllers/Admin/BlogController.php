@@ -7,11 +7,25 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Session;
 use App\Models\Blog;
+use App\Support\Features;
 
 class BlogController extends Controller
 {
+    /**
+     * The blog is switched off — /blog and the feed are gone, so publishing here
+     * would write to pages nobody can reach. Articles are retained.
+     */
+    protected function guard(): void
+    {
+        if (! Features::enabled('blog')) {
+            $this->abort(404, 'The blog is switched off.');
+        }
+    }
+
     public function index(Request $request): Response
     {
+        $this->guard();
+
         return $this->view('admin.blogs.index', [
             'title' => 'Blog',
             'posts' => Blog::query()->orderBy('id', 'desc')->get(),
@@ -20,6 +34,8 @@ class BlogController extends Controller
 
     public function create(Request $request): Response
     {
+        $this->guard();
+
         return $this->view('admin.blogs.form', [
             'title' => 'New Article',
             'post'  => null,
@@ -28,6 +44,8 @@ class BlogController extends Controller
 
     public function store(Request $request): Response
     {
+        $this->guard();
+
         $post = Blog::create($this->blogData($request, null));
         Session::flash('success', 'Article created.');
 
@@ -36,6 +54,8 @@ class BlogController extends Controller
 
     public function edit(Request $request, string $id): Response
     {
+        $this->guard();
+
         return $this->view('admin.blogs.form', [
             'title' => 'Edit Article',
             'post'  => Blog::findOrFail($id),
@@ -44,6 +64,8 @@ class BlogController extends Controller
 
     public function update(Request $request, string $id): Response
     {
+        $this->guard();
+
         $existing = Blog::findOrFail($id);
         Blog::updateById($id, $this->blogData($request, $existing));
         Session::flash('success', 'Article saved.');
@@ -53,6 +75,8 @@ class BlogController extends Controller
 
     public function destroy(Request $request, string $id): Response
     {
+        $this->guard();
+
         Blog::findOrFail($id);
         Blog::deleteById($id);
         Session::flash('status', 'Article deleted.');

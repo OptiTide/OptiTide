@@ -32,6 +32,12 @@ $router->get('/chat/poll', [PublicSite\ChatController::class, 'poll'])->name('ch
 $router->get('/manifest.webmanifest', [PublicSite\PwaController::class, 'manifest'])->name('pwa.manifest');
 $router->get('/sw.js', [PublicSite\PwaController::class, 'serviceWorker'])->name('pwa.sw');
 $router->get('/offline', [PublicSite\PwaController::class, 'offline'])->name('pwa.offline');
+// --- Quotes (public accept link, same token pattern as /pay) ---
+$router->get('/quote/{token}', [PublicSite\QuoteController::class, 'show'])->name('quote.show');
+$router->get('/quote/{token}/pdf', [PublicSite\QuoteController::class, 'pdf'])->name('quote.pdf');
+$router->post('/quote/{token}/accept', [PublicSite\QuoteController::class, 'accept'])->name('quote.accept')->middleware('csrf');
+$router->post('/quote/{token}/decline', [PublicSite\QuoteController::class, 'decline'])->name('quote.decline')->middleware('csrf');
+
 $router->get('/pay/{token}', [PublicSite\PayController::class, 'show'])->name('pay.show');
 $router->get('/pay/{token}/pdf', [PublicSite\PayController::class, 'pdf'])->name('pay.pdf');
 $router->get('/pay/{token}/skrill', [PublicSite\PayController::class, 'skrill'])->name('pay.skrill');
@@ -124,6 +130,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->post('/clients/{id}/api-credit', [Admin\ClientController::class, 'adjustApiCredit'])->name('admin.clients.apicredit');
     $router->post('/clients/{id}/apps', [Admin\ClientController::class, 'storeApp'])->name('admin.clients.apps.store');
     $router->post('/apps/{id}/delete', [Admin\ClientController::class, 'destroyApp'])->name('admin.apps.destroy');
+    $router->put('/apps/{id}', [Admin\ClientController::class, 'updateApp'])->name('admin.apps.update');
     $router->post('/clients/{id}/engagements', [Admin\EngagementController::class, 'store'])->name('admin.engagements.store');
     $router->put('/engagements/{id}', [Admin\EngagementController::class, 'update'])->name('admin.engagements.update');
     $router->delete('/engagements/{id}', [Admin\EngagementController::class, 'destroy'])->name('admin.engagements.destroy');
@@ -179,6 +186,13 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->post('/boards/{key}/columns', [Admin\BoardController::class, 'storeColumn'])->name('admin.boards.columns.store');
     $router->put('/cards/{id}', [Admin\BoardController::class, 'updateCard'])->name('admin.cards.update');
     $router->delete('/cards/{id}', [Admin\BoardController::class, 'destroyCard'])->name('admin.cards.destroy');
+    // Card detail + depth (checklist, comments). The card GET is declared
+    // after the literal /cards/{id} verbs above, mirroring the file order.
+    $router->get('/cards/{id}', [Admin\BoardController::class, 'card'])->name('admin.cards.show');
+    $router->post('/cards/{id}/checklist', [Admin\BoardController::class, 'storeChecklistItem'])->name('admin.cards.checklist.store');
+    $router->post('/checklist/{id}/toggle', [Admin\BoardController::class, 'toggleChecklistItem'])->name('admin.cards.checklist.toggle');
+    $router->post('/checklist/{id}/delete', [Admin\BoardController::class, 'destroyChecklistItem'])->name('admin.cards.checklist.destroy');
+    $router->post('/cards/{id}/comments', [Admin\BoardController::class, 'storeComment'])->name('admin.cards.comments.store');
     $router->post('/cards/{id}/move', [Admin\BoardController::class, 'moveCard'])->name('admin.cards.move');
 
     // Helpdesk
@@ -240,6 +254,17 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->delete('/categories/{id}', [Admin\ServiceCategoryController::class, 'destroy'])->name('admin.categories.destroy');
 
     // Invoices
+    // Quotes. create/{id} order matters — {id} would swallow "create".
+    $router->get('/quotes', [Admin\QuoteController::class, 'index'])->name('admin.quotes.index');
+    $router->get('/quotes/create', [Admin\QuoteController::class, 'create'])->name('admin.quotes.create');
+    $router->post('/quotes', [Admin\QuoteController::class, 'store'])->name('admin.quotes.store');
+    $router->get('/quotes/{id}/edit', [Admin\QuoteController::class, 'edit'])->name('admin.quotes.edit');
+    $router->get('/quotes/{id}/pdf', [Admin\QuoteController::class, 'pdf'])->name('admin.quotes.pdf');
+    $router->post('/quotes/{id}/send', [Admin\QuoteController::class, 'send'])->name('admin.quotes.send');
+    $router->put('/quotes/{id}', [Admin\QuoteController::class, 'update'])->name('admin.quotes.update');
+    $router->delete('/quotes/{id}', [Admin\QuoteController::class, 'destroy'])->name('admin.quotes.destroy');
+    $router->get('/quotes/{id}', [Admin\QuoteController::class, 'show'])->name('admin.quotes.show');
+
     $router->get('/invoices', [Admin\InvoiceController::class, 'index'])->name('admin.invoices.index');
     $router->get('/invoices/create', [Admin\InvoiceController::class, 'create'])->name('admin.invoices.create');
     $router->post('/invoices', [Admin\InvoiceController::class, 'store'])->name('admin.invoices.store');
@@ -295,6 +320,13 @@ $router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 't
     $router->post('/support', [Client\SupportController::class, 'store'])->name('portal.support.store');
     $router->get('/support/{id}', [Client\SupportController::class, 'show'])->name('portal.support.show');
     $router->post('/support/{id}/reply', [Client\SupportController::class, 'reply'])->name('portal.support.reply');
+    // Quotes
+    $router->get('/quotes', [Client\QuoteController::class, 'index'])->name('portal.quotes.index');
+    $router->get('/quotes/{id}/pdf', [Client\QuoteController::class, 'pdf'])->name('portal.quotes.pdf');
+    $router->post('/quotes/{id}/accept', [Client\QuoteController::class, 'accept'])->name('portal.quotes.accept');
+    $router->post('/quotes/{id}/decline', [Client\QuoteController::class, 'decline'])->name('portal.quotes.decline');
+    $router->get('/quotes/{id}', [Client\QuoteController::class, 'show'])->name('portal.quotes.show');
+
     $router->get('/invoices', [Client\InvoiceController::class, 'index'])->name('portal.invoices.index');
     $router->get('/invoices/{id}', [Client\InvoiceController::class, 'show'])->name('portal.invoices.show');
     $router->post('/invoices/{id}/apply-credit', [Client\InvoiceController::class, 'applyCredit'])->name('portal.invoices.credit');

@@ -10,11 +10,21 @@ use App\Models\Client;
 use App\Models\Meeting;
 use App\Services\Audit\AuditLog;
 use App\Services\Mail\Mail;
+use App\Support\Features;
 
 class MeetingController extends Controller
 {
+    protected function guard(): void
+    {
+        if (! Features::enabled('meetings')) {
+            $this->abort(404, 'Meetings are not available.');
+        }
+    }
+
     public function index(Request $request): Response
     {
+        $this->guard();
+
         $clientId = Auth::clientId();
 
         return $this->view('client.meetings.index', [
@@ -26,6 +36,10 @@ class MeetingController extends Controller
     /** A client requests a meeting time; admin confirms it. */
     public function store(Request $request): Response
     {
+        // A request that flashes "we'll confirm shortly" into a queue nobody can
+        // open is worse than no booking form at all.
+        $this->guard();
+
         $clientId = Auth::clientId();
         if (! $clientId) {
             return $this->redirectRoute('portal.dashboard');
