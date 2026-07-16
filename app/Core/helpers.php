@@ -89,9 +89,18 @@ if (! function_exists('url')) {
 }
 
 if (! function_exists('asset')) {
+    /**
+     * URL for a file under /public/assets, cache-busted with the file's mtime so
+     * a new deploy always serves the latest CSS/JS. The ?v= changes the URL,
+     * forcing a fresh fetch past the browser AND service-worker caches.
+     */
     function asset(string $path): string
     {
-        return config('app.url') . '/assets/' . ltrim($path, '/');
+        $rel = ltrim($path, '/');
+        $file = public_path('assets/' . $rel);
+        $version = is_file($file) ? '?v=' . filemtime($file) : '';
+
+        return '/assets/' . $rel . $version;
     }
 }
 
