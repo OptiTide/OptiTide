@@ -11,10 +11,12 @@ use App\Models\ClientService;
 use App\Models\Invoice;
 use App\Models\Service;
 use App\Models\ServiceCategory;
+use App\Services\Billing\DiscountExhaustedException;
 use App\Services\Billing\DiscountService;
 use App\Services\Billing\InstallmentService;
 use App\Services\Invoices\InvoiceService;
 use App\Services\Projects\ProjectService;
+use App\Support\Catalog;
 use App\Support\Gst;
 use App\Support\Money;
 
@@ -42,10 +44,13 @@ class OrderController extends Controller
         $total = new Money((int) $svc['price_cents'], $svc['currency']);
         $category = ($svc['category_id'] ?? null) ? (ServiceCategory::find($svc['category_id'])['slug'] ?? null) : null;
 
-        // Show any automatic sale up front, so the price on this screen matches
-        // what they'll actually be charged.
-        $sale = (new DiscountService())->saleForService($svc);
-        $saleAmount = $sale ? (new DiscountService())->amountFor($sale, (int) $svc['price_cents']) : 0;
+        // Show any automatic sale up front, resolved through Catalog::sale() —
+        // the SAME basis place() charges on (the real schedule total, which for
+        // yearly hosting is price x 12), so this screen can never advertise a
+        // figure the till won't honour.
+        $saleInfo = Catalog::sale($svc);
+        $sale = $saleInfo['sale'] ?? null;
+        $saleAmount = $saleInfo['amount_cents'] ?? 0;
 
         return $this->view('client.order.show', [
             'title'      => 'Confirm Order',
@@ -121,6 +126,15 @@ class OrderController extends Controller
         // Instalment / hardship plans are approval-gated: create the engagement and
         // a pending request, but issue NO invoices until an admin approves.
         if ($installments->requiresApproval($category, $plan)) {
+            // No invoice is issued here, so there is nothing to discount — and
+            // the later approval flow knows nothing about the code. Say so
+            // rather than silently swallowing it and billing full price.
+            if ($resolved['discount'] !== null) {
+                $this->flash('error', 'A discount code can\'t be combined with a payment plan yet. Choose pay-in-full to use your code, or remove the code to request the plan.');
+
+                return $this->redirect(route('portal.order.show', ['service' => $svc['id']]));
+            }
+
             $engagement = (new ProjectService())->createEngagement($engAttrs);
             \App\Models\InstallmentRequest::create([
                 'client_id'     => $clientId,
@@ -145,7 +159,8 @@ class OrderController extends Controller
 
         $invoices = new InvoiceService();
 
-        $result = Database::instance()->transaction(function () use ($svc, $clientId, $invoices, $discounts, $resolved, $recurring, $yearly, $schedule, $engAttrs) {
+        try {
+            $result = Database::instance()->transaction(function () use ($svc, $clientId, $invoices, $discounts, $resolved, $recurring, $yearly, $schedule, $engAttrs) {
             $engagement = (new ProjectService())->createEngagement($engAttrs);
 
             // Split the discount across the scheduled invoices in proportion to
@@ -201,13 +216,26 @@ class OrderController extends Controller
             }
 
             // Claim the use once per order, against the first invoice. Inside the
-            // transaction so a failed order never burns a use.
+            // transaction so a failed order never burns a use — and the CAS
+            // result MUST be honoured: if someone else took the last use while
+            // this order was being built, throwing rolls the invoices back
+            // rather than handing out a discount we refused to claim.
             if ($resolved['discount'] && $resolved['amount_cents'] > 0) {
-                $discounts->redeem($resolved['discount'], $resolved['amount_cents'], $clientId, $created[0]['id'] ?? null);
+                if (! $discounts->redeem($resolved['discount'], $resolved['amount_cents'], $clientId, $created[0]['id'] ?? null)) {
+                    throw new DiscountExhaustedException();
+                }
             }
 
-            return ['engagement' => $engagement, 'invoices' => $created];
-        });
+                return ['engagement' => $engagement, 'invoices' => $created];
+            });
+        } catch (DiscountExhaustedException $e) {
+            // Someone took the last use mid-order. The transaction rolled the
+            // invoices back, so nothing was issued — tell them plainly instead
+            // of quietly charging full price or handing out an unclaimed use.
+            $this->flash('error', 'Sorry — that code was fully redeemed while you were ordering. Nothing has been charged. Please try again without it.');
+
+            return $this->redirect(route('portal.order.show', ['service' => $svc['id']]));
+        }
 
         $firstInvoice = $result['invoices'][0];
         $n = count($result['invoices']);

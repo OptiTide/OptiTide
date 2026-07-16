@@ -29,6 +29,10 @@ $this->extends('layouts.portal');
                                 <?= e($sale_net->format()) ?><?php if ($recurring): ?><span class="text-muted fs-6">/<?= e(substr($service['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?>
                             </div>
                             <div class="small text-success fw-semibold"><i class="bi bi-tag-fill"></i> <?= e($sale['name']) ?> — save <?= e($saleAmount->format()) ?></div>
+                            <?php if ($recurring): ?>
+                                <?php // Renewals bill the full engagement price, so say so plainly. ?>
+                                <div class="small text-muted">first <?= e(strtolower(\App\Models\Service::INTERVALS[$service['interval']] ?? 'month')) ?> only, then <?= e($total->format()) ?><?= e(\App\Support\Catalog::suffix($service)) ?></div>
+                            <?php endif; ?>
                             <div class="text-muted small">includes GST of <?= e(\App\Support\Gst::component($sale_net)->format()) ?></div>
                         <?php else: ?>
                             <div class="h3 fw-bold money mb-0"><?= e($total->format()) ?><?php if ($recurring): ?><span class="text-muted fs-6">/<?= e(substr($service['interval'] ?? 'mo', 0, 2)) ?></span><?php endif; ?></div>

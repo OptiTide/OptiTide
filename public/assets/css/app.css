@@ -642,3 +642,15 @@ a:hover { color: var(--brand); }
     .mk-clock-card { padding: 1.25rem; }
     .mk-clock-vs { transform: rotate(90deg); }
 }
+
+/* Sale pricing on public plan cards */
+.mk-price-was { display: block; font-size: 1rem; color: var(--muted); text-decoration: line-through; line-height: 1.2; }
+.mk-price-num--sale { color: #15803d; }
+.mk-sale-badge {
+    display: inline-flex; align-items: center; gap: .3rem; margin-top: .4rem;
+    background: #dcfce7; color: #166534; border: 1px solid #86efac;
+    font-size: .7rem; font-weight: 700; letter-spacing: .02em;
+    padding: .15rem .5rem; border-radius: 999px; white-space: nowrap;
+}
+.mk-sale-badge i { font-size: .65rem; }
+.mk-price-note { display: block; font-size: .72rem; color: var(--muted); margin-top: .3rem; font-weight: 600; }

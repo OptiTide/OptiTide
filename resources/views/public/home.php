@@ -239,11 +239,7 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
                                 <div class="mk-price-name"><?= e($plan['name']) ?></div>
                                 <?php if (! empty($plan['description'])): ?><div class="mk-price-blurb"><?= e($plan['description']) ?></div><?php endif; ?>
                                 <div class="mk-price-amount">
-                                    <?php if ($isQuote): ?>
-                                        <span class="mk-price-num" style="font-size:1.4rem">Custom quote</span>
-                                    <?php else: ?>
-                                        <span class="mk-price-num"><?= e(\App\Support\Currency::display((int) $plan['price_cents'])) ?></span><span class="mk-price-per"><?= e(\App\Support\Catalog::suffix($plan)) ?></span>
-                                    <?php endif; ?>
+                                    <?php $this->insert('public.pages.partials.plan-price', ['plan' => $plan]); ?>
                                 </div>
                                 <div class="mk-price-terms"><?= $plan['billing_type'] === 'recurring' ? 'Ongoing monthly — cancel any time' : 'One-off project fee' ?></div>
                                 <?php if ($isQuote): ?>
