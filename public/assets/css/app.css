@@ -312,7 +312,10 @@ a:hover { color: var(--brand); }
 .mk-footer-about { font-size: .9rem; line-height: 1.6; color: #b9c0d4; max-width: 340px; }
 .mk-footer-contact { display: flex; flex-direction: column; gap: .35rem; margin-top: .75rem; }
 .mk-footer-contact a { display: inline-flex; align-items: center; gap: .45rem; }
-.mk-footer h5 + a { display: block; padding: .28rem 0; }
+.mk-footer-col a,
+.mk-footer-col .mk-footer-note { display: block; padding: .28rem 0; word-break: break-word; }
+.mk-footer-col .mk-footer-note { color: #8f97ad; font-size: .85rem; }
+.mk-footer-col a i, .mk-footer-col .mk-footer-note i { width: 15px; opacity: .8; margin-right: .15rem; }
 .mk-footer-tagline { color: var(--brand); font-weight: 700; font-style: italic; }
 
 /* --- Blog --------------------------------------------------------------- */
