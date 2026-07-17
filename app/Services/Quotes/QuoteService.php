@@ -10,6 +10,7 @@ use App\Models\QuoteItem;
 use App\Models\Setting;
 use App\Services\Invoices\InvoiceService;
 use App\Services\Mail\Mail;
+use App\Services\Notifications\OwnerAlert;
 use App\Support\Gst;
 use App\Support\Money;
 
@@ -287,6 +288,26 @@ final class QuoteService
             }
 
             Quote::updateById($quoteId, ['converted_invoice_id' => $invoice['id']]);
+
+            // A client accepting a quote is the highest-value event in the business and
+            // it told nobody. afterCommit, and below the CAS claim: a racing second
+            // acceptance returns early at $claimed === 0, so this can neither alert
+            // twice nor announce a sale that then rolled back.
+            Database::instance()->afterCommit(function () use ($quote, $invoice) {
+                $client = Client::find($quote['client_id']);
+                OwnerAlert::send(
+                    'Quote accepted: ' . ($client['business_name'] ?? 'A client') . ' — ' . $invoice['number'],
+                    ($client['business_name'] ?? 'A client') . ' just accepted quote ' . ($quote['number'] ?? '') . '.',
+                    array_filter([
+                        'Client'  => $client['business_name'] ?? '—',
+                        'Contact' => $client['email'] ?? '—',
+                        'Value'   => (new Money((int) $invoice['total_cents'], $invoice['currency']))->format() . ' inc GST',
+                        'Invoice' => $invoice['number'] . ' — emailed to them automatically',
+                    ]),
+                    url('admin/invoices/' . $invoice['id']),
+                    'View the invoice'
+                );
+            });
 
             return $invoice;
         });

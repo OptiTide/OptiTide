@@ -106,6 +106,21 @@ class RegisterController extends Controller
             // never block sign-up on the verification mail
         }
 
+        // A lead the owner never saw. A contact-form message emails him, and so does a
+        // careers application — but a brand-new client signing up did not. OwnerAlert
+        // swallows its own failures, so sign-up cannot break on it.
+        \App\Services\Notifications\OwnerAlert::send(
+            'New client signed up: ' . $user['name'],
+            $user['name'] . ' just created an account.',
+            array_filter([
+                'Name'     => $user['name'],
+                'Email'    => $user['email'],
+                'Referred' => is_string($refCode) && $refCode !== '' ? 'yes — code ' . $refCode : null,
+            ]),
+            url('admin/users'),
+            'Open the CRM'
+        );
+
         AuditLog::record('user.registered', 'user', $user['id'], ['email' => $user['email']]);
         Session::flash('success', 'Welcome to ' . config('company.brand_name') . '! We\'ve emailed you a link to confirm your email address.');
 

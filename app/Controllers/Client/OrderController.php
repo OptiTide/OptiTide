@@ -15,6 +15,7 @@ use App\Services\Billing\DiscountExhaustedException;
 use App\Services\Billing\DiscountService;
 use App\Services\Billing\InstallmentService;
 use App\Services\Invoices\InvoiceService;
+use App\Services\Notifications\OwnerAlert;
 use App\Services\Payments\PaymentManager;
 use App\Services\Projects\ProjectService;
 use App\Support\Catalog;
@@ -242,6 +243,27 @@ class OrderController extends Controller
 
         $firstInvoice = $result['invoices'][0];
         $n = count($result['invoices']);
+
+        // Tell the owner a sale just happened. AFTER the transaction, so a rolled-back
+        // order (DiscountExhaustedException above) can never report a phantom sale.
+        // A contact-form enquiry already emails him; an actual order did not — the one
+        // event that matters most was the only silent one.
+        $client = \App\Models\Client::find($clientId);
+        OwnerAlert::send(
+            'Order: ' . ($client['business_name'] ?? 'A client') . ' — ' . $svc['name'],
+            ($client['business_name'] ?? 'A client') . ' just ordered ' . $svc['name'] . '.',
+            array_filter([
+                'Client'   => $client['business_name'] ?? '—',
+                'Contact'  => $client['email'] ?? '—',
+                'Service'  => $svc['name'],
+                'Value'    => (new Money((int) $svc['price_cents'], $svc['currency']))->format()
+                    . ($recurring ? Catalog::suffix($svc) : ''),
+                'Invoice'  => $firstInvoice['number'] . ($n > 1 ? ' (first of ' . $n . ')' : ''),
+                'Plan'     => $n > 1 ? $plan['label'] ?? null : null,
+            ]),
+            url('admin/invoices/' . $firstInvoice['id']),
+            'View the invoice'
+        );
 
         // If this service line has a project brief, collect it before payment.
         if (\App\Models\ProjectIntake::questionsFor($category)) {

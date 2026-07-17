@@ -6,8 +6,12 @@ use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Request;
 use App\Core\Response;
+use App\Models\Client;
 use App\Models\ClientService;
 use App\Models\Service;
+use App\Services\Audit\AuditLog;
+use App\Services\Mail\Mail;
+use App\Services\Notifications\OwnerAlert;
 use App\Support\Money;
 
 class ServiceController extends Controller
@@ -53,7 +57,49 @@ class ServiceController extends Controller
                 'status'            => ClientService::STATUS_CANCELLED,
                 'next_invoice_date' => null,
             ]);
-            $this->flash('success', 'Your "' . ($engagement['label'] ?? 'service') . '" has been cancelled. You won\'t be billed again for it.');
+
+            $label = $engagement['label'] ?? 'service';
+            $client = Client::find($engagement['client_id']);
+
+            // This was the only client-facing state change with no audit row and no
+            // notification at all — recurring revenue walked out and nobody was told.
+            AuditLog::record('engagement.cancelled', 'client_service', $id, ['label' => $label]);
+
+            // The owner first: this is the event he'd most want pushed at him, because
+            // it's the only one where a phone call the same day can save the account.
+            OwnerAlert::send(
+                'Cancelled: ' . ($client['business_name'] ?? 'A client') . ' — ' . $label,
+                ($client['business_name'] ?? 'A client') . ' just cancelled ' . $label . '.',
+                array_filter([
+                    'Client'  => $client['business_name'] ?? '—',
+                    'Contact' => $client['email'] ?? '—',
+                    'Service' => $label,
+                    'Was'     => ! empty($engagement['price_cents'])
+                        ? (new Money((int) $engagement['price_cents'], $engagement['currency'] ?? config('company.currency', 'AUD')))->format()
+                        : null,
+                ]),
+                $client ? url('admin/clients/' . $client['id']) : null,
+                'Open the client'
+            );
+
+            // And confirm it to the client in writing — their paper trail against
+            // "I cancelled and you kept billing me", and ours too.
+            if ($client && ! empty($client['email'])) {
+                try {
+                    Mail::to($client['email'], $client['business_name'] ?? null)
+                        ->subject('Cancelled: ' . $label)
+                        ->view('emails.service-cancelled', [
+                            'client' => $client,
+                            'label'  => $label,
+                        ])
+                        ->send();
+                } catch (\Throwable $e) {
+                    // Never let a mail outage block a cancellation — it is already done.
+                    error_log('Cancellation confirmation failed: ' . $e->getMessage());
+                }
+            }
+
+            $this->flash('success', 'Your "' . $label . '" has been cancelled. You won\'t be billed again for it.');
         }
 
         return $this->redirect(route('portal.services'));

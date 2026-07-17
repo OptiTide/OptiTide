@@ -33,6 +33,23 @@ class EmailVerificationController extends Controller
                 'email_verify_token' => null,
             ]);
             AuditLog::record('user.email_verified', 'user', $user['id'], ['email' => $user['email']]);
+
+            // emails/welcome.php was written, branded, and then wired to nothing. This
+            // is where it belongs: the address is confirmed (so it will actually
+            // arrive) and they have just landed. Inside the empty() guard, so
+            // re-clicking an old link cannot send it a second time.
+            try {
+                Mail::to($user['email'], $user['name'])
+                    ->subject('Welcome to ' . config('company.brand_name'))
+                    ->view('emails.welcome', [
+                        'name' => $user['name'],
+                        'url'  => url('portal'),
+                    ])
+                    ->send();
+            } catch (\Throwable $e) {
+                // Confirming an email address must never fail on the welcome note.
+                error_log('Welcome email failed: ' . $e->getMessage());
+            }
         }
 
         Session::flash('success', 'Thanks! Your email address is now confirmed. 🎉');

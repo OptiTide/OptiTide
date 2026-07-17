@@ -87,6 +87,22 @@ final class SuspensionService
             ClientService::updateById($cs['id'], ['status' => ClientService::STATUS_ACTIVE]);
         }
 
+        // Going ON hold emails them ("Your account is on hold"); coming OFF hold said
+        // nothing. They got the bad news, paid to fix it, then heard silence — so they
+        // had no way to know service had actually resumed. Cheap goodwill at the exact
+        // moment the money arrived.
+        if (! empty($client['email'])) {
+            try {
+                Mail::to($client['email'], $client['business_name'] ?? null)
+                    ->subject('You\'re all paid up — your services are back on')
+                    ->view('emails.account-reactivated', ['client' => $client])
+                    ->send();
+            } catch (\Throwable $e) {
+                // Never let a mail failure undo a reactivation — they have paid.
+                error_log('Reactivation email failed: ' . $e->getMessage());
+            }
+        }
+
         return true;
     }
 }
