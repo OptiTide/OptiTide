@@ -9,6 +9,7 @@ use App\Core\Response;
 use App\Core\Session;
 use App\Models\Client;
 use App\Models\User;
+use App\Services\Accounts\InviteService;
 use App\Services\Audit\AuditLog;
 
 /** Admin-only. Every action re-checks isAdmin (the route group also allows staff). */
@@ -56,17 +57,38 @@ class UserController extends Controller
         $this->guard();
         $data = $this->validated($request);
 
+        $email = strtolower($data['email']);
+        $clientId = $data['role'] === User::ROLE_CLIENT ? (int) $data['client_id'] : null;
+
+        // Invite instead of inventing a password whenever no password was typed. A
+        // typed-in password has to be relayed to the person somehow — phone, chat,
+        // email — which is the insecure step the invite flow exists to remove, and the
+        // system never told them the account existed at all. This screen creates ADMIN
+        // and STAFF accounts too, so it closes the same hole for them.
+        $invite = empty($data['password']);
+
         $newUser = User::create([
             'name'          => $data['name'],
-            'email'         => strtolower($data['email']),
-            'password_hash' => password_hash($data['password'], PASSWORD_DEFAULT),
+            'email'         => $email,
+            // Null when inviting: Auth casts a null hash to '' before password_verify,
+            // so the account cannot be signed into until they set one themselves.
+            'password_hash' => $invite ? null : password_hash($data['password'], PASSWORD_DEFAULT),
             'role'          => $data['role'],
-            'client_id'     => $data['role'] === User::ROLE_CLIENT ? (int) $data['client_id'] : null,
+            'client_id'     => $clientId,
             'status'        => 'active',
         ]);
 
-        AuditLog::record('user.created', 'user', $newUser['id'] ?? null, ['role' => $data['role'] ?? null, 'email' => strtolower($data['email'])]);
-        Session::flash('success', 'User created.');
+        if ($invite) {
+            (new InviteService())->sendLink(
+                $newUser,
+                $clientId ? Client::find($clientId) : null
+            );
+        }
+
+        AuditLog::record('user.created', 'user', $newUser['id'] ?? null, ['role' => $data['role'] ?? null, 'email' => $email, 'invited' => $invite]);
+        Session::flash('success', $invite
+            ? 'User created — an invite to set their own password is on its way to ' . $email . '.'
+            : 'User created.');
 
         return $this->redirect(route('admin.users.index'));
     }
@@ -149,7 +171,9 @@ class UserController extends Controller
             'role'      => 'required|in:admin,staff,client',
             'client_id' => 'nullable|exists:clients,id',
             'status'    => 'nullable|in:active,inactive',
-            'password'  => ($id ? 'nullable' : 'required') . '|min:8',
+            // Optional on create too: blank means "email them an invite and let them
+            // choose their own", which is the better default. Still min:8 when given.
+            'password'  => 'nullable|min:8',
         ];
 
         $data = \App\Core\Validator::make($request->all(), $rules)->validate();

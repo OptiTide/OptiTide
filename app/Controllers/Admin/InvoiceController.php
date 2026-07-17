@@ -268,18 +268,10 @@ class InvoiceController extends Controller
             Auth::id()
         );
 
-        // E-mail the client a receipt.
-        $client = Client::find($invoice['client_id']);
-        if ($client && ! empty($client['email'])) {
-            \App\Services\Mail\Mail::to($client['email'], $client['business_name'])
-                ->subject('Payment received — invoice ' . $invoice['number'])
-                ->view('emails.payment-receipt', [
-                    'invoice' => Invoice::find($id),
-                    'payment' => $payment,
-                    'client'  => $client,
-                ])
-                ->send();
-        }
+        // The receipt now goes out from InvoiceService::recordPayment(), so every
+        // payment path sends one — including account credit, which used to be silent —
+        // and a mail outage can no longer 500 AFTER the payment committed and tempt a
+        // re-record (which would double-pay the invoice).
 
         AuditLog::record('invoice.payment_recorded', 'invoice', $id, []);
         Session::flash('success', 'Payment recorded and receipt e-mailed.');

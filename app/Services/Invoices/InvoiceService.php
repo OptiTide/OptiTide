@@ -326,6 +326,36 @@ final class InvoiceService
                 'paid_at'           => $status === Invoice::STATUS_PAID ? ($paidAt ?: now()) : $invoice['paid_at'],
             ]);
 
+            // The receipt belongs HERE, not in the controller. It used to live in
+            // Admin\InvoiceController::recordPayment() un-caught, so a mail outage threw
+            // AFTER the payment had committed: the admin saw a 500, assumed it hadn't
+            // saved, and recorded it again — double-paying the invoice. And the other
+            // caller (CreditService, applying account credit) sent no receipt at all,
+            // so a client whose invoice was settled from credit was never told.
+            // afterCommit + try/catch: it only fires if the payment really landed, and
+            // it can never turn a recorded payment into an error.
+            Database::instance()->afterCommit(function () use ($invoiceId, $payment) {
+                $fresh = Invoice::find($invoiceId);
+                $client = \App\Models\Client::find($fresh['client_id'] ?? null);
+
+                if (! $client || empty($client['email'])) {
+                    return;
+                }
+
+                try {
+                    Mail::to($client['email'], $client['business_name'] ?? null)
+                        ->subject('Payment received — invoice ' . $fresh['number'])
+                        ->view('emails.payment-receipt', [
+                            'invoice' => $fresh,
+                            'payment' => $payment,
+                            'client'  => $client,
+                        ])
+                        ->send();
+                } catch (\Throwable $e) {
+                    error_log('Payment receipt failed for invoice ' . ($fresh['number'] ?? '?') . ': ' . $e->getMessage());
+                }
+            });
+
             return ['payment' => $payment, 'becamePaid' => (! $wasPaid && $status === Invoice::STATUS_PAID)];
         });
 

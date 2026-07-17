@@ -73,8 +73,14 @@ class InviteService
         return $user;
     }
 
-    /** Mint a fresh token and email it. Public so admins can resend. */
-    public function sendLink(array $user, array $client, bool $isResend = false): void
+    /**
+     * Mint a fresh token and email it. Public so admins can resend.
+     *
+     * $client is nullable because this also serves STAFF accounts, which belong to no
+     * client — Admin > Users used to create them with a typed-in password that then had
+     * to be relayed by phone or chat.
+     */
+    public function sendLink(array $user, ?array $client = null, bool $isResend = false): void
     {
         $token = str_random(64);
 
@@ -89,10 +95,13 @@ class InviteService
         ]);
 
         Mail::to($user['email'], $user['name'])
-            ->subject('Your ' . config('company.brand_name') . ' client portal is ready')
+            ->subject(($user['role'] ?? null) !== \App\Models\User::ROLE_CLIENT
+                ? 'Your ' . config('company.brand_name') . ' staff account is ready'
+                : 'Your ' . config('company.brand_name') . ' client portal is ready')
             ->view('emails.client-invite', [
                 'name' => $user['name'],
                 'business' => $client['business_name'] ?? null,
+                'isStaff' => ($user['role'] ?? null) !== \App\Models\User::ROLE_CLIENT,
                 'url' => url('reset-password/' . $token . '?email=' . urlencode($user['email'])),
                 'days' => self::TTL_DAYS,
                 'isResend' => $isResend,

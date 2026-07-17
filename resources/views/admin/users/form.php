@@ -24,9 +24,21 @@ $role = old('role', $user['role'] ?? 'client');
                         <?php if (error('email')): ?><div class="invalid-feedback"><?= e(error('email')) ?></div><?php endif; ?>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Password <?= $isEdit ? '<span class="text-muted small">(leave blank to keep)</span>' : '' ?></label>
-                        <input type="password" name="password" class="form-control <?= has_error('password') ? 'is-invalid' : '' ?>" <?= $isEdit ? '' : 'required' ?>>
+                        <label class="form-label">
+                            Password
+                            <span class="text-muted small"><?= $isEdit ? '(leave blank to keep)' : '(leave blank to email them an invite)' ?></span>
+                        </label>
+                        <input type="password" name="password" class="form-control <?= has_error('password') ? 'is-invalid' : '' ?>" autocomplete="new-password">
                         <?php if (error('password')): ?><div class="invalid-feedback"><?= e(error('password')) ?></div><?php endif; ?>
+                        <?php if (! $isEdit): ?>
+                            <?php // Blank is the better path: a password you type here has to be
+                                  // relayed to them somehow, which is the insecure step worth
+                                  // removing — and they'd otherwise never be told the account exists. ?>
+                            <div class="form-text">
+                                Recommended: leave blank. They'll get an email to set their own password,
+                                so it never travels through you.
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
