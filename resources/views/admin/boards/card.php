@@ -97,8 +97,9 @@ $isComplete = ! empty($card['completed_at']);
                             <input type="checkbox" class="form-check-input mt-0" id="cl_<?= $item['id'] ?>" onchange="this.form.submit()" <?= ! empty($item['done']) ? 'checked' : '' ?>>
                             <label class="cl-item-text <?= ! empty($item['done']) ? 'cl-item-text--done' : '' ?>" for="cl_<?= $item['id'] ?>"><?= e($item['text']) ?></label>
                         </form>
+                        <?php // Plain POST — the checklist delete route is a POST verb, not a spoofed DELETE. ?>
                         <form method="post" action="<?= route('admin.cards.checklist.destroy', ['id' => $item['id']]) ?>">
-                            <?= csrf_field() ?><?= method_field('DELETE') ?>
+                            <?= csrf_field() ?>
                             <button class="btn btn-sm btn-light cl-item-del" title="Delete item"><i class="bi bi-x-lg"></i></button>
                         </form>
                     </div>

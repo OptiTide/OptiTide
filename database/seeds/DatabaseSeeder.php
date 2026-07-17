@@ -104,6 +104,7 @@ return new class {
             Service::create([
                 'category_id'  => $categories[$slug] ?? null,
                 'name'         => $name,
+                'features'     => self::PLAN_FEATURES[$name] ?? null,
                 'billing_type' => $billing,
                 'interval'     => $interval,
                 'price_cents'  => $price,
