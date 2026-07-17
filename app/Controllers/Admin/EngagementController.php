@@ -54,11 +54,25 @@ class EngagementController extends Controller
             'price'             => 'required|numeric|min:0',
             'status'            => 'required|in:active,paused,cancelled',
             'next_invoice_date' => 'nullable|date',
+            // started_at existed in the table but no form or validator ever exposed
+            // it, so the start date was stamped at creation and frozen forever.
+            'started_at'        => 'nullable|date',
+            'ends_at'           => 'nullable|date',
         ]);
 
         $recurring = $data['billing_type'] === Service::BILLING_RECURRING;
 
-        return [
+        $started = trim((string) ($data['started_at'] ?? ''));
+        $ends = trim((string) ($data['ends_at'] ?? ''));
+
+        // An engagement that ends before it starts is a typo, not a business rule.
+        if ($started !== '' && $ends !== '' && $ends < $started) {
+            throw new \App\Core\Exceptions\ValidationException([
+                'ends_at' => 'The end date is before the start date.',
+            ]);
+        }
+
+        $attrs = [
             'label'             => $data['label'],
             'service_id'        => ! empty($data['service_id']) ? (int) $data['service_id'] : null,
             'billing_type'      => $data['billing_type'],
@@ -67,6 +81,17 @@ class EngagementController extends Controller
             'currency'          => config('company.currency', 'AUD'),
             'status'            => $data['status'],
             'next_invoice_date' => $recurring ? ($data['next_invoice_date'] ?: date('Y-m-d', strtotime('+1 month'))) : null,
+            // Blank clears the end date (back to open-ended) rather than being
+            // ignored, so a date set by mistake can actually be removed.
+            'ends_at'           => $ends !== '' ? $ends : null,
         ];
+
+        // Only overwrite started_at when a date was supplied — an empty field must not
+        // wipe the real start date of an existing engagement.
+        if ($started !== '') {
+            $attrs['started_at'] = $started;
+        }
+
+        return $attrs;
     }
 }

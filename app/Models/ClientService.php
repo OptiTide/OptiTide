@@ -31,11 +31,21 @@ class ClientService extends Model
     /** Recurring engagements due to be invoiced on/before the given date. */
     public static function dueForInvoicing(string $date): array
     {
-        return static::query()
+        $due = static::query()
             ->where('status', self::STATUS_ACTIVE)
             ->where('billing_type', Service::BILLING_RECURRING)
             ->whereNotNull('next_invoice_date')
             ->where('next_invoice_date', '<=', $date)
             ->get();
+
+        // Stop at the end date. Filtered here rather than in SQL because ends_at is
+        // NULL for every open-ended engagement, and a NULL comparison in SQL would
+        // silently drop them all — which would quietly stop ALL recurring billing.
+        // Without this the end date would be decorative: an engagement that finished
+        // last year would keep issuing invoices forever.
+        return array_values(array_filter(
+            $due,
+            fn (array $e) => empty($e['ends_at']) || (string) $e['ends_at'] >= $date
+        ));
     }
 }

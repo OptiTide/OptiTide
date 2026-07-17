@@ -107,7 +107,24 @@ foreach ($services as $s) {
                         <?php endif; ?>
                         <?php foreach ($engagements as $e): ?>
                             <tr>
-                                <td class="fw-semibold"><?= e($e['label']) ?><?php if (! empty($e['reference'])): ?><div class="text-muted small"><?= e($e['reference']) ?></div><?php endif; ?></td>
+                                <td class="fw-semibold">
+                                    <?= e($e['label']) ?>
+                                    <?php if (! empty($e['reference'])): ?><div class="text-muted small"><?= e($e['reference']) ?></div><?php endif; ?>
+                                    <?php // The dates were invisible until you opened the modal.
+                                          $from = ! empty($e['started_at']) ? date('M Y', strtotime((string) $e['started_at'])) : null;
+                                          $to = ! empty($e['ends_at']) ? date('M Y', strtotime((string) $e['ends_at'])) : null; ?>
+                                    <?php if ($from || $to): ?>
+                                        <div class="text-muted small">
+                                            <i class="bi bi-calendar3"></i>
+                                            <?= $from ? e($from) : '—' ?> → <?= $to ? e($to) : 'ongoing' ?>
+                                            <?php if ($to && $e['ends_at'] < today() && $e['status'] === 'active'): ?>
+                                                <?php // Billing has stopped even though the badge still says Active,
+                                                      // so say so rather than leaving it looking live. ?>
+                                                <span class="badge text-bg-secondary ms-1">ended</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <?php if ($e['billing_type'] === 'recurring'): ?>
                                         <span class="badge badge-soft"><?= e(ucfirst($e['interval'] ?? 'monthly')) ?></span>
@@ -397,22 +414,41 @@ foreach ($services as $s) {
                         </select>
                     </div>
                 </div>
+                <?php // col-6/col-md-4 rather than bare .col: three .col cells never
+                      // stack, so on a phone Price/Next Invoice/Status were squeezed
+                      // into ~100px each. Now they pair up on a phone. ?>
                 <div class="row g-2">
-                    <div class="col">
+                    <div class="col-6 col-md-4">
                         <label class="form-label">Price (<?= e($currency) ?>)</label>
-                        <input type="number" step="0.01" name="price" id="engPrice" class="form-control" required>
+                        <input type="number" step="0.01" name="price" id="engPrice" class="form-control" required inputmode="decimal">
                     </div>
-                    <div class="col">
+                    <div class="col-6 col-md-4">
                         <label class="form-label">Next Invoice</label>
                         <input type="date" name="next_invoice_date" id="engNext" class="form-control">
                     </div>
-                    <div class="col">
+                    <div class="col-12 col-md-4">
                         <label class="form-label">Status</label>
                         <select name="status" id="engStatus" class="form-select">
                             <option value="active">Active</option>
                             <option value="paused">Paused</option>
                             <option value="cancelled">Cancelled</option>
                         </select>
+                    </div>
+                </div>
+                <?php // Start/end were unreachable: started_at was stamped once at
+                      // creation and never editable, and an end date did not exist at
+                      // all. Both are needed to port an engagement that began in 2023
+                      // and finished in 2024. ?>
+                <div class="row g-2 mt-0">
+                    <div class="col-6">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" name="started_at" id="engStart" class="form-control">
+                        <div class="form-text">When the work actually began.</div>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">End Date <span class="text-muted fw-normal small">(optional)</span></label>
+                        <input type="date" name="ends_at" id="engEnds" class="form-control">
+                        <div class="form-text">Billing stops after this. Blank = ongoing.</div>
                     </div>
                 </div>
             </div>
@@ -440,6 +476,8 @@ function engAdd() {
     document.getElementById('engPrice').value = '';
     document.getElementById('engNext').value = '';
     document.getElementById('engStatus').value = 'active';
+    document.getElementById('engStart').value = '';
+    document.getElementById('engEnds').value = '';
 }
 
 function engEdit(e) {
@@ -453,6 +491,11 @@ function engEdit(e) {
     document.getElementById('engPrice').value = (e.price_cents / 100).toFixed(2);
     document.getElementById('engNext').value = e.next_invoice_date || '';
     document.getElementById('engStatus').value = e.status;
+    // Dates are stored as strings that may carry a time ("2023-06-14 09:00:00");
+    // a date input only accepts YYYY-MM-DD and silently shows blank otherwise —
+    // which on save would look like "clear this date".
+    document.getElementById('engStart').value = (e.started_at || '').slice(0, 10);
+    document.getElementById('engEnds').value = (e.ends_at || '').slice(0, 10);
     new bootstrap.Modal(document.getElementById('engModal')).show();
 }
 
