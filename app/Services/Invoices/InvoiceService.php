@@ -59,10 +59,47 @@ final class InvoiceService
     }
 
     /**
+     * Create an invoice — and if it is born SENT, actually send it.
+     *
+     * This used to write the row and stop; only send() emailed anything. But four
+     * call sites mint an invoice already stamped STATUS_SENT — QuoteService::accept(),
+     * Client\OrderController::place(), and both InstallmentRequestController paths —
+     * so a client accepting a quote or placing an order got an invoice that SAID
+     * "Sent" and never was. No PDF, no pay link, nothing in their inbox.
+     *
+     * It failed dangerously rather than silently: payments are recorded by hand, so an
+     * invoice nobody receives is an invoice nobody pays. RecurringBiller::markOverdue()
+     * then flips it to Overdue, applies a LATE FEE, and emails "your invoice is
+     * overdue" — the client's FIRST word about a bill they never got — and
+     * SuspensionService suspends them 30 days later. Clients were being fined and cut
+     * off over invoices we never sent.
+     *
      * @param array<string,mixed> $data   client_id, currency, issue_date, due_date, notes, status, payoneer_link
      * @param array<int,array{description:string,quantity:int|float,unit_price_cents:int,service_id?:int|null}> $items
      */
     public function create(array $data, array $items): array
+    {
+        $invoice = $this->insert($data, $items);
+
+        // Outside the transaction on purpose: mail is slow and would hold row locks,
+        // and a rollback cannot un-send an email — an emailed invoice that no longer
+        // exists is worse than an un-emailed one.
+        if (($invoice['status'] ?? null) === Invoice::STATUS_SENT) {
+            // A mail failure must never destroy a committed, correct invoice — the
+            // admin can resend. email() already returns false (not throws) when the
+            // client has no address.
+            try {
+                $this->email($invoice);
+            } catch (\Throwable $e) {
+                error_log('Invoice ' . ($invoice['number'] ?? '?') . ' created but not emailed: ' . $e->getMessage());
+            }
+        }
+
+        return $invoice;
+    }
+
+    /** The row-writing half of create(): transactional, and deliberately mail-free. */
+    private function insert(array $data, array $items): array
     {
         return Database::instance()->transaction(function () use ($data, $items) {
             $currency = $data['currency'] ?? config('company.currency', 'AUD');

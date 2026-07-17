@@ -38,6 +38,47 @@ foreach ($services as $s) {
                 </dl>
             </div>
         </div>
+
+        <?php
+        // Portal access. Without this the ONLY way to invite anyone was the checkbox
+        // on the create form — so if it was unticked, or the invite failed, there was
+        // no way back to it in the UI.
+        $portalUser = \App\Models\User::query()
+            ->where('client_id', $client['id'])
+            ->where('role', \App\Models\User::ROLE_CLIENT)
+            ->first();
+        $activated = $portalUser && ! empty($portalUser['password_hash']);
+        ?>
+        <div class="card mt-3">
+            <div class="card-header"><i class="bi bi-person-badge"></i> Portal Access</div>
+            <div class="card-body">
+                <?php if (! $portalUser): ?>
+                    <p class="small text-muted mb-2">No portal login yet — <?= e($client['business_name']) ?> can't see invoices or track their project.</p>
+                <?php elseif (! $activated): ?>
+                    <p class="small mb-2">
+                        <span class="badge text-bg-warning">Invited</span>
+                        <span class="text-muted d-block mt-1">They haven't set a password yet. Links last 7 days — resend if theirs has expired.</span>
+                    </p>
+                <?php else: ?>
+                    <p class="small mb-2">
+                        <span class="badge text-bg-success">Active</span>
+                        <span class="text-muted d-block mt-1">Signing in as <?= e($portalUser['email']) ?>.</span>
+                    </p>
+                <?php endif; ?>
+                <form method="post" action="<?= route('admin.clients.invite', ['id' => $client['id']]) ?>">
+                    <?= csrf_field() ?>
+                    <button class="btn btn-sm <?= $activated ? 'btn-light' : 'btn-brand' ?> w-100" <?= empty($client['email']) ? 'disabled' : '' ?>>
+                        <i class="bi bi-envelope"></i>
+                        <?= $portalUser ? 'Resend Invite' : 'Send Portal Invite' ?>
+                    </button>
+                </form>
+                <?php if (empty($client['email'])): ?>
+                    <div class="form-text text-danger">Add an email address first.</div>
+                <?php elseif ($activated): ?>
+                    <div class="form-text">Resending lets them set a new password. Their old one stops working only once they use the link.</div>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
 
     <div class="col-lg-8">
