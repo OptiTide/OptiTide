@@ -36,7 +36,7 @@ services:
       MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-Hello@OptiTide.io}
       MAIL_FROM_NAME: ${MAIL_FROM_NAME:-OptiTide}
 
-      COMPANY_LEGAL_NAME: ${COMPANY_LEGAL_NAME:-OptiTide}
+      COMPANY_LEGAL_NAME: ${COMPANY_LEGAL_NAME:-Michael James Long t/a OptiTide}
       COMPANY_ABN: ${COMPANY_ABN:-}
       COMPANY_EMAIL: ${COMPANY_EMAIL:-Hello@OptiTide.io}
       COMPANY_GST_REGISTERED: ${COMPANY_GST_REGISTERED:-true}

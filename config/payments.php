@@ -30,7 +30,7 @@ return [
             'label'        => 'PayID / Bank transfer',
             'type'         => env('PAYID_TYPE', 'mobile'),   // mobile | email | abn
             'value'        => env('PAYID_VALUE', ''),
-            'account_name' => env('PAYID_ACCOUNT_NAME', env('COMPANY_LEGAL_NAME', 'OptiTide')),
+            'account_name' => env('PAYID_ACCOUNT_NAME', env('COMPANY_LEGAL_NAME', 'Michael James Long t/a OptiTide')),
             'bsb'          => env('BANK_BSB', ''),
             'account_number' => env('BANK_ACCOUNT_NUMBER', ''),
         ],

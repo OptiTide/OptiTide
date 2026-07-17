@@ -114,7 +114,7 @@ class SeoController extends Controller
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xml .= '<rss version="2.0"><channel>' . "\n";
-        $xml .= '  <title>' . e(config('company.legal_name', 'OptiTide') . ' Blog') . "</title>\n";
+        $xml .= '  <title>' . e(config('company.brand_name') . ' Blog') . "</title>\n";
         $xml .= '  <link>' . e($url . '/blog') . "</link>\n";
         $xml .= '  <description>Web design, SEO, social media and marketing tips for Australian business.</description>' . "\n";
         $xml .= '  <language>en-AU</language>' . "\n";

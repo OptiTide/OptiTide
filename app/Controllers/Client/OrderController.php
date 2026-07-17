@@ -195,7 +195,7 @@ class OrderController extends Controller
                     'status'     => Invoice::STATUS_SENT,
                     'issue_date' => today(),
                     'due_date'   => date('Y-m-d', strtotime('+' . $row['due_days'] . ' days')),
-                    'notes'      => 'Ordered online via the client portal. Thanks for choosing ' . config('company.legal_name', 'OptiTide') . '.',
+                    'notes'      => 'Ordered online via the client portal. Thanks for choosing ' . config('company.brand_name') . '.',
                 ], [
                     ['description' => $desc, 'quantity' => 1, 'unit_price_cents' => $row['amount_cents'], 'service_id' => $svc['id']],
                 ]);

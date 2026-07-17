@@ -46,7 +46,7 @@ final class SuspensionService
             if (! empty($client['email'])) {
                 try {
                     Mail::to($client['email'], $client['business_name'])
-                        ->subject('Your ' . config('company.legal_name', 'OptiTide') . ' account is on hold')
+                        ->subject('Your ' . config('company.brand_name') . ' account is on hold')
                         ->view('emails.account-suspended', ['client' => $client])
                         ->send();
                 } catch (\Throwable $e) {

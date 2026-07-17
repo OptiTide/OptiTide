@@ -265,7 +265,7 @@ class CareerController extends Controller
             'employmentType' => JobOpening::SCHEMA_EMPLOYMENT_TYPES[$role['employment_type']] ?? 'FULL_TIME',
             'hiringOrganization' => [
                 '@type' => 'Organization',
-                'name'  => $company['legal_name'] ?: $company['brand_name'],
+                'name'  => $company['brand_name'],
                 'sameAs' => $appUrl,
                 'logo'  => $appUrl . '/assets/img/logo.png',
             ],

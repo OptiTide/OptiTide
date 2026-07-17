@@ -48,7 +48,7 @@ class BlogController extends Controller
                 'name'      => $brand . ' Blog',
                 'url'       => $appUrl . '/blog',
                 'inLanguage' => 'en-AU',
-                'publisher' => ['@type' => 'Organization', 'name' => config('company.legal_name', 'OptiTide'), 'url' => $appUrl],
+                'publisher' => ['@type' => 'Organization', 'name' => config('company.brand_name'), 'url' => $appUrl],
             ],
         ]);
     }
@@ -93,7 +93,7 @@ class BlogController extends Controller
             'datePublished'    => $post['published_at'] ?: null,
             'dateModified'     => $post['updated_at'] ?: ($post['published_at'] ?: null),
             'author'           => ['@type' => 'Organization', 'name' => $post['author'] ?: config('company.brand_name')],
-            'publisher'        => ['@type' => 'Organization', 'name' => config('company.legal_name', 'OptiTide'), 'logo' => ['@type' => 'ImageObject', 'url' => $appUrl . '/assets/img/favicon.png']],
+            'publisher'        => ['@type' => 'Organization', 'name' => config('company.brand_name'), 'logo' => ['@type' => 'ImageObject', 'url' => $appUrl . '/assets/img/favicon.png']],
             'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $canonical],
             'keywords'         => $post['keywords'] ?: null,
             'url'              => $canonical,

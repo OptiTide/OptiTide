@@ -40,7 +40,7 @@ class BacklinkController extends Controller
             'summary'  => $this->service->summary(),
             'filter'   => $filter,
             'nap'      => [
-                'name'    => $company['legal_name'] ?? 'OptiTide',
+                'name'    => $company['brand_name'] ?? 'OptiTide',
                 'email'   => $company['email'] ?? '',
                 'phone'   => $company['phone'] ?? '',
                 'abn'     => $company['abn'] ?? '',

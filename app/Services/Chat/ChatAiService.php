@@ -115,7 +115,7 @@ final class ChatAiService
     private function systemPrompt(): string
     {
         $company = config('company');
-        $name = $company['legal_name'] ?: config('company.brand_name');
+        $name = config('company.brand_name');
 
         $lines = self::priceLines();
         $pricing = $lines
