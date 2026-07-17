@@ -13,9 +13,12 @@ use App\Models\ClientService;
 use App\Models\CreditTransaction;
 use App\Models\Invoice;
 use App\Models\Payment;
+use App\Models\Quote;
 use App\Models\Service;
+use App\Models\Ticket;
 use App\Services\Audit\AuditLog;
 use App\Services\Billing\CreditService;
+use App\Support\Features;
 use App\Support\Money;
 
 class ClientController extends Controller
@@ -108,6 +111,12 @@ class ClientController extends Controller
             'credit_txns'      => CreditTransaction::forClient($id),
             'apps'             => $apps,
             'app_engagements'  => ClientApp::engagementMap($apps),
+            // Both already existed per-client but were only reachable from their
+            // own top-level list — you had to know the client's name and search
+            // for it. Empty arrays when the feature is off so the view can't link
+            // to a screen that 404s.
+            'quotes'           => Features::enabled('quotes') ? Quote::forClient($id) : [],
+            'tickets'          => Ticket::forClient($id),
         ]);
     }
 

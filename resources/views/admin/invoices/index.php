@@ -1,17 +1,23 @@
 <?php $this->extends('layouts.admin'); ?>
 <?php $this->section('content'); ?>
 
+<?php $unpaid = \App\Controllers\Admin\InvoiceController::FILTER_OUTSTANDING; ?>
+
 <div class="row g-3 mb-4">
     <?php
+    // "Paid This Month" is payment-dated, so no invoice status filter agrees with
+    // it — it stays a plain figure rather than linking to a list that would show
+    // something else. The other three map exactly onto a filter.
     $kpis = [
-        ['Outstanding', $stats['outstanding']->format(), 'bi-hourglass-split'],
-        ['Paid This Month', $stats['paid_this_month']->format(), 'bi-cash-coin'],
-        ['Draft', $stats['draft_count'], 'bi-file-earmark'],
-        ['Overdue', $stats['overdue_count'], 'bi-exclamation-triangle'],
+        ['Outstanding', $stats['outstanding']->format(), 'bi-hourglass-split', route('admin.invoices.index') . '?status=' . $unpaid],
+        ['Paid This Month', $stats['paid_this_month']->format(), 'bi-cash-coin', null],
+        ['Draft', $stats['draft_count'], 'bi-file-earmark', route('admin.invoices.index') . '?status=' . \App\Models\Invoice::STATUS_DRAFT],
+        ['Overdue', $stats['overdue_count'], 'bi-exclamation-triangle', route('admin.invoices.index') . '?status=' . \App\Models\Invoice::STATUS_OVERDUE],
     ];
-    foreach ($kpis as [$label, $value, $icon]):
+    foreach ($kpis as [$label, $value, $icon, $href]):
         ?>
         <div class="col-6 col-xl-3">
+            <?php if ($href !== null): ?><a href="<?= e($href) ?>" class="text-decoration-none text-reset"><?php endif; ?>
             <div class="card stat-card h-100">
                 <div class="card-body d-flex align-items-center gap-3">
                     <div class="stat-icon"><i class="bi <?= $icon ?>"></i></div>
@@ -21,14 +27,16 @@
                     </div>
                 </div>
             </div>
+            <?php if ($href !== null): ?></a><?php endif; ?>
         </div>
     <?php endforeach; ?>
 </div>
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-    <div class="btn-group btn-group-sm">
+    <div class="btn-group btn-group-sm flex-wrap">
         <?php $carry = $search !== '' ? '&q=' . urlencode($search) : ''; ?>
         <a href="<?= route('admin.invoices.index') ?><?= $search !== '' ? '?q=' . urlencode($search) : '' ?>" class="btn <?= $status === '' ? 'btn-brand' : 'btn-outline-secondary' ?>">All</a>
+        <a href="<?= route('admin.invoices.index') ?>?status=<?= e($unpaid) ?><?= e($carry) ?>" class="btn <?= $status === $unpaid ? 'btn-brand' : 'btn-outline-secondary' ?>">Unpaid</a>
         <?php foreach (\App\Models\Invoice::STATUSES as $key => $label): ?>
             <a href="<?= route('admin.invoices.index') ?>?status=<?= $key ?><?= e($carry) ?>" class="btn <?= $status === $key ? 'btn-brand' : 'btn-outline-secondary' ?>"><?= e($label) ?></a>
         <?php endforeach; ?>
@@ -58,7 +66,19 @@
             </thead>
             <tbody>
                 <?php if (! $result['data']): ?>
-                    <tr><td colspan="8" class="text-center text-muted py-4">No invoices found.</td></tr>
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-5">
+                            <i class="bi bi-receipt fs-3 d-block mb-2 opacity-50"></i>
+                            <?php if ($status !== '' || $search !== ''): ?>
+                                No invoices match this filter.
+                                <div class="mt-2"><a href="<?= route('admin.invoices.index') ?>" class="btn btn-sm btn-light">Show All Invoices</a></div>
+                            <?php else: ?>
+                                No invoices yet.
+                                <div class="small mt-1 mb-3">An invoice is how you ask a client for money. It starts as a draft, then you send it — GST is included in the price, never added on top.</div>
+                                <a href="<?= route('admin.invoices.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> Create Your First Invoice</a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 <?php endif; ?>
                 <?php foreach ($result['data'] as $invoice): ?>
                     <tr>

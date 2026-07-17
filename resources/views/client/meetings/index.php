@@ -40,7 +40,12 @@ $statusLabel = ['requested' => 'Awaiting Confirmation'];
 </div>
 
 <?php if (! $meetings): ?>
-    <div class="card"><div class="card-body text-center text-muted py-5">No meetings yet. Use <strong>Request a Meeting</strong> above to book a time, or we'll invite you here when one is scheduled.</div></div>
+    <div class="card"><div class="card-body text-center text-muted py-5">
+        <i class="bi bi-calendar-event fs-3 d-block mb-2"></i>
+        <div class="fw-semibold text-body">No Meetings Yet</div>
+        <p class="mb-3">Want to talk something through? Ask for a time that suits you and we'll confirm it here and by email, with a video link to join. We're around <?= e(config('company.hours')) ?>.</p>
+        <button class="btn btn-sm btn-brand" type="button" data-bs-toggle="collapse" data-bs-target="#requestMeeting"><i class="bi bi-calendar-plus"></i> Request a Meeting</button>
+    </div></div>
 <?php endif; ?>
 
 <div class="row g-3">
@@ -55,7 +60,11 @@ $statusLabel = ['requested' => 'Awaiting Confirmation'];
                     </div>
                     <div class="text-muted my-2"><i class="bi bi-calendar-event"></i> <?= e(date('l j F Y, g:ia', strtotime($m['meeting_at']))) ?></div>
                     <?php if (! empty($m['description'])): ?><p class="small text-muted mb-2"><?= nl2br(e($m['description'])) ?></p><?php endif; ?>
-                    <?php if ($isUpcoming && ! empty($m['location']) && str_starts_with((string) $m['location'], 'http')): ?>
+                    <?php if ($m['status'] === 'requested'): ?>
+                        <?php // A requested time is the client's ASK, not a booking — saying so
+                              // stops them holding a slot we haven't agreed to. ?>
+                        <div class="small text-muted"><i class="bi bi-hourglass-split"></i> This is the time you asked for. We'll confirm it (or suggest another) shortly.</div>
+                    <?php elseif ($isUpcoming && ! empty($m['location']) && str_starts_with((string) $m['location'], 'http')): ?>
                         <a href="<?= e($m['location']) ?>" target="_blank" rel="noopener" class="btn btn-sm btn-brand"><i class="bi bi-camera-video"></i> Join Meeting</a>
                     <?php elseif (! empty($m['location'])): ?>
                         <div class="small"><i class="bi bi-geo-alt"></i> <?= e($m['location']) ?></div>

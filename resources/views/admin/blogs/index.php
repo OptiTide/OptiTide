@@ -40,7 +40,14 @@
                     </tr>
                 <?php endforeach; ?>
                 <?php if ($posts === []): ?>
-                    <tr><td colspan="6" class="text-center text-muted py-4">No articles yet. <a href="<?= route('admin.blogs.create') ?>">Write your first post.</a></td></tr>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi bi-newspaper fs-3 d-block mb-2 opacity-50"></i>
+                            No articles yet.
+                            <div class="small mt-1 mb-3">Articles are your own SEO surface — each one publishes to /blog, joins your sitemap and RSS feed, and starts as a draft so nothing goes live before you say so.</div>
+                            <a href="<?= route('admin.blogs.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> Write Your First Article</a>
+                        </td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>

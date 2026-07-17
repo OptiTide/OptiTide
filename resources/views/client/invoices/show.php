@@ -13,6 +13,19 @@ $balance = \App\Models\Invoice::balance($invoice);
     <a href="<?= route('portal.invoices.pdf', ['id' => $invoice['id']]) ?>" class="btn btn-outline-brand"><i class="bi bi-download"></i> Download PDF</a>
 </div>
 
+<?php if (\App\Models\Invoice::isPayable($invoice)): ?>
+    <?php $isOverdue = $invoice['status'] === \App\Models\Invoice::STATUS_OVERDUE; ?>
+    <div class="alert <?= $isOverdue ? 'alert-danger' : 'alert-info' ?> d-flex flex-wrap align-items-center gap-2">
+        <i class="bi <?= $isOverdue ? 'bi-exclamation-octagon-fill' : 'bi-info-circle' ?>"></i>
+        <span>
+            <strong><?= e($balance->format()) ?></strong>
+            <?= $isOverdue ? 'was due on' : 'is due by' ?>
+            <strong><?= e(date('j F Y', strtotime((string) $invoice['due_date']))) ?></strong>.
+            <?= $isOverdue ? 'Please pay when you can — the ways to pay are below.' : 'Choose how to pay below.' ?>
+        </span>
+    </div>
+<?php endif; ?>
+
 <div class="card mb-3">
     <div class="card-body">
         <div class="row mb-3">
@@ -78,6 +91,15 @@ $balance = \App\Models\Invoice::balance($invoice);
     <?php endif; ?>
 
     <h3 class="h5 mb-3">How to Pay</h3>
+    <?php if ($instructions === []): ?>
+        <?php // Every gateway is disabled or missing its credentials. A bare "How to
+              // Pay" heading over nothing strands the client on the one page that has
+              // to work, so name a way to reach us instead. ?>
+        <div class="card"><div class="card-body">
+            <p class="mb-2">Payment options aren't set up here yet. Get in touch and we'll send you payment details for <?= e($invoice['number']) ?>.</p>
+            <a href="<?= route('portal.support.create') ?>?subject=<?= rawurlencode('Payment for ' . $invoice['number']) ?>" class="btn btn-sm btn-brand"><i class="bi bi-chat-left-dots"></i> Ask How to Pay</a>
+        </div></div>
+    <?php endif; ?>
     <div class="row g-3">
         <?php foreach ($instructions as $instruction): ?>
             <div class="col-md-6">

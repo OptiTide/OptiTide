@@ -18,7 +18,21 @@ $badge = ['open' => 'text-bg-success', 'closed' => 'text-bg-secondary'];
                     </tr>
                 <?php endforeach; ?>
                 <?php if ($conversations === []): ?>
-                    <tr><td colspan="4" class="text-center text-muted py-4">No chats yet. The widget answers visitors instantly; you'll see conversations here.</td></tr>
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-5">
+                            <i class="bi bi-chat-dots fs-3 d-block mb-2 opacity-50"></i>
+                            No chats yet.
+                            <div class="small mt-1 mb-3">
+                                Conversations start when a visitor opens the chat bubble on your site
+                                <?php if (\App\Support\Features::enabled('ai_chat')): ?>
+                                    — the assistant answers straight away, and you can take over any thread at any time.
+                                <?php else: ?>
+                                    — AI replies are switched off, so every chat waits for your team. Keep an eye on this screen.
+                                <?php endif; ?>
+                            </div>
+                            <a href="<?= route('home') ?>" target="_blank" class="btn btn-sm btn-outline-brand"><i class="bi bi-box-arrow-up-right"></i> Try the Widget</a>
+                        </td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>

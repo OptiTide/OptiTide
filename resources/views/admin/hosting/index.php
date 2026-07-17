@@ -59,7 +59,21 @@
                     </tr>
                 <?php endforeach; ?>
                 <?php if ($accounts === []): ?>
-                    <tr><td colspan="7" class="text-center text-muted py-4">No hosting accounts yet. <?= $connected ? 'Click “Sync Accounts” to import them from WHM.' : 'Connect WHM to sync accounts.' ?></td></tr>
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">
+                            <i class="bi bi-hdd-network fs-3 d-block mb-2 opacity-50"></i>
+                            No hosting accounts yet.
+                            <?php if ($connected): ?>
+                                <div class="small mt-1 mb-3">Accounts are imported from your WHM server, never created here. Sync to pull them in, then assign each one to a client so it shows in their portal.</div>
+                                <form method="post" action="<?= route('admin.hosting.sync') ?>" class="d-inline">
+                                    <?= csrf_field() ?>
+                                    <button class="btn btn-sm btn-brand"><i class="bi bi-arrow-repeat"></i> Sync Accounts Now</button>
+                                </form>
+                            <?php else: ?>
+                                <div class="small mt-1">Accounts are imported from your WHM server. Add <code>WHM_HOST</code>, <code>WHM_USERNAME</code> and <code>WHM_API_TOKEN</code> to your <code>.env</code>, then sync — until then this screen stays empty and suspend/reactivate is recorded locally only.</div>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>

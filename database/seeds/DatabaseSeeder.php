@@ -245,8 +245,17 @@ return new class {
                 continue;
             }
 
-            $cover = '/assets/img/blog/' . $slug . '.svg';
-            $hasCover = defined('BASE_PATH') && is_file(BASE_PATH . '/public' . $cover);
+            // Prefer the licensed photo (provenance: public/assets/img/blog/
+            // CREDITS.md); the branded SVG is the fallback for any post without
+            // one. Mirrors migration 0041 so a fresh install matches production.
+            $cover = null;
+            foreach (['.jpg', '.svg'] as $ext) {
+                $candidate = '/assets/img/blog/' . $slug . $ext;
+                if (defined('BASE_PATH') && is_file(BASE_PATH . '/public' . $candidate)) {
+                    $cover = $candidate;
+                    break;
+                }
+            }
 
             Blog::create([
                 'title'            => $p['title'],
@@ -258,7 +267,7 @@ return new class {
                 'keywords'         => $p['keywords'] ?? null,
                 'meta_title'       => $p['meta_title'] ?? null,
                 'meta_description' => $p['meta_description'] ?? ($p['excerpt'] ?? null),
-                'cover_image'      => $hasCover ? $cover : null,
+                'cover_image'      => $cover,
                 'status'           => Blog::STATUS_PUBLISHED,
                 // Stagger publish dates so the feed looks natural (newest first).
                 'published_at'     => date('Y-m-d H:i:s', strtotime('-' . ($i * 3) . ' days')),

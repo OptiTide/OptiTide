@@ -22,7 +22,13 @@
                     </tr>
                 <?php endforeach; ?>
                 <?php if ($requests === []): ?>
-                    <tr><td colspan="6" class="text-center text-muted py-4">No pending payment-plan requests.</td></tr>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi bi-check2-circle fs-3 d-block mb-2 opacity-50"></i>
+                            Nothing waiting on you.
+                            <div class="small mt-1">Only pending requests appear here. A client raises one when ordering; approving it issues the split invoices, declining it issues a single pay-in-full invoice. Either way the result shows up under <a href="<?= route('admin.invoices.index') ?>">Invoices</a>.</div>
+                        </td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>

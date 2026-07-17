@@ -38,6 +38,19 @@ final class PaymentManager
         return $class ? new $class() : null;
     }
 
+    /**
+     * Labels of the gateways a client can ACTUALLY pay with right now, for copy
+     * that promises payment methods. A gateway listed in config but missing its
+     * credentials is not enabled, so naming the methods by hand would advertise
+     * a way to pay that the invoice page then can't offer.
+     *
+     * @return string[]
+     */
+    public function enabledLabels(): array
+    {
+        return array_map(fn (PaymentGateway $gateway) => $gateway->label(), $this->enabledGateways());
+    }
+
     /** @return PaymentInstruction[] */
     public function instructionsFor(array $invoice): array
     {

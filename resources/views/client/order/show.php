@@ -45,7 +45,7 @@ $this->extends('layouts.portal');
                     <div class="fw-semibold mb-2"><i class="bi bi-info-circle"></i> What Happens Next</div>
                     <ol class="mb-0 ps-3 small">
                         <li>We create your order and a tax invoice for <strong><?= e($total->format()) ?></strong><?= $recurring ? ' (your first ' . e(strtolower(\App\Models\Service::INTERVALS[$service['interval']] ?? 'monthly')) . ' payment)' : '' ?>.</li>
-                        <li>You pay securely by PayID or Payoneer from the invoice page.</li>
+                        <li>You pay from the invoice page<?= $payMethods !== '' ? ' by ' . e($payMethods) : '' ?>.</li>
                         <li>Once payment lands, our team gets started<?= $recurring ? ' and your subscription renews automatically each period.' : ' on your project.' ?></li>
                     </ol>
                 </div>

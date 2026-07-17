@@ -40,8 +40,10 @@
 
 <?php if (! $accounts): ?>
     <div class="card"><div class="card-body text-center text-muted py-5">
-        You don't have any hosting with us yet.
-        <div class="mt-3"><a href="<?= route('portal.order.index') ?>" class="btn btn-sm btn-brand">Browse Hosting Plans</a></div>
+        <i class="bi bi-hdd-network fs-3 d-block mb-2"></i>
+        <div class="fw-semibold text-body">No Hosting Yet</div>
+        <p class="mb-3">Hosting is where your website actually lives. Take it on with us and this page becomes your control panel — email accounts, files, backups and how much space you're using.</p>
+        <a href="<?= route('portal.order.index') ?>" class="btn btn-sm btn-brand"><i class="bi bi-bag-plus"></i> Browse Hosting Plans</a>
     </div></div>
 <?php endif; ?>
 

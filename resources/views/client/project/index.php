@@ -5,8 +5,10 @@
 
 <?php if ($grouped === []): ?>
     <div class="card"><div class="card-body text-center text-muted py-5">
-        No project cards yet. When you place an order, work is created here automatically.
-        <div class="mt-3"><a href="<?= route('portal.order.index') ?>" class="btn btn-sm btn-brand">Order a Service</a></div>
+        <i class="bi bi-kanban fs-3 d-block mb-2"></i>
+        <div class="fw-semibold text-body">Nothing Under Way Yet</div>
+        <p class="mb-3">Once you order a service, every piece of work shows up here — what we're on, what's done, when it's due, and any notes from the team. No need to chase us for an update.</p>
+        <a href="<?= route('portal.order.index') ?>" class="btn btn-sm btn-brand"><i class="bi bi-bag-plus"></i> Order a Service</a>
     </div></div>
 <?php endif; ?>
 

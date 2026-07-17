@@ -51,7 +51,13 @@ foreach ($services as $s) {
                     <thead><tr><th>Service</th><th>Billing</th><th class="text-end">Price</th><th>Status</th><th></th></tr></thead>
                     <tbody>
                         <?php if (! $engagements): ?>
-                            <tr><td colspan="5" class="text-center text-muted py-3">No services yet.</td></tr>
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    Nothing sold to this client yet.
+                                    <div class="small mt-1 mb-2">An engagement is a plan they're on. Recurring ones are invoiced for you on their schedule.</div>
+                                    <button class="btn btn-sm btn-outline-brand" data-bs-toggle="modal" data-bs-target="#engModal" onclick="engAdd()"><i class="bi bi-plus-lg"></i> Add a Service</button>
+                                </td>
+                            </tr>
                         <?php endif; ?>
                         <?php foreach ($engagements as $e): ?>
                             <tr>
@@ -87,7 +93,17 @@ foreach ($services as $s) {
                     <thead><tr><th>Invoice</th><th>Issued</th><th>Status</th><th class="text-end">Balance</th><th></th></tr></thead>
                     <tbody>
                         <?php if (! $invoices): ?>
-                            <tr><td colspan="5" class="text-center text-muted py-3">No invoices yet.</td></tr>
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    This client has never been invoiced.
+                                    <div class="mt-2">
+                                        <a href="<?= route('admin.invoices.create') ?>?client_id=<?= $client['id'] ?>" class="btn btn-sm btn-brand"><i class="bi bi-receipt"></i> Raise an Invoice</a>
+                                        <?php if (\App\Support\Features::enabled('quotes')): ?>
+                                            <a href="<?= route('admin.quotes.create') ?>?client_id=<?= $client['id'] ?>" class="btn btn-sm btn-outline-brand"><i class="bi bi-file-earmark-text"></i> Send a Quote</a>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
                         <?php endif; ?>
                         <?php foreach ($invoices as $invoice): ?>
                             <tr>
@@ -101,6 +117,74 @@ foreach ($services as $s) {
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <?php if (\App\Support\Features::enabled('quotes')): ?>
+            <div class="card mt-3" id="quotes">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-file-earmark-text"></i> Quotes</span>
+                    <a href="<?= route('admin.quotes.create') ?>?client_id=<?= $client['id'] ?>" class="btn btn-sm btn-outline-brand"><i class="bi bi-plus-lg"></i> New Quote</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead><tr><th>Quote</th><th>Issued</th><th>Expires</th><th>Status</th><th class="text-end">Total</th><th></th></tr></thead>
+                        <tbody>
+                            <?php if (! $quotes): ?>
+                                <tr><td colspan="6" class="text-center text-muted py-4">
+                                    No quotes for this client.
+                                    <div class="small mt-1">Send a price before the work starts — they accept it from a link and it becomes an invoice by itself.</div>
+                                </td></tr>
+                            <?php endif; ?>
+                            <?php foreach (array_slice($quotes, 0, 8) as $quote): ?>
+                                <?php $display = \App\Models\Quote::displayStatus($quote); ?>
+                                <tr>
+                                    <td class="fw-semibold"><?= e($quote['number']) ?></td>
+                                    <td><?= e($quote['issue_date']) ?></td>
+                                    <td><?= e($quote['expires_at'] ?: '—') ?></td>
+                                    <td><span class="badge text-bg-<?= \App\Models\Quote::STATUS_COLORS[$display] ?>"><?= e(\App\Models\Quote::STATUSES[$display]) ?></span></td>
+                                    <td class="text-end money"><?= e(\App\Models\Quote::total($quote)->format()) ?></td>
+                                    <td class="text-end"><a href="<?= route('admin.quotes.show', ['id' => $quote['id']]) ?>" class="btn btn-sm btn-light">View</a></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php if (count($quotes) > 8): ?>
+                    <div class="card-footer text-end small text-muted">Showing the 8 most recent of <?= count($quotes) ?>.</div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="card mt-3" id="tickets">
+            <div class="card-header"><i class="bi bi-life-preserver"></i> Support History</div>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Ref</th><th>Subject</th><th>Priority</th><th>Status</th><th>Last Update</th><th></th></tr></thead>
+                    <tbody>
+                        <?php if (! $tickets): ?>
+                            <tr><td colspan="6" class="text-center text-muted py-4">
+                                No tickets from this client.
+                                <div class="small mt-1">They raise these from their portal, or by e-mailing your support address.</div>
+                            </td></tr>
+                        <?php endif; ?>
+                        <?php foreach (array_slice($tickets, 0, 8) as $ticket): ?>
+                            <?php $tBadge = ['open' => 'text-bg-primary', 'pending' => 'text-bg-warning', 'closed' => 'text-bg-secondary']; ?>
+                            <?php $tPrio = ['high' => 'text-bg-danger', 'normal' => 'badge-soft', 'low' => 'text-bg-light']; ?>
+                            <tr>
+                                <td class="text-muted small"><?= e($ticket['number']) ?></td>
+                                <td class="fw-semibold"><?= e($ticket['subject']) ?></td>
+                                <td><span class="badge <?= $tPrio[$ticket['priority']] ?? 'badge-soft' ?>"><?= e(\App\Models\Ticket::PRIORITIES[$ticket['priority']] ?? ucfirst((string) $ticket['priority'])) ?></span></td>
+                                <td><span class="badge <?= $tBadge[$ticket['status']] ?? 'badge-soft' ?>"><?= e(\App\Models\Ticket::STATUSES[$ticket['status']] ?? ucfirst((string) $ticket['status'])) ?></span></td>
+                                <td class="text-nowrap text-muted small"><?= e($ticket['last_reply_at'] ? date('d M Y', strtotime($ticket['last_reply_at'])) : '—') ?></td>
+                                <td class="text-end"><a href="<?= route('admin.tickets.show', ['id' => $ticket['id']]) ?>" class="btn btn-sm btn-light">Open</a></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php if (count($tickets) > 8): ?>
+                <div class="card-footer text-end small text-muted">Showing the 8 most recent of <?= count($tickets) ?>.</div>
+            <?php endif; ?>
         </div>
 
         <?php if (! empty($intakes)): ?>
@@ -144,19 +228,21 @@ foreach ($services as $s) {
                     <div class="form-text">Use a negative amount to deduct. Credit can be applied to invoices.</div>
                 </form>
                 <?php if (! empty($credit_txns)): ?>
-                    <table class="table table-sm align-middle mb-0">
-                        <thead><tr><th>Date</th><th>Type</th><th>Reason</th><th class="text-end">Amount</th></tr></thead>
-                        <tbody>
-                            <?php foreach (array_slice($credit_txns, 0, 8) as $tx): ?>
-                                <tr>
-                                    <td class="text-muted small"><?= e($tx['created_at'] ? date('d M Y', strtotime($tx['created_at'])) : '') ?></td>
-                                    <td><span class="badge badge-soft"><?= e(ucfirst($tx['type'])) ?></span></td>
-                                    <td class="small"><?= e($tx['reason'] ?: '—') ?></td>
-                                    <td class="text-end money <?= (int) $tx['amount_cents'] < 0 ? 'text-danger' : 'text-success' ?>"><?= (int) $tx['amount_cents'] < 0 ? '−' : '+' ?><?= e(money(abs((int) $tx['amount_cents']), config('company.currency', 'AUD'))->format()) ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead><tr><th>Date</th><th>Type</th><th>Reason</th><th class="text-end">Amount</th></tr></thead>
+                            <tbody>
+                                <?php foreach (array_slice($credit_txns, 0, 8) as $tx): ?>
+                                    <tr>
+                                        <td class="text-muted small"><?= e($tx['created_at'] ? date('d M Y', strtotime($tx['created_at'])) : '') ?></td>
+                                        <td><span class="badge badge-soft"><?= e(ucfirst($tx['type'])) ?></span></td>
+                                        <td class="small"><?= e($tx['reason'] ?: '—') ?></td>
+                                        <td class="text-end money <?= (int) $tx['amount_cents'] < 0 ? 'text-danger' : 'text-success' ?>"><?= (int) $tx['amount_cents'] < 0 ? '−' : '+' ?><?= e(money(abs((int) $tx['amount_cents']), config('company.currency', 'AUD'))->format()) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>

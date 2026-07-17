@@ -68,7 +68,20 @@ $family = function (string $action): string {
                         <td class="small text-muted"><?= e($r['ip'] ?: '—') ?></td>
                     </tr>
                 <?php endforeach; ?>
-                <?php if ($rows === []): ?><tr><td colspan="6" class="text-center text-muted py-4">No audit events match.</td></tr><?php endif; ?>
+                <?php if ($rows === []): ?>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi bi-journal-text fs-3 d-block mb-2 opacity-50"></i>
+                            <?php if ($f_action !== '' || $f_actor !== ''): ?>
+                                No events match this filter.
+                                <div class="mt-2"><a href="<?= route('admin.audit.index') ?>" class="btn btn-sm btn-light">Show All Events</a></div>
+                            <?php else: ?>
+                                Nothing recorded yet.
+                                <div class="small mt-1">Significant actions — issuing an invoice, waiving a fee, changing a user — are written here automatically as they happen. Entries can't be added or edited by hand.</div>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

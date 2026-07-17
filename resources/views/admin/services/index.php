@@ -16,7 +16,14 @@ $currency = config('company.currency', 'AUD');
                     <thead><tr><th>Name</th><th>Line</th><th>Billing</th><th>State</th><th class="text-end">Price</th><th class="text-end">In Use</th><th></th></tr></thead>
                     <tbody>
                         <?php if (! $services): ?>
-                            <tr><td colspan="7" class="text-center text-muted py-4">No services yet.</td></tr>
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-5">
+                                    <i class="bi bi-grid fs-3 d-block mb-2 opacity-50"></i>
+                                    No services yet.
+                                    <div class="small mt-1 mb-3">Your catalogue is what clients order and what you bill against — a plan here becomes a line on a quote, an invoice and your public pricing.</div>
+                                    <a href="<?= route('admin.services.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> Add Your First Service</a>
+                                </td>
+                            </tr>
                         <?php endif; ?>
                         <?php foreach ($services as $service): ?>
                             <?php $count = (int) ($in_use[$service['id']] ?? 0); ?>
@@ -68,7 +75,10 @@ $currency = config('company.currency', 'AUD');
             </div>
             <ul class="list-group list-group-flush">
                 <?php if (! $categories): ?>
-                    <li class="list-group-item text-muted text-center py-3">No service lines.</li>
+                    <li class="list-group-item text-muted text-center py-4">
+                        <div class="small mb-2">No service lines yet. A line groups your plans — Web Design &amp; Development, SEO, Social Media Marketing, Web Hosting.</div>
+                        <button class="btn btn-sm btn-outline-brand" data-bs-toggle="modal" data-bs-target="#catModal" onclick="catAdd()"><i class="bi bi-plus-lg"></i> Add a Line</button>
+                    </li>
                 <?php endif; ?>
                 <?php foreach ($categories as $c): ?>
                     <li class="list-group-item d-flex justify-content-between align-items-center">

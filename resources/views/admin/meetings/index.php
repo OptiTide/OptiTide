@@ -86,7 +86,15 @@ $requestedCount = count(array_filter($meetings, fn ($m) => $m['status'] === 'req
                                 </tr>
                             <?php endif; ?>
                         <?php endforeach; ?>
-                        <?php if ($meetings === []): ?><tr><td colspan="5" class="text-center text-muted py-4">No meetings yet.</td></tr><?php endif; ?>
+                        <?php if ($meetings === []): ?>
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-5">
+                                    <i class="bi bi-calendar-event fs-3 d-block mb-2 opacity-50"></i>
+                                    No meetings yet.
+                                    <div class="small mt-1">Book one with the form on the left and the client is e-mailed an invitation. Requests they raise from the portal also land here, ready for you to confirm a time.</div>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

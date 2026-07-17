@@ -61,19 +61,21 @@ $publicUrl = url('quote/' . $quote['public_token']);
                     </div>
                 </div>
 
-                <table class="table align-middle">
-                    <thead><tr><th>Description</th><th class="text-end">Qty</th><th class="text-end">Unit</th><th class="text-end">Amount</th></tr></thead>
-                    <tbody>
-                        <?php foreach ($items as $item): ?>
-                            <tr>
-                                <td><?= e($item['description']) ?></td>
-                                <td class="text-end"><?= e($item['quantity']) ?></td>
-                                <td class="text-end money"><?= e(money((int) $item['unit_price_cents'], $quote['currency'])->format()) ?></td>
-                                <td class="text-end money"><?= e(money((int) $item['line_total_cents'], $quote['currency'])->format()) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead><tr><th>Description</th><th class="text-end">Qty</th><th class="text-end">Unit</th><th class="text-end">Amount</th></tr></thead>
+                        <tbody>
+                            <?php foreach ($items as $item): ?>
+                                <tr>
+                                    <td><?= e($item['description']) ?></td>
+                                    <td class="text-end"><?= e($item['quantity']) ?></td>
+                                    <td class="text-end money"><?= e(money((int) $item['unit_price_cents'], $quote['currency'])->format()) ?></td>
+                                    <td class="text-end money"><?= e(money((int) $item['line_total_cents'], $quote['currency'])->format()) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="row justify-content-end">
                     <div class="col-sm-6">

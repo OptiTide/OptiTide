@@ -24,8 +24,16 @@ class SupportController extends Controller
 
     public function create(Request $request): Response
     {
+        // Prefill lets other portal pages ("Ask for a quote", "Need a change?")
+        // hand over a half-written request. The category is allow-listed against
+        // the real list so a crafted URL can't inject an option; store() then
+        // validates both like any other input.
+        $category = (string) $request->query('category', '');
+
         return $this->view('client.support.create', [
-            'title' => 'New Support Request',
+            'title'    => 'New Support Request',
+            'subject'  => (string) $request->query('subject', ''),
+            'category' => in_array($category, Ticket::CATEGORIES, true) ? $category : '',
         ]);
     }
 

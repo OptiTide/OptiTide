@@ -133,6 +133,26 @@ a:hover { color: var(--brand); }
 .main { padding: 1.5rem; flex: 1 1 auto; }
 .page-title { font-weight: 700; font-size: 1.4rem; margin: 0; }
 
+/* Touch targets. Most portal clients arrive on a phone, where Bootstrap's
+   .btn-sm is ~31px tall — under the 44px minimum a finger needs. Raised only
+   below the lg breakpoint so the dense desktop tables keep their compact rows;
+   width is left alone so table action buttons don't stretch.
+   .main is the shared app shell, so this lifts the admin panel on a phone too —
+   intended: the same finger is tapping both. */
+@media (max-width: 991.98px) {
+    .main .btn {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .35rem;
+    }
+    /* A list-group row is block-level — it must fill its card, so it gets the
+       height without the inline-flex the buttons above need. */
+    .main .list-group-item-action { min-height: 44px; }
+    .main { padding: 1rem; }
+}
+
 /* --- Cards / tables -------------------------------------------------------- */
 .card { border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 1px 2px rgba(13,21,48,.04); }
 .card-header { background: var(--surface); border-bottom: 1px solid var(--line); font-weight: 600; }
@@ -381,6 +401,16 @@ a:hover { color: var(--brand); }
 .tk-msg--internal { border-left: 3px solid #f59e0b; background: #fffbeb; }
 .tk-msg-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin-bottom: .35rem; }
 .tk-msg-body { color: #2c3348; line-height: 1.6; white-space: normal; }
+
+/* --- Client "My Project" cards ------------------------------------------
+   The client-facing read-only face of a delivery card. Deliberately NOT
+   .kb-card: that one is a draggable board tile, this is a plain progress
+   readout for a client who never sees the board. */
+.pj-card { border: 1px solid #e7eaf3; border-radius: 12px; padding: .8rem 1rem; background: #fff; }
+.pj-card + .pj-card { margin-top: .75rem; }
+.pj-notes { margin-top: .75rem; display: flex; flex-direction: column; gap: .5rem; }
+.pj-note { border-left: 3px solid var(--brand, #FF6A00); background: #f8fafc; border-radius: 0 8px 8px 0; padding: .5rem .75rem; }
+.pj-note .small { color: #2c3348; line-height: 1.55; }
 
 /* --- Auth pages (site header + footer, blended) ------------------------- */
 .auth-body { min-height: calc(100vh - 90px); display: grid; place-items: center; padding: 3.5rem 1.25rem;

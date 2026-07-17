@@ -75,7 +75,19 @@ if ($onlyGeneral) {
                     </tr>
                 <?php endforeach; ?>
                 <?php if ($rows === []): ?>
-                    <tr><td colspan="6" class="text-center text-muted py-4">No applications match that filter yet.</td></tr>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi bi-inbox fs-3 d-block mb-2 opacity-50"></i>
+                            <?php if ($activeRole !== '' || $activeStatus !== ''): ?>
+                                No applications match that filter.
+                                <div class="mt-2"><a href="<?= route('admin.careers.applications') ?>" class="btn btn-sm btn-light">Show All Applications</a></div>
+                            <?php else: ?>
+                                No applications yet.
+                                <div class="small mt-1 mb-3">People apply from your public careers page — you can't add an application here. Post a role to start collecting them; until you do, the page invites general expressions of interest.</div>
+                                <a href="<?= route('admin.careers.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> Post a Role</a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>

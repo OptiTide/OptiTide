@@ -35,7 +35,13 @@ $badge = ['pending' => 'text-bg-warning', 'approved' => 'text-bg-info', 'paid' =
                     </tr>
                 <?php endforeach; ?>
                 <?php if ($commissions === []): ?>
-                    <tr><td colspan="7" class="text-center text-muted py-4">No commissions yet.</td></tr>
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">
+                            <i class="bi bi-cash-stack fs-3 d-block mb-2 opacity-50"></i>
+                            No commissions yet.
+                            <div class="small mt-1">A commission is created automatically the first time a referred client pays an order — you can't add one by hand. Clients find their referral link under Refer &amp; Earn in the portal.</div>
+                        </td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>

@@ -41,11 +41,27 @@
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead>
-                <tr><th>Quote</th><th>Issued</th><th>Expires</th><th>Status</th><th class="text-end">Total</th><th></th></tr>
+                <tr><th>Quote</th><th class="d-none d-md-table-cell">Issued</th><th>Valid Until</th><th>Status</th><th class="text-end">Total</th><th></th></tr>
             </thead>
             <tbody>
                 <?php if (! $quotes): ?>
-                    <tr><td colspan="6" class="text-center text-muted py-4">No quotes found.</td></tr>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <?php // $count ignores the filter, so "you have none" and "none match
+                                  // this filter" can give different answers. ?>
+                            <?php if ($count === 0): ?>
+                                <i class="bi bi-file-earmark-text fs-3 d-block mb-2"></i>
+                                <div class="fw-semibold text-body">No Quotes Yet</div>
+                                <p class="mb-3">A quote is our written price for a piece of work, with no obligation. When we prepare one it lands here — you can read it, download it, and accept or decline it in one click.</p>
+                                <a href="<?= route('portal.support.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-chat-left-dots"></i> Ask For a Quote</a>
+                            <?php else: ?>
+                                <i class="bi bi-funnel fs-3 d-block mb-2"></i>
+                                <div class="fw-semibold text-body">Nothing Here</div>
+                                <p class="mb-3">You have no quotes in this view.</p>
+                                <a href="<?= route('portal.quotes.index') ?>" class="btn btn-sm btn-light">Show All Quotes</a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 <?php endif; ?>
                 <?php foreach ($quotes as $quote): ?>
                     <?php
@@ -54,8 +70,8 @@
                     ?>
                     <tr>
                         <td class="fw-semibold"><?= e($quote['number']) ?></td>
-                        <td><?= e($quote['issue_date']) ?></td>
-                        <td><?= e($quote['expires_at'] ?: '—') ?></td>
+                        <td class="d-none d-md-table-cell"><?= e($quote['issue_date']) ?></td>
+                        <td class="text-nowrap"><?= e($quote['expires_at'] ?: '—') ?></td>
                         <td><span class="badge text-bg-<?= \App\Models\Quote::STATUS_COLORS[$display] ?>"><?= e(\App\Models\Quote::STATUSES[$display]) ?></span></td>
                         <td class="text-end money"><?= e(\App\Models\Quote::total($quote)->format()) ?></td>
                         <td class="text-end text-nowrap">

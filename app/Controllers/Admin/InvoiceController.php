@@ -19,6 +19,14 @@ use App\Support\Money;
 
 class InvoiceController extends Controller
 {
+    /**
+     * Pseudo-status for the list filter: everything issued but not settled
+     * (sent + overdue). It is what "Outstanding" on the dashboard counts, and no
+     * single real status matches it — without this the headline money figure
+     * could only link to a list that disagreed with it.
+     */
+    public const FILTER_OUTSTANDING = 'outstanding';
+
     public function __construct(protected InvoiceService $invoices = new InvoiceService())
     {
     }
@@ -30,8 +38,14 @@ class InvoiceController extends Controller
         $clientNames = array_column(Client::all(), 'business_name', 'id');
 
         $query = Invoice::query()->orderBy('id', 'desc');
-        if ($status !== '' && isset(Invoice::STATUSES[$status])) {
+        if ($status === self::FILTER_OUTSTANDING) {
+            $query->whereIn('status', [Invoice::STATUS_SENT, Invoice::STATUS_OVERDUE]);
+        } elseif ($status !== '' && isset(Invoice::STATUSES[$status])) {
             $query->where('status', $status);
+        } else {
+            // Normalise an unknown value to "All" so the view can't highlight a
+            // filter button that isn't actually applied.
+            $status = '';
         }
 
         if ($search !== '') {

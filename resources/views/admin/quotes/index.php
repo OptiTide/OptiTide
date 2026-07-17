@@ -26,7 +26,8 @@
 </div>
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-    <div class="btn-group btn-group-sm">
+    <?php // flex-wrap: the filter row is wider than a phone and would push the page sideways. ?>
+    <div class="btn-group btn-group-sm flex-wrap">
         <?php $carry = $search !== '' ? '&q=' . urlencode($search) : ''; ?>
         <a href="<?= route('admin.quotes.index') ?><?= $search !== '' ? '?q=' . urlencode($search) : '' ?>" class="btn <?= $status === '' ? 'btn-brand' : 'btn-outline-secondary' ?>">All</a>
         <?php foreach (\App\Models\Quote::STATUSES as $key => $label): ?>
@@ -58,7 +59,19 @@
             </thead>
             <tbody>
                 <?php if (! $result['data']): ?>
-                    <tr><td colspan="7" class="text-center text-muted py-4">No quotes found.</td></tr>
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">
+                            <i class="bi bi-file-earmark-text fs-3 d-block mb-2 opacity-50"></i>
+                            <?php if ($status !== '' || $search !== ''): ?>
+                                No quotes match this filter.
+                                <div class="mt-2"><a href="<?= route('admin.quotes.index') ?>" class="btn btn-sm btn-light">Show All Quotes</a></div>
+                            <?php else: ?>
+                                No quotes yet.
+                                <div class="small mt-1 mb-3">A quote is a price you send a client before the work starts. They accept it from a link — no login needed — and it turns into an invoice by itself.</div>
+                                <a href="<?= route('admin.quotes.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-plus-lg"></i> Create Your First Quote</a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 <?php endif; ?>
                 <?php foreach ($result['data'] as $quote): ?>
                     <?php $display = \App\Models\Quote::displayStatus($quote); ?>

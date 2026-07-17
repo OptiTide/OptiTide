@@ -15,6 +15,7 @@ use App\Services\Billing\DiscountExhaustedException;
 use App\Services\Billing\DiscountService;
 use App\Services\Billing\InstallmentService;
 use App\Services\Invoices\InvoiceService;
+use App\Services\Payments\PaymentManager;
 use App\Services\Projects\ProjectService;
 use App\Support\Catalog;
 use App\Support\Gst;
@@ -32,8 +33,9 @@ class OrderController extends Controller
     public function index(Request $request): Response
     {
         return $this->view('client.order.index', [
-            'title'    => 'Order a Service',
-            'packages' => $this->packages(),
+            'title'      => 'Order a Service',
+            'packages'   => $this->packages(),
+            'payMethods' => $this->payMethods(),
         ]);
     }
 
@@ -62,6 +64,7 @@ class OrderController extends Controller
             'plans'      => (new InstallmentService())->plansFor($category),
             'sale'       => $sale,
             'saleAmount' => new Money($saleAmount, $svc['currency']),
+            'payMethods' => $this->payMethods(),
         ]);
     }
 
@@ -252,6 +255,28 @@ class OrderController extends Controller
             : 'Order confirmed — invoice ' . $firstInvoice['number'] . ' is ready. Complete payment below to get started.');
 
         return $this->redirectRoute('portal.invoices.show', ['id' => $firstInvoice['id']]);
+    }
+
+    /**
+     * How the client will be able to pay, as a readable list ("PayID / Bank
+     * transfer, Skrill or PayPal"). Read from the gateways that are actually
+     * enabled, never named by hand — copy that promises a method the invoice
+     * page can't offer is worse than not naming them at all, so an empty
+     * registry yields an empty string and the callers drop the sentence.
+     */
+    protected function payMethods(): string
+    {
+        $labels = (new PaymentManager())->enabledLabels();
+
+        if ($labels === []) {
+            return '';
+        }
+
+        if (count($labels) === 1) {
+            return $labels[0];
+        }
+
+        return implode(', ', array_slice($labels, 0, -1)) . ' or ' . end($labels);
     }
 
     /**

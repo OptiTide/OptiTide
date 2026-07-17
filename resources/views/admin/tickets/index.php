@@ -32,7 +32,21 @@ $filters = ['' => 'All'] + \App\Models\Ticket::STATUSES;
                     </tr>
                 <?php endforeach; ?>
                 <?php if ($tickets === []): ?>
-                    <tr><td colspan="7" class="text-center text-muted py-4">No tickets in this view.</td></tr>
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">
+                            <i class="bi bi-life-preserver fs-3 d-block mb-2 opacity-50"></i>
+                            <?php if (($status ?? '') !== ''): ?>
+                                No <?= e(strtolower(\App\Models\Ticket::STATUSES[$status] ?? '')) ?> tickets right now.
+                                <div class="mt-2"><a href="<?= route('admin.tickets.index') ?>" class="btn btn-sm btn-light">Show All Tickets</a></div>
+                            <?php elseif (($counts[''] ?? 0) === 0): ?>
+                                No tickets yet.
+                                <div class="small mt-1">Tickets arrive when a client raises one from their portal, or when an e-mail hits your support address. You can't open one on a client's behalf — reply to their e-mail and it lands here.</div>
+                            <?php else: ?>
+                                Nothing in this view.
+                                <div class="mt-2"><a href="<?= route('admin.tickets.index') ?>" class="btn btn-sm btn-light">Show All Tickets</a></div>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>

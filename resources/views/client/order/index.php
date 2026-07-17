@@ -1,14 +1,11 @@
-<?php
-$this->extends('layouts.portal');
-$companyEmail = config('company.email');
-?>
+<?php $this->extends('layouts.portal'); ?>
 <?php $this->section('content'); ?>
 
 <div class="card border-0 mb-4" style="background:var(--brand-soft)">
     <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-2">
         <div>
             <div class="h5 fw-bold mb-1">Order a Service</div>
-            <div class="text-muted">Pick a package below and we'll set it up right away. You'll get a tax invoice you can pay by PayID or Payoneer, and we'll get started as soon as it's paid.</div>
+            <div class="text-muted">Pick a package below and we'll set it up right away. You'll get a tax invoice<?= $payMethods !== '' ? ' you can pay by ' . e($payMethods) : '' ?>, and we'll get started as soon as it's paid.</div>
         </div>
         <a href="<?= route('portal.services') ?>" class="btn btn-sm btn-outline-brand"><i class="bi bi-grid"></i> My Services</a>
     </div>
@@ -16,7 +13,10 @@ $companyEmail = config('company.email');
 
 <?php if (! $packages): ?>
     <div class="card"><div class="card-body text-center text-muted py-5">
-        Our catalogue is being set up. Please <a href="mailto:<?= e($companyEmail) ?>">contact us</a> for a quote.
+        <i class="bi bi-bag fs-3 d-block mb-2"></i>
+        <div class="fw-semibold text-body">Nothing to Order Just Yet</div>
+        <p class="mb-3">Our packages aren't listed here at the moment. Tell us what you're after and we'll put a price together for you.</p>
+        <a href="<?= route('portal.support.create') ?>" class="btn btn-sm btn-brand"><i class="bi bi-chat-left-dots"></i> Ask For a Quote</a>
     </div></div>
 <?php endif; ?>
 
@@ -42,7 +42,10 @@ $companyEmail = config('company.email');
                             <?php endif; ?>
                         </div>
                         <?php if ($isCustom): ?>
-                            <a href="mailto:<?= e($companyEmail) ?>?subject=<?= rawurlencode('Quote request: ' . $plan['name']) ?>" class="btn btn-sm btn-outline-brand w-100 mt-auto">Request a Quote</a>
+                            <?php // A tracked in-portal request, not a mailto: it lands in the
+                                  // helpdesk where both sides can see it, and it doesn't depend
+                                  // on a mail client being set up (most clients are on a phone). ?>
+                            <a href="<?= route('portal.support.create') ?>?subject=<?= rawurlencode('Quote request: ' . $plan['name']) ?>" class="btn btn-sm btn-outline-brand w-100 mt-auto">Request a Quote</a>
                         <?php else: ?>
                             <a href="<?= route('portal.order.show', ['service' => $plan['id']]) ?>" class="btn btn-sm btn-brand w-100 mt-auto">Order Now</a>
                         <?php endif; ?>

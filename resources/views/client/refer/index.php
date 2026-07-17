@@ -41,7 +41,13 @@ $badge = ['pending' => 'text-bg-warning', 'approved' => 'text-bg-info', 'paid' =
                     </tr>
                 <?php endforeach; ?>
                 <?php if ($commissions === []): ?>
-                    <tr><td colspan="4" class="text-center text-muted py-4">No commissions yet — share your link to get started.</td></tr>
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-5">
+                            <i class="bi bi-gift fs-3 d-block mb-2"></i>
+                            <div class="fw-semibold text-body">No Commissions Yet</div>
+                            <p class="mb-0">Send your link to someone who needs a website, SEO, social or hosting. When they sign up and pay their first invoice, your <?= e($ratePercent) ?>% shows up here.</p>
+                        </td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>

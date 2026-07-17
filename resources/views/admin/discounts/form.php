@@ -156,20 +156,22 @@ $dollars = fn (?int $c) => $c === null ? '' : rtrim(rtrim(number_format($c / 100
                     </div>
                     <div class="card-body p-0">
                         <?php if ($redemptions): ?>
-                            <table class="table table-sm mb-0">
-                                <thead><tr><th class="ps-3">When</th><th>Client</th><th class="text-end pe-3">Amount</th></tr></thead>
-                                <tbody>
-                                    <?php foreach (array_slice($redemptions, 0, 10) as $r): ?>
-                                        <tr>
-                                            <td class="ps-3 small text-nowrap"><?= e(date('j M y', strtotime((string) $r['created_at']))) ?></td>
-                                            <td class="small"><?= e(\App\Models\Client::find($r['client_id'])['business_name'] ?? '—') ?></td>
-                                            <td class="text-end pe-3 small"><?= e((new Money((int) $r['amount_cents'], $r['currency'] ?: $ccy))->format()) ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-sm mb-0">
+                                    <thead><tr><th class="ps-3">When</th><th>Client</th><th class="text-end pe-3">Amount</th></tr></thead>
+                                    <tbody>
+                                        <?php foreach (array_slice($redemptions, 0, 10) as $r): ?>
+                                            <tr>
+                                                <td class="ps-3 small text-nowrap"><?= e(date('j M y', strtotime((string) $r['created_at']))) ?></td>
+                                                <td class="small"><?= e(\App\Models\Client::find($r['client_id'])['business_name'] ?? '—') ?></td>
+                                                <td class="text-end pe-3 small"><?= e((new Money((int) $r['amount_cents'], $r['currency'] ?: $ccy))->format()) ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         <?php else: ?>
-                            <p class="text-muted small mb-0 p-3">Not used yet.</p>
+                            <p class="text-muted small mb-0 p-3">Not used yet — nobody has redeemed this code. Redemptions are recorded automatically at checkout.</p>
                         <?php endif; ?>
                     </div>
                 </div>
