@@ -85,6 +85,16 @@ try {
             (require BASE_PATH . '/database/seeds/DatabaseSeeder.php')->runDemo($out);
             break;
 
+        case 'db:reset':
+            // Clear every client + their data so real clients can start; keeps the
+            // marketing site, catalogue, blog and your admin login. Deliberately NOT
+            // guarded by APP_ENV — production is exactly where you run it. It guards
+            // itself: prints the resolved database, requires typed confirmation, and
+            // asserts the KEEP tables survived before committing.
+            $exit = (require BASE_PATH . '/database/reset.php')
+                ->run($out, in_array('--yes', $flags, true));
+            exit($exit);
+
         case 'key:generate':
             $key = 'base64:' . base64_encode(random_bytes(32));
             set_env_value('APP_KEY', $key);
