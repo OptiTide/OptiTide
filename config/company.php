@@ -17,7 +17,7 @@ return [
     // page titles. Kept separate from legal_name (which is what the ABN is
     // registered to, and is what a tax invoice must show).
     'brand_name' => env('COMPANY_BRAND_NAME') ?: 'OptiTide',
-    'legal_name' => env('COMPANY_LEGAL_NAME') ?: 'OptiTide Pty Ltd',
+    'legal_name' => env('COMPANY_LEGAL_NAME') ?: 'OptiTide',
     'abn'        => env('COMPANY_ABN') ?: '38 163 865 712',
     'email'      => env('COMPANY_EMAIL', env('MAIL_FROM_ADDRESS', 'Hello@OptiTide.io')),
     'phone'      => env('COMPANY_PHONE'),
@@ -31,7 +31,7 @@ return [
     ],
 
     // Shown in the top bar, footer and contact pages. Editable in admin Settings.
-    'hours' => env('COMPANY_HOURS') ?: 'Mon – Fri, 9am – 9pm AWST',
+    'hours' => env('COMPANY_HOURS') ?: 'Mon – Fri, 9 AM – 9 PM AWST',
 
     /*
     | Where the team actually sits. Drives the "How We Work" page's live office

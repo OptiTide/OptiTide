@@ -49,7 +49,7 @@ $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/');
                     <li><a class="dropdown-item" href="<?= route('pages.services') ?>"><i class="bi bi-grid me-1"></i> All Services &amp; Pricing</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <?php foreach ($svcNav as $slug => $s): ?>
-                        <li><a class="dropdown-item" href="/services/<?= e($slug) ?>"><i class="bi <?= e($s['icon']) ?> me-1"></i> <?= e($s['nav']) ?></a></li>
+                        <li><a class="dropdown-item" href="/services/<?= e($slug) ?>"><i class="bi <?= e($s['icon']) ?> me-1"></i> <?= e($s['title']) ?></a></li>
                     <?php endforeach; ?>
                 </ul>
             </div>

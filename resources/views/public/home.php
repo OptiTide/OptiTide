@@ -167,7 +167,7 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
                         <?= csrf_field() ?>
                         <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
                         <div class="row g-2">
-                            <div class="col-sm-6"><input type="text" name="name" class="form-control" placeholder="Your Name" required></div>
+                            <div class="col-sm-6"><input type="text" name="name" class="form-control" autocomplete="name" placeholder="Your Full Name" required></div>
                             <div class="col-sm-6"><input type="email" name="email" class="form-control" placeholder="Email Address" required></div>
                             <div class="col-sm-6"><input type="text" name="phone" class="form-control" placeholder="Phone Number"></div>
                             <div class="col-sm-6">
@@ -365,7 +365,7 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
                         <?= csrf_field() ?>
                         <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
                         <div class="row g-3">
-                            <div class="col-md-6"><label class="form-label" for="c_name">Name</label><input id="c_name" type="text" name="name" value="<?= e(old('name')) ?>" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" placeholder="Your Name" required></div>
+                            <div class="col-md-6"><label class="form-label" for="c_name">Full Name</label><input id="c_name" type="text" name="name" value="<?= e(old('name')) ?>" autocomplete="name" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" placeholder="Your full name" required></div>
                             <div class="col-md-6"><label class="form-label" for="c_email">Email Address</label><input id="c_email" type="email" name="email" value="<?= e(old('email')) ?>" class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>" placeholder="Email Address" required></div>
                             <div class="col-md-6"><label class="form-label" for="c_phone">Phone Number</label><input id="c_phone" type="text" name="phone" value="<?= e(old('phone')) ?>" class="form-control" placeholder="Phone Number"></div>
                             <div class="col-md-6"><label class="form-label" for="c_service">How can we help?</label>

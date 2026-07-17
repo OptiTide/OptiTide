@@ -51,7 +51,7 @@
                         <input type="hidden" name="return" value="/contact#contact">
                         <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
                         <div class="row g-3">
-                            <div class="col-md-6"><label class="form-label" for="p_name">Name</label><input id="p_name" type="text" name="name" value="<?= e(old('name')) ?>" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" required></div>
+                            <div class="col-md-6"><label class="form-label" for="p_name">Full Name</label><input id="p_name" type="text" name="name" value="<?= e(old('name')) ?>" autocomplete="name" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" placeholder="Your full name" required></div>
                             <div class="col-md-6"><label class="form-label" for="p_email">Email Address</label><input id="p_email" type="email" name="email" value="<?= e(old('email')) ?>" class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>" required></div>
                             <div class="col-md-6"><label class="form-label" for="p_phone">Phone <span class="text-muted small">(optional)</span></label><input id="p_phone" type="text" name="phone" value="<?= e(old('phone')) ?>" class="form-control"></div>
                             <div class="col-md-6"><label class="form-label" for="p_service">I'm interested in</label>
