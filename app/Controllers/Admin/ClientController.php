@@ -16,6 +16,7 @@ use App\Models\Payment;
 use App\Models\Quote;
 use App\Models\Service;
 use App\Models\Ticket;
+use App\Services\Accounts\InviteService;
 use App\Services\Audit\AuditLog;
 use App\Services\Billing\CreditService;
 use App\Support\Features;
@@ -91,7 +92,45 @@ class ClientController extends Controller
     {
         $data = $this->clientData($request);
         $client = Client::create($data);
+
+        // Creating the client used to be the whole story — no login, no email — so
+        // giving someone portal access meant a second trip to Admin > Users to
+        // hand-make a user and invent a password you then had to send them somehow.
+        // Now it is a checkbox, and they choose their own password from the email.
+        if ($request->input('send_invite')) {
+            $user = (new InviteService())->invite($client);
+
+            if ($user) {
+                Session::flash('success', 'Client created — portal invite sent to ' . $client['email'] . '.');
+            } else {
+                // Refused: missing/invalid email, or that address already belongs to
+                // someone else (staff, or another client's login). Say so plainly
+                // rather than claiming an invite went out.
+                Session::flash('error', 'Client created, but the portal invite could NOT be sent — check the '
+                    . 'email address is valid and not already used by another account.');
+            }
+
+            return $this->redirect(route('admin.clients.show', ['id' => $client['id']]));
+        }
+
         Session::flash('success', 'Client created.');
+
+        return $this->redirect(route('admin.clients.show', ['id' => $client['id']]));
+    }
+
+    /** Send/resend the portal invite from the client's own page. */
+    public function invite(Request $request, string $id): Response
+    {
+        $client = Client::findOrFail($id);
+        $user = (new InviteService())->invite($client);
+
+        if ($user) {
+            AuditLog::record('client.invited', 'client', $client['id'], ['email' => $client['email']]);
+            Session::flash('success', 'Portal invite sent to ' . $client['email'] . ' — the link works for 7 days.');
+        } else {
+            Session::flash('error', 'Could not send the invite — check the email address is valid and not '
+                . 'already used by another account.');
+        }
 
         return $this->redirect(route('admin.clients.show', ['id' => $client['id']]));
     }

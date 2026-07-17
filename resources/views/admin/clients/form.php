@@ -76,6 +76,18 @@ $val = fn (string $key, $default = '') => e(old($key, $client[$key] ?? $default)
                             <option value="archived" <?= ($client['status'] ?? '') === 'archived' ? 'selected' : '' ?>>Archived</option>
                         </select>
                     <?php endif; ?>
+                    <?php if (! $isEdit): ?>
+                        <?php // On by default: adding a client almost always means giving them
+                              // the portal. Untick to add them quietly and invite later from
+                              // the client's own page. ?>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" role="switch" id="send_invite" name="send_invite" value="1" checked>
+                            <label class="form-check-label" for="send_invite">
+                                <strong>Email a portal invite</strong>
+                                <span class="d-block text-muted small">They choose their own password — we never see it. The link lasts 7 days.</span>
+                            </label>
+                        </div>
+                    <?php endif; ?>
                     <button class="btn btn-brand w-100"><?= $isEdit ? 'Save Changes' : 'Create Client' ?></button>
                     <a href="<?= $isEdit ? route('admin.clients.show', ['id' => $client['id']]) : route('admin.clients.index') ?>" class="btn btn-link w-100">Cancel</a>
                 </div>

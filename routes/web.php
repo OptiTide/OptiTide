@@ -125,6 +125,9 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->put('/clients/{id}', [Admin\ClientController::class, 'update'])->name('admin.clients.update');
     $router->delete('/clients/{id}', [Admin\ClientController::class, 'destroy'])->name('admin.clients.destroy');
 
+    // Portal invite — send/resend the "set your password" link
+    $router->post('/clients/{id}/invite', [Admin\ClientController::class, 'invite'])->name('admin.clients.invite');
+
     // Engagements (client_services) — managed from the client page
     $router->post('/clients/{id}/credit', [Admin\ClientController::class, 'addCredit'])->name('admin.clients.credit');
     $router->post('/clients/{id}/api-credit', [Admin\ClientController::class, 'adjustApiCredit'])->name('admin.clients.apicredit');

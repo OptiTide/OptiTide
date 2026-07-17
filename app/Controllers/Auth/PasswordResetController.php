@@ -70,7 +70,13 @@ class PasswordResetController extends Controller
             ->where('token', hash('sha256', $data['token']))
             ->first();
 
-        if (! $record || strtotime($record['created_at']) < time() - 3600) {
+        // expires_at wins when set (client invites give themselves 7 days); a NULL
+        // means an ordinary "forgot password" link, which keeps the 60-minute rule.
+        $expired = ! empty($record['expires_at'])
+            ? strtotime((string) $record['expires_at']) < time()
+            : strtotime((string) $record['created_at']) < time() - 3600;
+
+        if (! $record || $expired) {
             Session::flash('error', 'This reset link is invalid or has expired.');
 
             return $this->redirect(route('password.request'));
