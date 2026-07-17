@@ -25,6 +25,11 @@ $company  = config('company');
 <title><?= e($seoTitle) ?></title>
 <meta name="description" content="<?= e($seoDescription) ?>">
 <link rel="canonical" href="<?= e($canonical) ?>">
+<?php // Feed autodiscovery. /blog/rss.xml existed and served fine, but nothing
+      // linked it, so no reader could find the feed. Gated with the blog itself. ?>
+<?php if (\App\Support\Features::enabled('blog')): ?>
+<link rel="alternate" type="application/rss+xml" title="<?= e(config('company.brand_name')) ?> Blog" href="<?= route('blog.rss') ?>">
+<?php endif; ?>
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="<?= e($brand) ?>">
 <meta name="geo.region" content="AU">

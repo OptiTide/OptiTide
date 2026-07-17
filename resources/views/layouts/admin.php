@@ -48,6 +48,9 @@ $me = auth();
             <?php endif; ?>
 
             <div class="nav-section">Delivery Boards</div>
+            <?php // The overview (card counts per board) had no link anywhere — it
+                  // existed but you could only reach it by typing the URL. ?>
+            <a class="nav-link <?= $active('/admin/boards', true) ?>" href="<?= route('admin.boards.index') ?>"><i class="bi bi-kanban"></i> All Boards</a>
             <a class="nav-link <?= $active('/admin/boards/web-design') ?>" href="<?= route('admin.boards.show', ['key' => 'web-design']) ?>"><i class="bi bi-palette"></i> Web Design</a>
             <a class="nav-link <?= $active('/admin/boards/seo') ?>" href="<?= route('admin.boards.show', ['key' => 'seo']) ?>"><i class="bi bi-graph-up-arrow"></i> SEO</a>
             <a class="nav-link <?= $active('/admin/boards/smm') ?>" href="<?= route('admin.boards.show', ['key' => 'smm']) ?>"><i class="bi bi-instagram"></i> Social Media</a>

@@ -90,6 +90,11 @@ $hasMascot = is_file(public_path('assets/img/mascot.png'));
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0D1530">
 <link rel="canonical" href="<?= e($appUrl) ?>/">
+<?php // The homepage builds its own head instead of using layouts.marketing, so
+      // the feed link is repeated here or autodiscovery misses the front door. ?>
+<?php if (\App\Support\Features::enabled('blog')): ?>
+<link rel="alternate" type="application/rss+xml" title="<?= e(config('company.brand_name')) ?> Blog" href="<?= route('blog.rss') ?>">
+<?php endif; ?>
 <meta name="geo.region" content="AU">
 <meta name="geo.placename" content="Australia">
 
