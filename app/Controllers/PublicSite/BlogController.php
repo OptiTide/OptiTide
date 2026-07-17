@@ -71,7 +71,7 @@ class BlogController extends Controller
         $appUrl = rtrim(config('app.url'), '/');
         $canonical = $appUrl . '/blog/' . $post['slug'];
         $desc = (string) ($post['meta_description'] ?: $post['excerpt'] ?: '');
-        $img = $this->imageUrl($post['cover_image'] ?? '', $appUrl);
+        $img = $this->imageUrl($post['cover_image'] ?? '', $appUrl, (string) $post['slug']);
 
         $related = array_slice(array_values(array_filter(
             Blog::published(),
@@ -123,14 +123,29 @@ class BlogController extends Controller
         ]);
     }
 
-    /** Absolute URL for a stored cover image (path or full URL), with fallback. */
-    protected function imageUrl(string $cover, string $appUrl): string
+    /**
+     * Absolute URL for a post's cover.
+     *
+     * The fallback matters: this is the og:image, so a post with no cover set is
+     * what a shared link LOOKS like. It used to fall back to favicon.png — a
+     * 512px square, which social cards render as a tiny smear. So try the
+     * on-disk cover for the slug first (photo, then the branded SVG), and only
+     * then the 1200x630 brand card.
+     */
+    protected function imageUrl(string $cover, string $appUrl, string $slug = ''): string
     {
         $cover = trim($cover);
-        if ($cover === '') {
-            return $appUrl . '/assets/img/favicon.png';
+        if ($cover !== '') {
+            return str_starts_with($cover, 'http') ? $cover : $appUrl . '/' . ltrim($cover, '/');
         }
 
-        return str_starts_with($cover, 'http') ? $cover : $appUrl . '/' . ltrim($cover, '/');
+        foreach (['jpg', 'svg'] as $ext) {
+            $rel = '/assets/img/blog/' . $slug . '.' . $ext;
+            if ($slug !== '' && is_file(public_path(ltrim($rel, '/')))) {
+                return $appUrl . $rel;
+            }
+        }
+
+        return $appUrl . '/assets/img/og-default.png';
     }
 }
