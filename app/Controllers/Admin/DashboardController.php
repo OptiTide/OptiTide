@@ -31,12 +31,17 @@ class DashboardController extends Controller
             }
         }
 
+        // Compare against the DATE, never date . ' 00:00:00'. paid_at is mixed:
+        // an auto-stamped payment stores a datetime, but a staff-recorded one
+        // stores the date alone (the admin form validates it as `date`). String
+        // compared, '2026-07-01' < '2026-07-01 00:00:00' — so the time suffix
+        // silently dropped every payment taken on the first day of the period.
         $paidThisMonth = Payment::query()
-            ->where('paid_at', '>=', date('Y-m-01') . ' 00:00:00')
+            ->where('paid_at', '>=', date('Y-m-01'))
             ->sum('amount_cents');
 
         $paidThisWeek = Payment::query()
-            ->where('paid_at', '>=', date('Y-m-d', strtotime('monday this week')) . ' 00:00:00')
+            ->where('paid_at', '>=', date('Y-m-d', strtotime('monday this week')))
             ->sum('amount_cents');
 
         $recent = Invoice::query()->orderBy('id', 'desc')->limit(8)->get();

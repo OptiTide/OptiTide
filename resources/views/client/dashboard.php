@@ -15,7 +15,9 @@ $companyEmail = config('company.email');
                 ['bi-kanban', 'Track Your Project', 'See progress live', route('portal.project')],
                 ['bi-receipt', 'View & Pay Invoices', 'PayID, PayPal, Skrill & more', route('portal.invoices.index')],
                 ['bi-calendar-event', 'Meetings', 'Book or join a call', route('portal.meetings')],
-                ['bi-gift', 'Refer & Earn', 'Get a % on every referral', route('portal.refer')],
+                // CommissionService pays ONE acquisition commission per referred
+                // client, on their first paid invoice — not on every referral.
+                ['bi-gift', 'Refer & Earn', 'Earn a % when they first pay', route('portal.refer')],
                 ['bi-life-preserver', 'Get Help', 'Support or live chat', route('portal.support.index')],
             ];
             foreach ($guide as [$icon, $t, $d, $href]):

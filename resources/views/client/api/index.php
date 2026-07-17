@@ -31,7 +31,10 @@ $typeBadge = ['topup' => 'text-bg-success', 'usage' => 'text-bg-secondary', 'adj
                     </div>
                     <div class="input-group" style="max-width:220px">
                         <span class="input-group-text">$</span>
-                        <input type="number" name="amount" min="10" step="1" class="form-control" placeholder="Custom">
+                        <?php // From the config the server actually enforces — a hardcoded
+                              // minimum here would keep gating on the old value after the
+                              // config changed, and reject what the server would accept. ?>
+                        <input type="number" name="amount" min="<?= (int) ceil(config('api_credits.min_topup_cents', 1000) / 100) ?>" step="1" class="form-control" placeholder="Custom">
                         <button class="btn btn-brand" type="submit">Buy</button>
                     </div>
                 </form>
