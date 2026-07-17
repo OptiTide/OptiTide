@@ -85,6 +85,30 @@ try {
             (require BASE_PATH . '/database/seeds/DatabaseSeeder.php')->runDemo($out);
             break;
 
+        case 'import:clients':
+        case 'import:invoices':
+            // DRY RUN unless --commit. Everything it creates is silent (notify=false,
+            // and unpaid backdated rows are exempt from the chase), so importing
+            // history can never email a client an invoice they settled years ago.
+            $file = $flags[0] ?? null;
+            if (! $file || str_starts_with($file, '--')) {
+                $out('Usage: php bin/console ' . $command . ' <file.csv> [--commit]');
+                $out('');
+                $out('  Without --commit it only reports what it WOULD do. Nothing is written.');
+                $out('');
+                $out('  clients.csv   business_name,contact_name,email,phone,abn,address_line1,');
+                $out('                address_locality,address_region,address_postcode,notes,created_at');
+                $out('  invoices.csv  client_email,number,description,amount,issue_date,due_date,');
+                $out('                paid_date,status');
+                $out('');
+                $out('  amount is DOLLARS and GST-INCLUSIVE. Import clients first.');
+                exit(1);
+            }
+
+            $importer = require BASE_PATH . '/database/import.php';
+            $method = $command === 'import:clients' ? 'clients' : 'invoices';
+            exit($importer->{$method}($out, $file, in_array('--commit', $flags, true)));
+
         case 'db:reset':
             // Clear every client + their data so real clients can start; keeps the
             // marketing site, catalogue, blog and your admin login. Deliberately NOT
