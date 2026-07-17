@@ -17,6 +17,20 @@ use App\Services\Referrals\ReferralService;
 use App\Services\Support\TicketService;
 
 return new class {
+    /**
+     * REFERENCE data only: the catalogue, the starter articles, the board structure,
+     * the backlink list. No fake clients, no logins. Every part is guarded by an
+     * existence check, so this is safe to re-run against production and a second run
+     * adds nothing.
+     *
+     * This is what `php bin/console seed` runs. Demo data lives in runDemo() and is
+     * reachable ONLY via `seed:demo`, which refuses when APP_ENV=production. The two
+     * were a single method until the owner asked to "keep updating without importing
+     * demo data" — separate commands are the answer, because a --demo flag on one
+     * command is a single typo away from putting a login with the password
+     * "password" into a live CRM. This repo is public; that password is readable by
+     * anyone.
+     */
     public function run(callable $out): void
     {
         $out('Seeding service lines…');
@@ -25,7 +39,28 @@ return new class {
         $out('Seeding service catalogue…');
         $this->services($categories);
 
-        $out('Seeding users…');
+        $out('Seeding starter blog articles…');
+        $this->blogs();
+
+        $out('Seeding project board structure…');
+        $this->boardStructure();
+
+        $out('Seeding backlink directory starter list…');
+        (new \App\Services\Seo\BacklinkService())->seedStarter();
+
+        $out('');
+        $out('Reference data seeded — no demo data, no logins. Safe on production.');
+        $out('Create your admin with:  php bin/console make:admin <email> <password>');
+    }
+
+    /**
+     * DEMO data: a fake client, sample billing, demo tickets/hosting, demo board
+     * cards, and three logins whose password is the literal string "password".
+     * Local development only — bin/console gates this on APP_ENV.
+     */
+    public function runDemo(callable $out): void
+    {
+        $out('Seeding demo logins…');
         $this->user('Michael Long', 'Hello@OptiTide.io', User::ROLE_ADMIN);
         $this->user('Support Staff', 'staff@optitide.io', User::ROLE_STAFF);
 
@@ -36,18 +71,12 @@ return new class {
 
         $this->demoEngagementsAndInvoices($client);
 
-        $out('Seeding starter blog articles…');
-        $this->blogs();
-
-        $out('Seeding project boards…');
-        $this->boards($client);
+        $out('Seeding demo board cards…');
+        $this->boardCards($client);
 
         $out('Seeding helpdesk + hosting demo data…');
         $this->support($client);
         $this->hosting($client);
-
-        $out('Seeding backlink directory starter list…');
-        (new \App\Services\Seo\BacklinkService())->seedStarter();
 
         $out('');
         $out('Done. Local logins (password: "password"):');
@@ -185,42 +214,72 @@ return new class {
         }
     }
 
-    private function boards(array $client): void
-    {
-        $blueprint = [
-            ['web-design', 'Web Design', ['Backlog', 'In Design', 'In Development', 'Review', 'Launched'], [
-                ['Backlog', 'New brochure site — Coastline Cafe', true],
-                ['In Design', 'Homepage mockups', true],
-                ['In Development', 'Booking form integration', false],
-            ]],
-            ['seo', 'SEO', ['Backlog', 'In Progress', 'On-Page', 'Reporting', 'Done'], [
-                ['Backlog', 'Keyword research — local terms', true],
-                ['In Progress', 'Fix crawl errors', false],
-                ['Reporting', 'July ranking report', true],
-            ]],
-            ['smm', 'Social Media', ['Ideas', 'Scheduled', 'Published', 'Reporting'], [
-                ['Ideas', 'Winter promo campaign concept', false],
-                ['Scheduled', 'Weekly tips carousel', true],
-                ['Published', 'Customer spotlight post', true],
-            ]],
-        ];
+    /**
+     * The boards and their columns, split out from the demo CARDS below.
+     *
+     * The structure is reference data — a fresh production install needs the three
+     * kanbans to exist, and `db:reset` deliberately keeps them. The sample cards on
+     * them are demo fiction and must not survive either.
+     */
+    private const BOARD_BLUEPRINT = [
+        ['web-design', 'Web Design', ['Backlog', 'In Design', 'In Development', 'Review', 'Launched'], [
+            ['Backlog', 'New brochure site — Coastline Cafe', true],
+            ['In Design', 'Homepage mockups', true],
+            ['In Development', 'Booking form integration', false],
+        ]],
+        ['seo', 'SEO', ['Backlog', 'In Progress', 'On-Page', 'Reporting', 'Done'], [
+            ['Backlog', 'Keyword research — local terms', true],
+            ['In Progress', 'Fix crawl errors', false],
+            ['Reporting', 'July ranking report', true],
+        ]],
+        ['smm', 'Social Media', ['Ideas', 'Scheduled', 'Published', 'Reporting'], [
+            ['Ideas', 'Winter promo campaign concept', false],
+            ['Scheduled', 'Weekly tips carousel', true],
+            ['Published', 'Customer spotlight post', true],
+        ]],
+    ];
 
-        foreach ($blueprint as $i => [$key, $name, $columnNames, $cards]) {
+    /** Boards + columns only. Reference — safe on production. */
+    private function boardStructure(): void
+    {
+        foreach (self::BOARD_BLUEPRINT as $i => [$key, $name, $columnNames, $_cards]) {
             if (Board::byKey($key)) {
                 continue;
             }
 
             $board = Board::create(['key' => $key, 'name' => $name, 'position' => $i]);
 
-            $columnIds = [];
             foreach ($columnNames as $ci => $colName) {
-                $col = BoardColumn::create(['board_id' => $board['id'], 'name' => $colName, 'position' => $ci]);
-                $columnIds[$colName] = $col['id'];
+                BoardColumn::create(['board_id' => $board['id'], 'name' => $colName, 'position' => $ci]);
+            }
+        }
+    }
+
+    /** The sample cards. Demo only — assumes boardStructure() already ran. */
+    private function boardCards(array $client): void
+    {
+        foreach (self::BOARD_BLUEPRINT as [$key, $_name, $_columnNames, $cards]) {
+            $board = Board::byKey($key);
+            if (! $board) {
+                continue;
+            }
+
+            // Idempotent: never stack a second set of demo cards on a re-run.
+            if (BoardCard::query()->where('board_id', $board['id'])->first()) {
+                continue;
+            }
+
+            $columnIds = [];
+            foreach (BoardColumn::query()->where('board_id', $board['id'])->get() as $col) {
+                $columnIds[$col['name']] = $col['id'];
             }
 
             $pos = [];
             foreach ($cards as [$colName, $title, $linkClient]) {
-                $columnId = $columnIds[$colName];
+                $columnId = $columnIds[$colName] ?? null;
+                if (! $columnId) {
+                    continue;
+                }
                 $pos[$columnId] = ($pos[$columnId] ?? -1) + 1;
                 BoardCard::create([
                     'board_id'  => $board['id'],

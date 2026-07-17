@@ -25,6 +25,30 @@ $out = function (string $message = ''): void {
 
 $migrator = fn () => new Migrator(BASE_PATH . '/database/migrations');
 
+/**
+ * Refuse to run a destructive/demo command anywhere that might be production.
+ *
+ * Fails CLOSED, and deliberately checks BOTH sources of APP_ENV. Env::get()
+ * (app/Core/Env.php:48-60) consults the parsed .env FILE before getenv(), so a .env
+ * written inside a container — which `key:generate` does, copying .env.example, and
+ * which docs/COOLIFY.md tells you to run there — would shadow Coolify's real
+ * APP_ENV=production and quietly re-open the gate. Checking getenv() directly as
+ * well means the file cannot lie its way past this.
+ */
+function guard_local(string $command): void
+{
+    $candidates = [env('APP_ENV'), getenv('APP_ENV')];
+
+    foreach ($candidates as $value) {
+        if (is_string($value) && strtolower(trim($value)) === 'production') {
+            fwrite(STDERR, "Refusing to run `{$command}` — APP_ENV is production.\n");
+            fwrite(STDERR, "This command creates demo data (logins with the password \"password\") or drops tables.\n");
+            fwrite(STDERR, "If you meant to reset live data, use: php bin/console db:reset\n");
+            exit(1);
+        }
+    }
+}
+
 try {
     switch ($command) {
         case 'migrate':
@@ -36,14 +60,29 @@ try {
             break;
 
         case 'migrate:fresh':
+            // fresh() DROPS every table, so this is local-only whatever the flags
+            // say. Gated exactly like seed:demo.
+            guard_local('migrate:fresh');
             $migrator()->fresh($out);
             if (in_array('--seed', $flags, true)) {
-                (require BASE_PATH . '/database/seeds/DatabaseSeeder.php')->run($out);
+                $seeder = require BASE_PATH . '/database/seeds/DatabaseSeeder.php';
+                $seeder->run($out);
+                $seeder->runDemo($out);
             }
             break;
 
         case 'seed':
+            // REFERENCE data only (catalogue, articles, board structure, backlinks):
+            // idempotent and safe on production. This is what SEED_ON_BOOT runs, so
+            // a container restart can never reintroduce demo data.
             (require BASE_PATH . '/database/seeds/DatabaseSeeder.php')->run($out);
+            break;
+
+        case 'seed:demo':
+            // A demo client plus logins whose password is literally "password" — in a
+            // PUBLIC repo. Never on production.
+            guard_local('seed:demo');
+            (require BASE_PATH . '/database/seeds/DatabaseSeeder.php')->runDemo($out);
             break;
 
         case 'key:generate':
