@@ -77,6 +77,12 @@ $val = fn (string $key, $default = '') => e(old($key, $client[$key] ?? $default)
                         </select>
                     <?php endif; ?>
                     <?php if (! $isEdit): ?>
+                        <?php // Porting: without this every ported client reads as having
+                              // joined today, and "client since" on their page is a lie. ?>
+                        <label class="form-label">Client Since <span class="text-muted fw-normal small">(optional)</span></label>
+                        <input type="date" name="created_at" value="<?= e(old('created_at')) ?>" class="form-control mb-1" max="<?= e(today()) ?>">
+                        <div class="form-text mb-3">Only set this when porting an existing client in. Leave blank for today.</div>
+
                         <?php // On by default: adding a client almost always means giving them
                               // the portal. Untick to add them quietly and invite later from
                               // the client's own page. ?>

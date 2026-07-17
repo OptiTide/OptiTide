@@ -127,6 +127,9 @@ class InvoiceController extends Controller
             'due_date'   => 'nullable|date',
             'notes'      => 'nullable|max:2000',
             'payoneer_link' => 'nullable|url',
+            // Porting in from another system: keep the number it was issued under.
+            // `unique` so a clash is a form error rather than a 500 off the index.
+            'number'     => 'nullable|max:40|unique:invoices,number',
         ]);
 
         $items = $this->parseItems($request);
@@ -136,6 +139,14 @@ class InvoiceController extends Controller
             return $this->back();
         }
 
+        $number = trim((string) ($data['number'] ?? ''));
+
+        // Only stamp created_at when the invoice is genuinely BACKDATED. Doing it for
+        // every invoice would set today's to midnight, so same-day invoices would all
+        // tie and "newest first" lists would lose their order.
+        $issued = $data['issue_date'] ?: null;
+        $backdated = $issued && $issued < today();
+
         $invoice = $this->invoices->create([
             'client_id'     => $data['client_id'],
             'issue_date'    => $data['issue_date'] ?: today(),
@@ -143,6 +154,11 @@ class InvoiceController extends Controller
             'notes'         => $data['notes'] ?? null,
             'payoneer_link' => $data['payoneer_link'] ?? null,
             'status'        => Invoice::STATUS_DRAFT,
+            // Blank means auto-generate, which is the everyday path.
+            'number'        => $number !== '' ? $number : null,
+            // A ported invoice's record date should match the day it was issued, not
+            // the day it was typed in, or every dashboard reads it as this month's work.
+            'created_at'    => $backdated ? $issued . ' 09:00:00' : null,
         ], $items);
 
         AuditLog::record('invoice.created', 'invoice', $invoice['id'], ['number' => $invoice['number'] ?? null]);

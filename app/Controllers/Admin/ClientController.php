@@ -329,7 +329,18 @@ class ClientController extends Controller
             'address_region'   => 'nullable|max:60',
             'address_postcode' => 'nullable|max:12',
             'status'           => 'nullable|in:active,archived',
-        ], ['business_name' => 'Business name', 'abn' => 'ABN']);
+            // Porting only: the date they actually became a client elsewhere.
+            'created_at'       => 'nullable|date',
+        ], ['business_name' => 'Business name', 'abn' => 'ABN', 'created_at' => 'Client since']);
+
+        // Backdate only, and only on create. A future date would be nonsense, and
+        // letting an edit rewrite created_at would quietly rewrite history.
+        $since = trim((string) ($data['created_at'] ?? ''));
+        unset($data['created_at']);
+
+        if ($id === null && $since !== '' && $since < today()) {
+            $data['created_at'] = $since . ' 09:00:00';
+        }
 
         // Let the NOT NULL default stand when no status was submitted.
         if (($data['status'] ?? null) === null) {

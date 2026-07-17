@@ -50,6 +50,28 @@ final class InvoiceService
         return 'INV-' . str_pad((string) $n, 6, '0', STR_PAD_LEFT);
     }
 
+    /**
+     * Move invoice_counter up to $number's numeric part, never down.
+     *
+     * Only ever raises: porting an old INV-000007 after you have already issued
+     * INV-000200 must not rewind the counter and start minting duplicates. Numbers
+     * with no digits (a free-form reference from another system) are ignored rather
+     * than treated as zero.
+     */
+    protected function raiseCounterTo(string $number): void
+    {
+        if (! preg_match('/(\d+)\s*$/', $number, $m)) {
+            return;
+        }
+
+        $n = (int) $m[1];
+        $current = (int) Setting::get('invoice_counter', '0');
+
+        if ($n > $current) {
+            Setting::put('invoice_counter', (string) $n);
+        }
+    }
+
     /** Default due date = issue date + the configured payment terms (days). */
     protected function defaultDueDate(): string
     {
@@ -81,6 +103,13 @@ final class InvoiceService
     {
         $invoice = $this->insert($data, $items);
 
+        // notify=false is for PORTING history in from another system: the invoice is
+        // a record of something that already happened, and emailing it would send a
+        // client a "new" invoice they settled two years ago.
+        if (($data['notify'] ?? true) === false) {
+            return $invoice;
+        }
+
         if (($invoice['status'] ?? null) === Invoice::STATUS_SENT) {
             // afterCommit, NOT inline. Callers wrap this in their own transaction —
             // OrderController::place() creates the invoices and can then throw
@@ -109,7 +138,15 @@ final class InvoiceService
             $currency = $data['currency'] ?? config('company.currency', 'AUD');
 
             $invoice = Invoice::create([
-                'number'            => $this->nextNumber(),
+                // A supplied number is for PORTING: an AU tax invoice number is
+                // referenced by your accountant, your BAS and the client's own
+                // records, so history has to keep the number it was issued under.
+                // Short-circuits, so nextNumber() is not called (and no counter
+                // value is burned) when one is given.
+                'number'            => $data['number'] ?? $this->nextNumber(),
+                // Passed through so ported rows carry their real date; Model::create
+                // uses ??= so a null here still becomes now().
+                'created_at'        => $data['created_at'] ?? null,
                 'client_id'         => $data['client_id'],
                 'status'            => $data['status'] ?? Invoice::STATUS_DRAFT,
                 'currency'          => $currency,
@@ -127,6 +164,14 @@ final class InvoiceService
 
             $this->syncItems($invoice['id'], $items, $currency);
             $this->recomputeTotals($invoice['id']);
+
+            // Keep the counter above anything ported in. Without this, importing
+            // INV-000001..INV-000150 against a counter still sitting at 0 means the
+            // NEXT real invoice mints INV-000001 — which collides with the unique
+            // index on invoices.number and 500s, on the first invoice after a port.
+            if (isset($data['number'])) {
+                $this->raiseCounterTo((string) $data['number']);
+            }
 
             return Invoice::find($invoice['id']);
         });

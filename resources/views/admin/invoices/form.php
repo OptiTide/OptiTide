@@ -38,6 +38,24 @@ foreach ($services as $s) {
                             <input type="date" name="due_date" value="<?= e(old('due_date', $invoice['due_date'] ?? date('Y-m-d', strtotime('+14 days')))) ?>" class="form-control">
                         </div>
                     </div>
+
+                    <?php if (! $isEdit): ?>
+                        <?php // Porting from another system: an AU tax invoice number is
+                              // referenced by your accountant, your BAS and the client's own
+                              // records, so history must keep the number it was issued under. ?>
+                        <div class="row g-3 mt-0">
+                            <div class="col-md-6">
+                                <label class="form-label">Invoice Number <span class="text-muted fw-normal small">(optional)</span></label>
+                                <input type="text" name="number" value="<?= e(old('number')) ?>" class="form-control <?= has_error('number') ? 'is-invalid' : '' ?>" placeholder="Leave blank to auto-generate" maxlength="40">
+                                <?php if (error('number')): ?><div class="invalid-feedback"><?= e(error('number')) ?></div><?php endif; ?>
+                                <div class="form-text">
+                                    Only set this when porting an old invoice in — use the number it was
+                                    originally issued under. New invoices number themselves, and the
+                                    counter jumps past anything you import.
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
