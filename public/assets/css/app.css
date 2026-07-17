@@ -770,3 +770,22 @@ a:hover { color: var(--brand); }
 }
 .mk-price-group-title::after { content: ""; flex: 1 1 auto; height: 1px; background: var(--line); }
 .mk-price-card { padding: 1.6rem 1.35rem; }
+
+/* ============================================================
+   Mobile hardening — verified fixes (see the mobile bug sweep)
+   ============================================================ */
+/* iOS Safari ZOOMS the page when you focus an input whose font is < 16px, which
+   feels broken and shifts the whole layout. Force every form control to 16px at
+   phone widths. The .mk-hero-form override (.92rem) was a live instance. This
+   only applies <=576px, so the desktop look is untouched. */
+@media (max-width: 576px) {
+    .form-control, .form-select, .mk-hero-form .form-control, .mk-hero-form .form-select {
+        font-size: 16px;
+    }
+    /* Give tappable controls a 44px minimum height — Apple's HIG target. Small
+       buttons in tight table rows are the usual offenders. */
+    .btn, .form-control, .form-select { min-height: 44px; }
+    .btn-sm, .btn-link { min-height: 0; } /* keep inline text buttons compact */
+    /* Any table that forgot its wrapper still can't burst the viewport. */
+    .table-responsive { -webkit-overflow-scrolling: touch; }
+}
