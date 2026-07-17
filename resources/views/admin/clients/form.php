@@ -64,6 +64,15 @@ $val = fn (string $key, $default = '') => e(old($key, $client[$key] ?? $default)
                     </div>
                 </div>
             </div>
+
+            <div class="card mb-3">
+                <div class="card-header">Notes <span class="text-muted fw-normal small">— internal, the client never sees these</span></div>
+                <div class="card-body">
+                    <?php // The notes column always existed; the form never exposed it,
+                          // so it was unwritable from the UI. ?>
+                    <textarea name="notes" rows="4" class="form-control" placeholder="Anything worth remembering — how they like to work, billing quirks, history."><?= $val('notes') ?></textarea>
+                </div>
+            </div>
         </div>
 
         <div class="col-lg-4">
@@ -75,6 +84,10 @@ $val = fn (string $key, $default = '') => e(old($key, $client[$key] ?? $default)
                             <option value="active" <?= ($client['status'] ?? '') === 'active' ? 'selected' : '' ?>>Active</option>
                             <option value="archived" <?= ($client['status'] ?? '') === 'archived' ? 'selected' : '' ?>>Archived</option>
                         </select>
+
+                        <label class="form-label">Client Since</label>
+                        <input type="date" name="created_at" value="<?= e(old('created_at', substr((string) ($client['created_at'] ?? ''), 0, 10))) ?>" class="form-control mb-1" max="<?= e(today()) ?>">
+                        <div class="form-text mb-3">Changing this rewrites when they became a client — it's logged in the audit trail.</div>
                     <?php endif; ?>
                     <?php if (! $isEdit): ?>
                         <?php // Porting: without this every ported client reads as having

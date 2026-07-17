@@ -29,4 +29,34 @@ final class NullWhmClient implements WhmClient
     {
         return false;
     }
+
+    public function createAccount(string $username, string $domain, string $plan, string $contactEmail): bool
+    {
+        return false;
+    }
+
+    public function terminateAccount(string $username): bool
+    {
+        return false;
+    }
+
+    public function changePackage(string $username, string $plan): bool
+    {
+        return false;
+    }
+
+    public function changePassword(string $username, string $password): bool
+    {
+        return false;
+    }
+
+    public function listPackages(): array
+    {
+        return [];
+    }
+
+    public function lastError(): ?string
+    {
+        return 'WHM is not connected — set WHM_HOST, WHM_USERNAME and WHM_API_TOKEN first.';
+    }
 }

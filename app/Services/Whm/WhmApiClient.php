@@ -12,12 +12,15 @@ use RuntimeException;
  */
 final class WhmApiClient implements WhmClient
 {
+    private ?string $lastError = null;
+
     public function __construct(
         private string $host,
         private int $port,
         private string $username,
         private string $token,
         private string $server,
+        private string $scheme = 'https',
     ) {}
 
     public function available(): bool
@@ -27,7 +30,7 @@ final class WhmApiClient implements WhmClient
 
     public function listAccounts(): array
     {
-        $url = sprintf('https://%s:%d/json-api/listaccts?api.version=1', $this->host, $this->port);
+        $url = sprintf('%s://%s:%d/json-api/listaccts?api.version=1', $this->scheme, $this->host, $this->port);
 
         $ch = curl_init($url);
         curl_setopt_array($ch, [
@@ -84,7 +87,8 @@ final class WhmApiClient implements WhmClient
         }
 
         $url = sprintf(
-            'https://%s:%d/json-api/create_user_session?api.version=1&user=%s&service=cpaneld',
+            '%s://%s:%d/json-api/create_user_session?api.version=1&user=%s&service=cpaneld',
+            $this->scheme,
             $this->host,
             $this->port,
             rawurlencode($username)
@@ -121,10 +125,77 @@ final class WhmApiClient implements WhmClient
         return $this->simpleCall('unsuspendacct', ['user' => $username]);
     }
 
+    public function createAccount(string $username, string $domain, string $plan, string $contactEmail): bool
+    {
+        // The initial password is generated here and thrown away — it is never
+        // stored, logged or shown. Access goes through the one-time cPanel SSO
+        // session like every other account; anyone needing a standing password
+        // sets one explicitly with changePassword().
+        return $this->simpleCall('createacct', [
+            'username'     => $username,
+            'domain'       => $domain,
+            'plan'         => $plan,
+            'contactemail' => $contactEmail,
+            'password'     => str_random(24) . 'aA1!',
+        ]);
+    }
+
+    public function terminateAccount(string $username): bool
+    {
+        return $this->simpleCall('removeacct', ['user' => $username, 'keepdns' => 0]);
+    }
+
+    public function changePackage(string $username, string $plan): bool
+    {
+        return $this->simpleCall('changepackage', ['user' => $username, 'pkg' => $plan]);
+    }
+
+    public function changePassword(string $username, string $password): bool
+    {
+        return $this->simpleCall('passwd', ['user' => $username, 'password' => $password]);
+    }
+
+    public function listPackages(): array
+    {
+        $data = $this->call('listpkgs', []);
+        $packages = [];
+
+        foreach ((array) ($data['data']['pkg'] ?? []) as $pkg) {
+            if (! empty($pkg['name'])) {
+                $packages[] = (string) $pkg['name'];
+            }
+        }
+
+        return $packages;
+    }
+
+    public function lastError(): ?string
+    {
+        return $this->lastError;
+    }
+
     /** Fire a WHM function and return whether it reported success. */
     private function simpleCall(string $fn, array $params): bool
     {
-        $url = sprintf('https://%s:%d/json-api/%s?%s', $this->host, $this->port, $fn, http_build_query(['api.version' => 1] + $params));
+        $data = $this->call($fn, $params);
+
+        if ((int) ($data['metadata']['result'] ?? 0) === 1) {
+            $this->lastError = null;
+
+            return true;
+        }
+
+        // WHM puts its human-readable refusal ("domain already exists", "package
+        // limit reached") in metadata.reason — losing it leaves the admin guessing.
+        $this->lastError = (string) ($data['metadata']['reason'] ?? 'WHM did not accept the request.');
+
+        return false;
+    }
+
+    /** @return array<mixed> decoded response, [] on transport failure */
+    private function call(string $fn, array $params): array
+    {
+        $url = sprintf('%s://%s:%d/json-api/%s?%s', $this->scheme, $this->host, $this->port, $fn, http_build_query(['api.version' => 1] + $params));
 
         $ch = curl_init($url);
         curl_setopt_array($ch, [
@@ -135,14 +206,18 @@ final class WhmApiClient implements WhmClient
             CURLOPT_SSL_VERIFYHOST => false,
         ]);
         $body = curl_exec($ch);
+        $err = curl_error($ch);
         curl_close($ch);
+
         if ($body === false) {
-            return false;
+            $this->lastError = 'Could not reach WHM: ' . $err;
+
+            return [];
         }
 
         $data = json_decode((string) $body, true);
 
-        return (int) ($data['metadata']['result'] ?? 0) === 1;
+        return is_array($data) ? $data : [];
     }
 
     /** Parse WHM disk figures like "512M", "2.5G", "unlimited" into MB. */

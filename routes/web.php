@@ -214,6 +214,13 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->get('/visitors', [Admin\VisitorController::class, 'index'])->name('admin.visitors.index');
 
     // Backlinks & citations (SEO off-page toolkit)
+    // Blacklist (RBL) monitoring — listings land as cards on the SEO/Hosting boards
+    $router->get('/blacklists', [Admin\BlacklistController::class, 'index'])->name('admin.blacklists.index');
+    $router->post('/blacklists', [Admin\BlacklistController::class, 'store'])->name('admin.blacklists.store');
+    $router->post('/blacklists/seed', [Admin\BlacklistController::class, 'seed'])->name('admin.blacklists.seed');
+    $router->post('/blacklists/check', [Admin\BlacklistController::class, 'check'])->name('admin.blacklists.check');
+    $router->post('/blacklists/{id}/delete', [Admin\BlacklistController::class, 'destroy'])->name('admin.blacklists.destroy');
+
     $router->get('/backlinks', [Admin\BacklinkController::class, 'index'])->name('admin.backlinks.index');
     $router->post('/backlinks/seed', [Admin\BacklinkController::class, 'seed'])->name('admin.backlinks.seed');
     $router->post('/backlinks', [Admin\BacklinkController::class, 'store'])->name('admin.backlinks.store');
@@ -250,6 +257,11 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->post('/hosting/{id}/assign', [Admin\HostingController::class, 'assign'])->name('admin.hosting.assign');
     $router->post('/hosting/{id}/suspend', [Admin\HostingController::class, 'suspend'])->name('admin.hosting.suspend');
     $router->post('/hosting/{id}/unsuspend', [Admin\HostingController::class, 'unsuspend'])->name('admin.hosting.unsuspend');
+    // Full WHMCS-style module functions: create / change package / change password / terminate
+    $router->post('/hosting/create', [Admin\HostingController::class, 'create'])->name('admin.hosting.create');
+    $router->post('/hosting/{id}/package', [Admin\HostingController::class, 'changePackage'])->name('admin.hosting.package');
+    $router->post('/hosting/{id}/password', [Admin\HostingController::class, 'changePassword'])->name('admin.hosting.password');
+    $router->post('/hosting/{id}/terminate', [Admin\HostingController::class, 'terminate'])->name('admin.hosting.terminate');
 
     // Service categories (service lines)
     $router->post('/categories', [Admin\ServiceCategoryController::class, 'store'])->name('admin.categories.store');

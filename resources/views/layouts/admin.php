@@ -54,7 +54,9 @@ $me = auth();
             <a class="nav-link <?= $active('/admin/boards/web-design') ?>" href="<?= route('admin.boards.show', ['key' => 'web-design']) ?>"><i class="bi bi-palette"></i> Web Design</a>
             <a class="nav-link <?= $active('/admin/boards/seo') ?>" href="<?= route('admin.boards.show', ['key' => 'seo']) ?>"><i class="bi bi-graph-up-arrow"></i> SEO</a>
             <a class="nav-link <?= $active('/admin/boards/smm') ?>" href="<?= route('admin.boards.show', ['key' => 'smm']) ?>"><i class="bi bi-instagram"></i> Social Media</a>
+            <a class="nav-link <?= $active('/admin/boards/hosting') ?>" href="<?= route('admin.boards.show', ['key' => 'hosting']) ?>"><i class="bi bi-server"></i> Hosting</a>
             <a class="nav-link <?= $active('/admin/hosting') ?>" href="<?= route('admin.hosting.index') ?>"><i class="bi bi-hdd-network"></i> Hosting Accounts</a>
+            <a class="nav-link <?= $active('/admin/blacklists') ?>" href="<?= route('admin.blacklists.index') ?>"><i class="bi bi-shield-exclamation"></i> Blacklist Monitor</a>
 
             <?php if (\App\Core\Auth::isAdmin()): ?>
                 <div class="nav-section">Admin</div>

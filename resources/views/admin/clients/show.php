@@ -77,6 +77,11 @@ foreach ($services as $s) {
                 <?php elseif ($activated): ?>
                     <div class="form-text">Resending lets them set a new password. Their old one stops working only once they use the link.</div>
                 <?php endif; ?>
+                <?php if ($portalUser): ?>
+                    <a href="<?= route('admin.users.edit', ['id' => $portalUser['id']]) ?>" class="btn btn-sm btn-link w-100 mt-1">
+                        Edit login (email, name, or move to another client)
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>

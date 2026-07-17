@@ -22,6 +22,10 @@ final class PaymentManager
         $gateways = [];
 
         foreach ((array) config('payments.enabled', []) as $key) {
+            if (! self::switchedOn($key)) {
+                continue;
+            }
+
             $gateway = $this->gateway($key);
             if ($gateway && $gateway->isEnabled()) {
                 $gateways[] = $gateway;
@@ -29,6 +33,20 @@ final class PaymentManager
         }
 
         return $gateways;
+    }
+
+    /**
+     * The admin's on/off switch for a gateway (Settings > Payment Methods),
+     * layered ON TOP of env enablement — env decides what is configured at all,
+     * this decides what is offered right now. The settings page writes
+     * `payments.on.{key}` as '1'/'0'; missing means on, so a gateway can never
+     * vanish because the switch was simply never saved. This filter lives HERE,
+     * in the one registry every caller uses (pay page, order copy, emails), so
+     * switching a method off removes it everywhere at once.
+     */
+    public static function switchedOn(string $key): bool
+    {
+        return (string) config('payments.on.' . $key, '1') !== '0';
     }
 
     public function gateway(string $key): ?PaymentGateway

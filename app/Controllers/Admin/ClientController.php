@@ -329,17 +329,31 @@ class ClientController extends Controller
             'address_region'   => 'nullable|max:60',
             'address_postcode' => 'nullable|max:12',
             'status'           => 'nullable|in:active,archived',
-            // Porting only: the date they actually became a client elsewhere.
+            // The column always existed; no form or validator ever exposed it, so
+            // notes were simply unwritable from the UI.
+            'notes'            => 'nullable|max:5000',
+            // Porting: the date they actually became a client elsewhere.
             'created_at'       => 'nullable|date',
         ], ['business_name' => 'Business name', 'abn' => 'ABN', 'created_at' => 'Client since']);
 
-        // Backdate only, and only on create. A future date would be nonsense, and
-        // letting an edit rewrite created_at would quietly rewrite history.
+        // Backdate only — a future "client since" is nonsense. Editable on update too
+        // (the owner asked to edit everything), but a change on an EXISTING client is
+        // rewriting history, so it goes to the audit log rather than happening quietly.
         $since = trim((string) ($data['created_at'] ?? ''));
         unset($data['created_at']);
 
-        if ($id === null && $since !== '' && $since < today()) {
-            $data['created_at'] = $since . ' 09:00:00';
+        if ($since !== '' && $since < today()) {
+            $stamp = $since . ' 09:00:00';
+
+            if ($id !== null) {
+                $current = substr((string) (Client::find($id)['created_at'] ?? ''), 0, 10);
+                if ($current !== $since) {
+                    AuditLog::record('client.since_changed', 'client', $id, ['from' => $current, 'to' => $since]);
+                    $data['created_at'] = $stamp;
+                }
+            } else {
+                $data['created_at'] = $stamp;
+            }
         }
 
         // Let the NOT NULL default stand when no status was submitted.

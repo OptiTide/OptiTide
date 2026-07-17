@@ -76,6 +76,31 @@ $addr = $company['address'];
 
         <div class="col-lg-6">
             <div class="card mb-3">
+                <div class="card-header">Payment Methods</div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">Switch a payment method off and it disappears everywhere at once — the pay page, order confirmations and email copy. Nothing is deleted; switch it back on any time.</p>
+                    <div class="row g-3">
+                        <?php foreach (['payid' => 'PayID / Bank transfer', 'skrill' => 'Skrill', 'paypal' => 'PayPal', 'payoneer' => 'Payoneer'] as $pKey => $pLabel): ?>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <?php /* Hidden 0 is load-bearing: an unchecked box submits nothing
+                                             and the settings loader skips empty values, so without it
+                                             the default would win and the switch would do nothing. */ ?>
+                                    <input type="hidden" name="s_pay_<?= e($pKey) ?>" value="0">
+                                    <input class="form-check-input" type="checkbox" role="switch" value="1"
+                                           id="s_pay_<?= e($pKey) ?>" name="s_pay_<?= e($pKey) ?>"
+                                           <?= \App\Services\Payments\PaymentManager::switchedOn($pKey) ? 'checked' : '' ?>>
+                                    <label class="form-check-label fw-semibold" for="s_pay_<?= e($pKey) ?>"><?= e($pLabel) ?></label>
+                                    <?php $live = (new \App\Services\Payments\PaymentManager())->gateway($pKey)?->isEnabled() && \App\Services\Payments\PaymentManager::switchedOn($pKey); ?>
+                                    <div class="form-text"><?= $live ? 'Offered to clients right now.' : 'Not offered — switched off or missing its details below.' ?></div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>PayID / Bank Transfer</span>
                     <?= in_array('payid', $enabled, true) ? '<span class="badge text-bg-success">Enabled</span>' : '<span class="badge text-bg-secondary">Off</span>' ?>

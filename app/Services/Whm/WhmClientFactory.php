@@ -16,6 +16,7 @@ final class WhmClientFactory
                 (string) $c['username'],
                 (string) $c['api_token'],
                 (string) ($c['server_label'] ?? 'Primary Server'),
+                (string) ($c['scheme'] ?? 'https'),
             );
         }
 

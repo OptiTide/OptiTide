@@ -44,6 +44,14 @@ class SettingController extends Controller
         's_social_fb'     => 'company.social.facebook',
         's_social_ig'     => 'company.social.instagram',
         's_social_li'     => 'company.social.linkedin',
+        // Payment method on/off switches. Same hidden-0 rule as the feature
+        // toggles, and each key MUST be the key PaymentManager::switchedOn reads --
+        // a setting that writes one key while the consumer reads another silently
+        // does nothing.
+        's_pay_payid'    => 'payments.on.payid',
+        's_pay_skrill'   => 'payments.on.skrill',
+        's_pay_paypal'   => 'payments.on.paypal',
+        's_pay_payoneer' => 'payments.on.payoneer',
         's_payid_type'    => 'payments.gateways.payid.type',
         's_payid_value'   => 'payments.gateways.payid.value',
         's_payid_name'    => 'payments.gateways.payid.account_name',

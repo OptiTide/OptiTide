@@ -237,6 +237,9 @@ return new class {
             ['Scheduled', 'Weekly tips carousel', true],
             ['Published', 'Customer spotlight post', true],
         ]],
+        // No demo cards: real ones arrive from blacklist monitoring and hosting
+        // incidents. Mirrors migration 0046 so a fresh install matches production.
+        ['hosting', 'Hosting', ['Issues', 'In Progress', 'Monitoring', 'Resolved'], []],
     ];
 
     /** Boards + columns only. Reference — safe on production. */

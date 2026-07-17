@@ -85,6 +85,16 @@ try {
             (require BASE_PATH . '/database/seeds/DatabaseSeeder.php')->runDemo($out);
             break;
 
+        case 'blacklist:check':
+            // Scheduled (daily is plenty — listings move slowly). Raises one board
+            // card per new listing; clears its guard on delisting.
+            $stats = (new App\Services\Seo\BlacklistService())->run();
+            $out(sprintf(
+                'Checked %d target(s): %d listed (%d new card(s)), %d cleared, %d unavailable.',
+                $stats['checked'], $stats['listed'], $stats['new_cards'], $stats['cleared'], $stats['unavailable']
+            ));
+            break;
+
         case 'import:clients':
         case 'import:invoices':
             // DRY RUN unless --commit. Everything it creates is silent (notify=false,
