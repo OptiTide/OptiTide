@@ -81,18 +81,22 @@ final class InvoiceService
     {
         $invoice = $this->insert($data, $items);
 
-        // Outside the transaction on purpose: mail is slow and would hold row locks,
-        // and a rollback cannot un-send an email — an emailed invoice that no longer
-        // exists is worse than an un-emailed one.
         if (($invoice['status'] ?? null) === Invoice::STATUS_SENT) {
-            // A mail failure must never destroy a committed, correct invoice — the
-            // admin can resend. email() already returns false (not throws) when the
-            // client has no address.
-            try {
-                $this->email($invoice);
-            } catch (\Throwable $e) {
-                error_log('Invoice ' . ($invoice['number'] ?? '?') . ' created but not emailed: ' . $e->getMessage());
-            }
+            // afterCommit, NOT inline. Callers wrap this in their own transaction —
+            // OrderController::place() creates the invoices and can then throw
+            // DiscountExhaustedException, rolling them back. An inline send would
+            // already have emailed the client an invoice that no longer exists. With
+            // no transaction open (the admin path) this runs immediately.
+            Database::instance()->afterCommit(function () use ($invoice) {
+                // A mail failure must never destroy a committed, correct invoice — the
+                // admin can resend. email() already returns false (not throws) when the
+                // client has no address.
+                try {
+                    $this->email($invoice);
+                } catch (\Throwable $e) {
+                    error_log('Invoice ' . ($invoice['number'] ?? '?') . ' created but not emailed: ' . $e->getMessage());
+                }
+            });
         }
 
         return $invoice;

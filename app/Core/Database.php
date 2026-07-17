@@ -17,6 +17,9 @@ final class Database
     /** Nesting depth so transaction() calls can compose via savepoints. */
     protected int $transactionLevel = 0;
 
+    /** @var array<int,callable> Side effects deferred until the outermost commit. */
+    protected array $afterCommit = [];
+
     public static function instance(): self
     {
         return static::$instance ??= new self();
@@ -183,10 +186,26 @@ final class Database
             $this->pdo->exec('RELEASE SAVEPOINT trans' . $this->transactionLevel);
         }
         $this->transactionLevel = max(0, $this->transactionLevel - 1);
+
+        // Only once everything is durably committed. Drain to a local first so a
+        // callback that itself opens a transaction cannot re-enter this list.
+        if ($this->transactionLevel === 0 && $this->afterCommit !== []) {
+            $callbacks = $this->afterCommit;
+            $this->afterCommit = [];
+
+            foreach ($callbacks as $callback) {
+                $callback();
+            }
+        }
     }
 
     public function rollBack(): void
     {
+        // Anything queued is tied to work that is now being undone. Discarding the
+        // whole queue is deliberately conservative: dropping an email is recoverable
+        // (resend it), sending one for a rolled-back invoice is not.
+        $this->afterCommit = [];
+
         if ($this->transactionLevel === 0) {
             return;
         }
@@ -215,6 +234,26 @@ final class Database
             $this->rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * Run $fn once the OUTERMOST transaction commits — or immediately if none is open.
+     *
+     * For side effects that cannot be undone. Emailing from inside a transaction is a
+     * bug waiting to happen: Client\OrderController::place() wraps invoice creation in
+     * a transaction and can then throw DiscountExhaustedException, rolling the invoices
+     * back — but an email sent inline has already gone, leaving the client holding an
+     * invoice that does not exist. Deferred here, it only sends if the data survives.
+     */
+    public function afterCommit(callable $fn): void
+    {
+        if ($this->transactionLevel === 0) {
+            $fn();
+
+            return;
+        }
+
+        $this->afterCommit[] = $fn;
     }
 
     public function table(string $table): QueryBuilder
