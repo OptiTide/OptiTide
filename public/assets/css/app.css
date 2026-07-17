@@ -228,7 +228,10 @@ a:hover { color: var(--brand); }
 .mk-nav-links a { color: #475569; text-decoration: none; font-weight: 600; font-size: .93rem; }
 .mk-nav-links a:hover { color: var(--brand); }
 .mk-nav-toggle { display: none; background: none; border: 0; font-size: 1.6rem; color: var(--navy); line-height: 1; padding: .1rem .3rem; cursor: pointer; }
-@media (max-width: 991.98px) {
+/* Collapse at xl, not lg. The tagline logo is deliberately large (the slogan has
+   to be readable), so logo + links + Login + CTA needs ~1150px. Collapsing at
+   991.98 left 992-1150 showing a desktop nav that didn't fit. */
+@media (max-width: 1199.98px) {
     .mk-nav .mk-container { position: relative; }
     .mk-nav-toggle { display: inline-flex; }
     .mk-nav-links { position: absolute; top: 100%; left: 0; right: 0; background: #fff; flex-direction: column;
@@ -526,7 +529,10 @@ a:hover { color: var(--brand); }
 .mk-topbar-hours { color: #b9c0d4; }
 .mk-topbar-hours i { color: var(--brand-bright); }
 .mk-flag { font-size: 1rem; }
-.mk-nav-brand { display: inline-flex; align-items: center; }
+/* Never let the logo be the flex item that absorbs a too-tight nav row: it has
+   object-fit:contain, so shrinking the box silently letterboxes the artwork to
+   half size instead of overflowing visibly. Squash the gaps, not the brand. */
+.mk-nav-brand { display: inline-flex; align-items: center; flex-shrink: 0; }
 .mk-nav-cta { color: #fff !important; padding: .5rem 1.1rem; border-radius: 10px; font-weight: 700; font-size: .9rem; white-space: nowrap; }
 /* Login sits in the main nav beside the CTA — the way IN shouldn't be less
    visible than the way to buy. */
@@ -538,7 +544,9 @@ a:hover { color: var(--brand); }
 .mk-nav-dd .dropdown-menu { border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 16px 40px rgba(13,21,48,.14); padding: .4rem; margin-top: .4rem; }
 .mk-nav-dd .dropdown-item { border-radius: 8px; font-size: .9rem; font-weight: 600; color: #334155; padding: .5rem .7rem; }
 .mk-nav-dd .dropdown-item:hover { background: var(--brand-soft); color: var(--brand-dark); }
-@media (max-width: 991.98px) {
+/* Must track the .mk-nav-links collapse breakpoint above — if these two
+   disagree, the dropdowns/CTA style for one layout while the row is in the other. */
+@media (max-width: 1199.98px) {
     .mk-nav-dd { width: 100%; }
     .mk-nav-dd .dropdown-menu { position: static !important; transform: none !important; box-shadow: none; border: 0; padding-left: .8rem; }
     .mk-nav-cta { display: block; text-align: center; margin-top: .6rem; }
