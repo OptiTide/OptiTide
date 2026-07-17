@@ -116,14 +116,25 @@ final class InvoiceService
             // DiscountExhaustedException, rolling them back. An inline send would
             // already have emailed the client an invoice that no longer exists. With
             // no transaction open (the admin path) this runs immediately.
-            Database::instance()->afterCommit(function () use ($invoice) {
+            $invoiceId = $invoice['id'];
+            Database::instance()->afterCommit(function () use ($invoiceId) {
+                // Re-fetch at SEND time, never use the create-time array. Both
+                // self-service orders and quote acceptances apply a discount AFTER
+                // create() returns (updateById + recomputeTotals), so the captured
+                // array is pre-discount — the client would be emailed a total higher
+                // than they owe while the attached PDF (rendered by id) showed the
+                // real figure. Fetching fresh makes body and PDF agree.
+                $fresh = Invoice::find($invoiceId);
+                if (! $fresh) {
+                    return;
+                }
                 // A mail failure must never destroy a committed, correct invoice — the
                 // admin can resend. email() already returns false (not throws) when the
                 // client has no address.
                 try {
-                    $this->email($invoice);
+                    $this->email($fresh);
                 } catch (\Throwable $e) {
-                    error_log('Invoice ' . ($invoice['number'] ?? '?') . ' created but not emailed: ' . $e->getMessage());
+                    error_log('Invoice ' . ($fresh['number'] ?? '?') . ' created but not emailed: ' . $e->getMessage());
                 }
             });
         }
