@@ -192,7 +192,12 @@ a:hover { color: var(--brand); }
 
 /* Nav */
 .mk-nav { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
-.mk-nav .mk-container { display: flex; align-items: center; justify-content: space-between; padding-top: .85rem; padding-bottom: .85rem; }
+/* column-gap is a FLOOR, not a nicety: space-between alone lets the links sit
+   flush against the logo the moment the row runs out of room, and the sums below
+   only hold while the fonts render at the widths they were measured at. With a
+   floor, a row that outgrows the container overflows on the right (obvious, and
+   the CTA is the last thing out) instead of silently eating the brand. */
+.mk-nav .mk-container { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-top: .85rem; padding-bottom: .85rem; }
 .mk-nav .brand-mark { font-size: 1.35rem; color: var(--ink); }
 .mk-nav .brand-logo { height: 84px; }
 /* Tagline logo runs bigger so the slogan is legible. */
@@ -224,14 +229,25 @@ a:hover { color: var(--brand); }
 .mk-trustbar .mk-container { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .6rem 1.75rem; padding-top: .9rem; padding-bottom: .9rem; }
 .mk-trust-item { color: #475569; font-size: .86rem; font-weight: 600; white-space: nowrap; }
 .mk-trust-item i { color: #16a34a; margin-right: .35rem; }
-.mk-nav-links { display: flex; align-items: center; gap: 1.4rem; }
+/* Sizing this row is unforgiving, so the numbers are written down. The container
+   is max-width:1140 with 20px padding => 1100px of usable row, ALWAYS (it caps,
+   so a wider screen buys nothing). The logo is 254. That leaves 846 for the
+   links, and they must still clear the logo by ~32px.
+   Link labels total 353 (Home 45, Services 75, Pricing 52, Company 87, Blog 33,
+   Contact 61) + the CTA 193 + the auth button + 7 gaps. The auth button is the
+   trap: "Login" is 92 but "Dashboard" is 137, so the row is WIDER for a signed-in
+   visitor -- at the old 1.4rem gaps the logged-in row was 1120 > 1100 and collided
+   at EVERY width. 1rem gaps put the worst case at 1049, leaving ~51px. Note a
+   wider screen does not help (the container caps at 1140), so this one gap value
+   serves every desktop width. */
+.mk-nav-links { display: flex; align-items: center; gap: 1rem; }
 .mk-nav-links a { color: #475569; text-decoration: none; font-weight: 600; font-size: .93rem; }
 .mk-nav-links a:hover { color: var(--brand); }
 .mk-nav-toggle { display: none; background: none; border: 0; font-size: 1.6rem; color: var(--navy); line-height: 1; padding: .1rem .3rem; cursor: pointer; }
-/* Collapse at xl, not lg. The tagline logo is deliberately large (the slogan has
-   to be readable), so logo + links + Login + CTA needs ~1150px. Collapsing at
-   991.98 left 992-1150 showing a desktop nav that didn't fit. */
-@media (max-width: 1199.98px) {
+/* Below 992 the row genuinely cannot seat the links, so it becomes a hamburger.
+   (992-1199 still shows the full nav — it fits once the auth button steps out;
+   see the .mk-nav-login media query further down.) */
+@media (max-width: 991.98px) {
     .mk-nav .mk-container { position: relative; }
     .mk-nav-toggle { display: inline-flex; }
     .mk-nav-links { position: absolute; top: 100%; left: 0; right: 0; background: #fff; flex-direction: column;
@@ -538,6 +554,15 @@ a:hover { color: var(--brand); }
    visible than the way to buy. */
 .mk-nav-login { padding: .45rem .9rem; border-radius: 10px; font-weight: 700; font-size: .9rem; white-space: nowrap; display: inline-flex; align-items: center; gap: .35rem; }
 .mk-nav-login i { font-size: 1rem; }
+/* 992-1199 the row can't seat everything, so the auth button steps out: the top
+   bar carries the SAME link ("Client & Staff Login" / "My Dashboard") and stays
+   visible down to 640px, so the way in is never lost — whereas collapsing the
+   whole nav to a hamburger would hide it on a 1366 laptop at 125% zoom (~1093 CSS
+   px). This MUST live after the .mk-nav-login display declaration above: media
+   queries add no specificity, so declaring it earlier in the file loses. */
+@media (max-width: 1199.98px) and (min-width: 992px) {
+    .mk-nav-login { display: none; }
+}
 .mk-nav-cta:hover { color: #fff !important; }
 .mk-nav-dd { position: relative; }
 .mk-nav-dd .dropdown-toggle::after { vertical-align: .1em; margin-left: .25em; }
@@ -546,7 +571,7 @@ a:hover { color: var(--brand); }
 .mk-nav-dd .dropdown-item:hover { background: var(--brand-soft); color: var(--brand-dark); }
 /* Must track the .mk-nav-links collapse breakpoint above — if these two
    disagree, the dropdowns/CTA style for one layout while the row is in the other. */
-@media (max-width: 1199.98px) {
+@media (max-width: 991.98px) {
     .mk-nav-dd { width: 100%; }
     .mk-nav-dd .dropdown-menu { position: static !important; transform: none !important; box-shadow: none; border: 0; padding-left: .8rem; }
     .mk-nav-cta { display: block; text-align: center; margin-top: .6rem; }

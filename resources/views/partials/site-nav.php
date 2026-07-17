@@ -72,8 +72,13 @@ $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/');
                   // 13px top-bar link plus a mobile-only nav item, so the way in for a
                   // client or staff member was the least visible thing on the page —
                   // and nobody looks in a utility bar for it. ?>
+<?php   // "Dashboard", not "My Dashboard": the top bar already says "My Dashboard"
+        // right above this, and the longer label made the signed-in row 71px wider
+        // than the signed-out one — enough to overflow the container and jam the
+        // links into the logo at EVERY desktop width. Keep this button's two
+        // states close in width or the row only fits for logged-out visitors. ?>
             <a href="<?= $dashUrl ?>" class="btn btn-outline-brand mk-nav-login">
-                <i class="bi bi-person-circle"></i> <?= $isAuthed ? 'My Dashboard' : 'Login' ?>
+                <i class="bi bi-person-circle"></i> <?= $isAuthed ? 'Dashboard' : 'Login' ?>
             </a>
             <a href="<?= route('pages.contact') ?>" class="btn btn-brand mk-nav-cta">Get My Free Proposal</a>
         </div>
