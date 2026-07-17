@@ -498,6 +498,10 @@ a:hover { color: var(--brand); }
 .mk-flag { font-size: 1rem; }
 .mk-nav-brand { display: inline-flex; align-items: center; }
 .mk-nav-cta { color: #fff !important; padding: .5rem 1.1rem; border-radius: 10px; font-weight: 700; font-size: .9rem; white-space: nowrap; }
+/* Login sits in the main nav beside the CTA — the way IN shouldn't be less
+   visible than the way to buy. */
+.mk-nav-login { padding: .45rem .9rem; border-radius: 10px; font-weight: 700; font-size: .9rem; white-space: nowrap; display: inline-flex; align-items: center; gap: .35rem; }
+.mk-nav-login i { font-size: 1rem; }
 .mk-nav-cta:hover { color: #fff !important; }
 .mk-nav-dd { position: relative; }
 .mk-nav-dd .dropdown-toggle::after { vertical-align: .1em; margin-left: .25em; }
@@ -508,6 +512,7 @@ a:hover { color: var(--brand); }
     .mk-nav-dd { width: 100%; }
     .mk-nav-dd .dropdown-menu { position: static !important; transform: none !important; box-shadow: none; border: 0; padding-left: .8rem; }
     .mk-nav-cta { display: block; text-align: center; margin-top: .6rem; }
+    .mk-nav-login { display: flex; justify-content: center; margin-top: .6rem; }
 }
 
 /* Footer social icons */

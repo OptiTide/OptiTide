@@ -68,7 +68,13 @@ $ccyReturn = rawurlencode($_SERVER['REQUEST_URI'] ?? '/');
             <a href="<?= route('blog.index') ?>" class="mk-nav-link <?= $on('/blog') ? 'is-active' : '' ?>">Blog</a>
             <?php endif; ?>
             <a href="<?= route('pages.contact') ?>" class="mk-nav-link <?= $on('/contact') ? 'is-active' : '' ?>">Contact</a>
-            <a href="<?= $dashUrl ?>" class="mk-nav-link d-lg-none"><?= $isAuthed ? 'My Dashboard' : 'Login' ?></a>
+            <?php // Login lives in the MAIN nav, not just the top bar. It was only a
+                  // 13px top-bar link plus a mobile-only nav item, so the way in for a
+                  // client or staff member was the least visible thing on the page —
+                  // and nobody looks in a utility bar for it. ?>
+            <a href="<?= $dashUrl ?>" class="btn btn-outline-brand mk-nav-login">
+                <i class="bi bi-person-circle"></i> <?= $isAuthed ? 'My Dashboard' : 'Login' ?>
+            </a>
             <a href="<?= route('pages.contact') ?>" class="btn btn-brand mk-nav-cta">Get My Free Proposal</a>
         </div>
     </div>
