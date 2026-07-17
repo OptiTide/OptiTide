@@ -324,17 +324,28 @@ final class InvoiceService
                 'recorded_by'  => $recordedBy,
             ]);
 
-            $paid = (int) $invoice['amount_paid_cents'] + $amountCents;
-            $status = $invoice['status'];
+            // ATOMIC increment, not read-modify-write. Two payments recorded on the
+            // same invoice at once each used to read amount_paid=0 and both write
+            // amount_paid=X, so the running total lost one payment's contribution —
+            // an invoice could read part-paid or unpaid when it was fully paid. The
+            // += happens in the database; then re-read to decide status from the true
+            // total.
+            Database::instance()->affecting(
+                'UPDATE invoices SET amount_paid_cents = amount_paid_cents + ? WHERE id = ?',
+                [$amountCents, $invoiceId]
+            );
 
-            if ($paid >= (int) $invoice['total_cents'] && $status !== Invoice::STATUS_VOID) {
+            $fresh = Invoice::findOrFail($invoiceId);
+            $paid = (int) $fresh['amount_paid_cents'];
+            $status = $fresh['status'];
+
+            if ($paid >= (int) $fresh['total_cents'] && $status !== Invoice::STATUS_VOID) {
                 $status = Invoice::STATUS_PAID;
             }
 
             Invoice::updateById($invoiceId, [
-                'amount_paid_cents' => $paid,
-                'status'            => $status,
-                'paid_at'           => $status === Invoice::STATUS_PAID ? ($paidAt ?: now()) : $invoice['paid_at'],
+                'status'  => $status,
+                'paid_at' => $status === Invoice::STATUS_PAID ? ($fresh['paid_at'] ?: ($paidAt ?: now())) : $fresh['paid_at'],
             ]);
 
             // The receipt belongs HERE, not in the controller. It used to live in

@@ -44,22 +44,52 @@ final class CreditService
     public function applyToInvoice(int|string $invoiceId, int|string|null $actorId): int
     {
         $invoice = Invoice::findOrFail($invoiceId);
-        $client = $invoice['client_id'] ? Client::find($invoice['client_id']) : null;
-        if (! $client) {
+        if (empty($invoice['client_id'])) {
             return 0;
         }
+        $clientId = $invoice['client_id'];
 
-        $credit = (int) ($client['credit_cents'] ?? 0);
-        $balance = (int) $invoice['total_cents'] - (int) $invoice['amount_paid_cents'];
-        $apply = min($credit, max(0, $balance));
-        if ($apply <= 0) {
-            return 0;
-        }
+        // Deduct, log, and record-as-payment in ONE transaction, so a mid-way failure
+        // can never leave credit spent but the invoice unpaid (or the reverse).
+        // recordPayment nests via savepoint; its receipt afterCommit fires only if
+        // this outer transaction commits.
+        return Database::instance()->transaction(function () use ($invoiceId, $clientId, $actorId) {
+            $invoice = Invoice::findOrFail($invoiceId);
+            $credit = (int) (Client::find($clientId)['credit_cents'] ?? 0);
+            $balance = (int) $invoice['total_cents'] - (int) $invoice['amount_paid_cents'];
+            $apply = min($credit, max(0, $balance));
 
-        // Deduct + log first, then record the payment (its own transaction).
-        $this->add($client['id'], -$apply, 'applied', 'Applied to invoice ' . $invoice['number'], $actorId, $invoiceId);
-        (new InvoiceService())->recordPayment($invoiceId, $apply, 'credit', 'Account credit', today(), $actorId);
+            if ($apply <= 0) {
+                return 0;
+            }
 
-        return $apply;
+            // Atomic deduct via compare-and-swap, NOT read-then-write. Two concurrent
+            // applies of the same credit each read $100 and each deducted (clamped at
+            // 0, so the balance never went negative) — but each then recorded a $100
+            // payment, crediting $200 of invoices against $100 of real credit. The CAS
+            // lets exactly one win; the loser sees 0 rows affected and applies nothing.
+            // Same shape as the discount-redeem guard.
+            $deducted = Database::instance()->affecting(
+                'UPDATE clients SET credit_cents = credit_cents - ? WHERE id = ? AND credit_cents >= ?',
+                [$apply, $clientId, $apply]
+            );
+
+            if ($deducted === 0) {
+                return 0; // lost the race; empty transaction commits, caller gets 0
+            }
+
+            CreditTransaction::create([
+                'client_id'    => $clientId,
+                'amount_cents' => -$apply,
+                'type'         => 'applied',
+                'reason'       => 'Applied to invoice ' . $invoice['number'],
+                'invoice_id'   => $invoiceId,
+                'recorded_by'  => $actorId,
+            ]);
+
+            (new InvoiceService())->recordPayment($invoiceId, $apply, 'credit', 'Account credit', today(), $actorId);
+
+            return $apply;
+        });
     }
 }

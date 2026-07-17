@@ -157,6 +157,13 @@ a:hover { color: var(--brand); }
 .card { border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 1px 2px rgba(13,21,48,.04); }
 .card-header { background: var(--surface); border-bottom: 1px solid var(--line); font-weight: 600; }
 .stat-card .stat-value { font-size: 1.6rem; font-weight: 700; }
+/* The markup uses .min-w-0 to let the text column shrink beside the fixed 44px
+   icon — but Bootstrap 5 ships no such utility, so it was a no-op and a long money
+   value ($12,345.67) burst the card on a col-6 phone tile. Define it, and let the
+   value ellipsize rather than overflow. */
+.min-w-0 { min-width: 0; }
+.stat-card .stat-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 576px) { .stat-card .stat-value { font-size: 1.25rem; } }
 .stat-card .stat-label { color: var(--muted); font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
 .stat-card .stat-icon { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand-dark); font-size: 1.2rem; }
 
@@ -252,7 +259,10 @@ a:hover { color: var(--brand); }
     .mk-nav-toggle { display: inline-flex; }
     .mk-nav-links { position: absolute; top: 100%; left: 0; right: 0; background: #fff; flex-direction: column;
         align-items: stretch; gap: 0; padding: .5rem 1.25rem 1rem; border-bottom: 1px solid var(--line);
-        box-shadow: 0 12px 22px rgba(13,21,48,.08); display: none; }
+        box-shadow: 0 12px 22px rgba(13,21,48,.08); display: none;
+        /* On a short phone in landscape the open menu is taller than the viewport;
+           without this the CTA at the bottom sits off-screen with no way to reach it. */
+        max-height: calc(100vh - 100%); overflow-y: auto; }
     .mk-nav-links.open { display: flex; }
     .mk-nav-links .mk-nav-link { display: block; padding: .7rem 0; border-bottom: 1px solid #f1f2f4; }
     .mk-nav-links .btn { margin-top: .75rem; text-align: center; }
@@ -406,6 +416,11 @@ a:hover { color: var(--brand); }
 .kb-tag--due { background: #fff2e8; color: var(--brand, #FF6A00); }
 .kb-card-edit { position: absolute; top: .35rem; right: .35rem; border: 0; background: transparent; color: #b3bacb; padding: .1rem .25rem; border-radius: 6px; font-size: .8rem; opacity: 0; transition: .12s; }
 .kb-card:hover .kb-card-edit { opacity: 1; }
+/* On touch there is no hover, so the ONLY way into a card was permanently hidden.
+   Show it always where a fine pointer (mouse) isn't the primary input. */
+@media (hover: none), (pointer: coarse) {
+    .kb-card-edit { opacity: 1; }
+}
 .kb-card-edit:hover { background: #eef1f7; color: var(--brand, #FF6A00); }
 .kb-add { margin-top: .5rem; }
 .kb-add input, .kb-add-col input { width: 100%; border: 1px dashed #c4cbdd; background: rgba(255,255,255,.6); border-radius: 8px; padding: .45rem .6rem; font-size: .85rem; color: #1f2637; }
@@ -788,4 +803,20 @@ a:hover { color: var(--brand); }
     .btn-sm, .btn-link { min-height: 0; } /* keep inline text buttons compact */
     /* Any table that forgot its wrapper still can't burst the viewport. */
     .table-responsive { -webkit-overflow-scrolling: touch; }
+    /* Filter/status button groups (tickets, quotes, invoices) are 4-5 buttons that
+       can't wrap and overshoot a 360-375px viewport, pushing the page sideways.
+       Let them wrap. */
+    .btn-group { flex-wrap: wrap; }
+    /* Header toolbars laid out with d-flex gap-2 but no wrap — let their buttons
+       drop to a second line rather than compress and truncate. */
+    .card-header .d-flex, .page-head .d-flex { flex-wrap: wrap; }
+    /* Long unbreakable strings (app URLs on the Client Apps rows, hosting domains)
+       must wrap instead of shoving action buttons off-screen. */
+    .text-break-mobile, .app-url, td .text-truncate { word-break: break-word; overflow-wrap: anywhere; }
 }
+
+/* A sticky nav overlays the top of any in-page anchor jump (#pricing, #packages)
+   so the heading lands hidden behind it. Reserve its height. Applies at all widths
+   because the nav is sticky on desktop too. */
+:target { scroll-margin-top: 96px; }
+[id] { scroll-margin-top: 96px; }

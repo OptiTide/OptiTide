@@ -13,7 +13,7 @@ $c = fn (string $key, $default = '') => e(old($key, $client[$key] ?? $default));
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label">Your Name</label>
-                        <input type="text" name="name" value="<?= e(old('name', $user['name'])) ?>" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" required>
+                        <input type="text" name="name" autocomplete="name" value="<?= e(old('name', $user['name'])) ?>" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" required>
                         <?php if (error('name')): ?><div class="invalid-feedback"><?= e(error('name')) ?></div><?php endif; ?>
                     </div>
                     <div class="mb-0">
@@ -52,25 +52,25 @@ $c = fn (string $key, $default = '') => e(old($key, $client[$key] ?? $default));
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label">Business Name</label>
-                        <input type="text" name="business_name" value="<?= $c('business_name') ?>" class="form-control <?= has_error('business_name') ? 'is-invalid' : '' ?>" required>
+                        <input type="text" name="business_name" autocomplete="organization" value="<?= $c('business_name') ?>" class="form-control <?= has_error('business_name') ? 'is-invalid' : '' ?>" required>
                         <?php if (error('business_name')): ?><div class="invalid-feedback"><?= e(error('business_name')) ?></div><?php endif; ?>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">ABN</label>
-                            <input type="text" name="abn" value="<?= $c('abn') ?>" class="form-control" placeholder="12 345 678 901">
+                            <input type="text" name="abn" inputmode="numeric" value="<?= $c('abn') ?>" class="form-control" placeholder="12 345 678 901">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">ACN <span class="text-muted small">(optional)</span></label>
-                            <input type="text" name="acn" value="<?= $c('acn') ?>" class="form-control" placeholder="123 456 789">
+                            <input type="text" name="acn" inputmode="numeric" value="<?= $c('acn') ?>" class="form-control" placeholder="123 456 789">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Contact Name</label>
-                            <input type="text" name="contact_name" value="<?= $c('contact_name') ?>" class="form-control">
+                            <input type="text" name="contact_name" autocomplete="name" value="<?= $c('contact_name') ?>" class="form-control">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Business Phone</label>
-                            <input type="text" name="phone" value="<?= $c('phone') ?>" class="form-control" placeholder="0400 000 000">
+                            <input type="tel" name="phone" autocomplete="tel" inputmode="tel" value="<?= $c('phone') ?>" class="form-control" placeholder="0400 000 000">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Business E-Mail</label>
@@ -89,11 +89,11 @@ $c = fn (string $key, $default = '') => e(old($key, $client[$key] ?? $default));
                     <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label">Street</label>
-                            <input type="text" name="address_line1" value="<?= $c('address_line1') ?>" class="form-control">
+                            <input type="text" name="address_line1" autocomplete="address-line1" value="<?= $c('address_line1') ?>" class="form-control">
                         </div>
                         <div class="col-md-5">
                             <label class="form-label">Suburb / City</label>
-                            <input type="text" name="address_locality" value="<?= $c('address_locality') ?>" class="form-control">
+                            <input type="text" name="address_locality" autocomplete="address-level2" value="<?= $c('address_locality') ?>" class="form-control">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">State</label>
@@ -107,7 +107,7 @@ $c = fn (string $key, $default = '') => e(old($key, $client[$key] ?? $default));
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Postcode</label>
-                            <input type="text" name="address_postcode" value="<?= $c('address_postcode') ?>" class="form-control" maxlength="4" placeholder="2000">
+                            <input type="text" name="address_postcode" inputmode="numeric" autocomplete="postal-code" value="<?= $c('address_postcode') ?>" class="form-control" maxlength="4" placeholder="2000">
                         </div>
                         <div class="col-12">
                             <label class="form-label">Country</label>

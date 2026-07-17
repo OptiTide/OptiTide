@@ -34,7 +34,18 @@ class InstallmentRequestController extends Controller
     public function approve(Request $request, string $id): Response
     {
         $req = InstallmentRequest::findOrFail($id);
-        if ($req['status'] !== InstallmentRequest::STATUS_PENDING) {
+
+        // CLAIM before issuing. The old check-then-act (read pending, issue invoices,
+        // then mark approved) let a double-click — or two admins at once — both pass
+        // the check and both issue the FULL invoice set, double-billing the client.
+        // The compare-and-swap lets exactly one caller win; the loser issues nothing.
+        $claimed = \App\Core\Database::instance()->affecting(
+            'UPDATE installment_requests SET status = ? WHERE id = ? AND status = ?',
+            [InstallmentRequest::STATUS_APPROVED, $id, InstallmentRequest::STATUS_PENDING]
+        );
+        if ($claimed === 0) {
+            Session::flash('error', 'That request has already been actioned.');
+
             return $this->redirectRoute('admin.installments.index');
         }
 
@@ -72,7 +83,7 @@ class InstallmentRequestController extends Controller
             ]);
         }
 
-        InstallmentRequest::updateById($id, ['status' => InstallmentRequest::STATUS_APPROVED]);
+        // Status already flipped to approved by the CAS claim above.
         AuditLog::record('installment.approved', 'installment_request', $id, ['invoices' => $count]);
         Session::flash('success', 'Payment plan approved — ' . $count . ' invoice(s) issued.');
 
@@ -82,7 +93,16 @@ class InstallmentRequestController extends Controller
     public function decline(Request $request, string $id): Response
     {
         $req = InstallmentRequest::findOrFail($id);
-        if ($req['status'] !== InstallmentRequest::STATUS_PENDING) {
+
+        // Same claim-before-act as approve(): a double-click would otherwise issue two
+        // pay-in-full invoices for one declined request.
+        $claimed = \App\Core\Database::instance()->affecting(
+            'UPDATE installment_requests SET status = ? WHERE id = ? AND status = ?',
+            [InstallmentRequest::STATUS_DECLINED, $id, InstallmentRequest::STATUS_PENDING]
+        );
+        if ($claimed === 0) {
+            Session::flash('error', 'That request has already been actioned.');
+
             return $this->redirectRoute('admin.installments.index');
         }
 
@@ -96,7 +116,7 @@ class InstallmentRequestController extends Controller
             ['description' => ($svc['name'] ?? 'Service') . ' (pay in full)', 'quantity' => 1, 'unit_price_cents' => (int) $req['price_cents'], 'service_id' => $req['service_id']],
         ]);
 
-        InstallmentRequest::updateById($id, ['status' => InstallmentRequest::STATUS_DECLINED]);
+        // Status already flipped to declined by the CAS claim above.
         AuditLog::record('installment.declined', 'installment_request', $id);
         Session::flash('success', 'Plan declined — a pay-in-full invoice was issued.');
 
