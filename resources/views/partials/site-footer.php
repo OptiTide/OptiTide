@@ -61,7 +61,7 @@
         </div>
 
         <div class="mk-footer-bottom d-flex flex-wrap justify-content-between gap-2">
-            <span>&copy; <?= date('Y') ?> <?= e($company['legal_name'] ?? 'OptiTide') ?><?= ! empty($company['abn']) ? ' · ABN ' . e($company['abn']) : '' ?>. All rights reserved.</span>
+            <span>&copy; <?= date('Y') ?> <?= e($company['brand_name']) ?><?= ! empty($company['abn']) ? ' · ABN ' . e($company['abn']) : '' ?>. All rights reserved.</span>
             <span class="mk-footer-tagline">🇦🇺 Australian Owned &amp; Operated</span>
         </div>
     </div>

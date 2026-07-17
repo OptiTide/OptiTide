@@ -13,7 +13,7 @@
                 <?= $this->yield('content') ?>
             </td></tr>
             <tr><td style="padding:18px 28px;border-top:1px solid #e2e8f0;color:#64748b;font-size:12px;">
-                <?= e(config('company.legal_name')) ?><?= config('company.abn') ? ' · ABN ' . e(config('company.abn')) : '' ?><br>
+                <?= e(config('company.brand_name')) ?><?= config('company.abn') ? ' · ABN ' . e(config('company.abn')) : '' ?><br>
                 <?= e(config('company.email')) ?><br>
                 <span style="color:<?= e($accent) ?>;font-weight:700;font-style:italic;">Grow Online. Lead Always.</span>
             </td></tr>
