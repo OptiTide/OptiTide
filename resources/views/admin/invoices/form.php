@@ -54,6 +54,18 @@ foreach ($services as $s) {
                                     counter jumps past anything you import.
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label d-block">Porting an unpaid invoice?</label>
+                                <div class="form-check form-switch mt-1">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="no_auto_chase" name="no_auto_chase" value="1" <?= old('no_auto_chase') ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="no_auto_chase">Don't auto-chase this one</label>
+                                </div>
+                                <div class="form-text">
+                                    Only applies when the issue date is in the past. Stops the overdue
+                                    engine fining it a late fee, emailing the client, and suspending
+                                    them — which it would, because the due date is long gone.
+                                </div>
+                            </div>
                         </div>
                     <?php endif; ?>
                 </div>

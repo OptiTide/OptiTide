@@ -159,6 +159,8 @@ final class InvoiceService
                 'total_cents'       => 0,
                 'amount_paid_cents' => 0,
                 'api_credit_topup_cents' => (int) ($data['api_credit_topup_cents'] ?? 0),
+                // Ported history opts out of the automated chase — see migration 0045.
+                'no_auto_chase'     => ! empty($data['no_auto_chase']) ? 1 : 0,
                 'public_token'      => str_random(48),
             ]);
 

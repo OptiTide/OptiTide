@@ -156,6 +156,9 @@ class InvoiceController extends Controller
             'status'        => Invoice::STATUS_DRAFT,
             // Blank means auto-generate, which is the everyday path.
             'number'        => $number !== '' ? $number : null,
+            // Only offered on a backdated invoice, and only honoured there: nobody
+            // should be able to quietly exempt a live invoice from being chased.
+            'no_auto_chase' => $backdated && $request->input('no_auto_chase') ? 1 : 0,
             // A ported invoice's record date should match the day it was issued, not
             // the day it was typed in, or every dashboard reads it as this month's work.
             'created_at'    => $backdated ? $issued . ' 09:00:00' : null,

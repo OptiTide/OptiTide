@@ -110,9 +110,15 @@ final class RecurringBiller
     {
         $asOf ??= today();
 
+        // no_auto_chase exempts history ported in from another system. An unpaid 2023
+        // invoice imported today is two years past due, so without this it gets flipped
+        // Overdue, fined a late fee, emailed "your invoice is overdue" and the client
+        // suspended 30 days later — punished because you changed CRM. Defaults to 0, so
+        // every normal invoice is still chased exactly as before.
         $due = Invoice::query()
             ->where('status', Invoice::STATUS_SENT)
             ->where('due_date', '<', $asOf)
+            ->where('no_auto_chase', 0)
             ->get();
 
         $count = 0;
