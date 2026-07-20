@@ -6,54 +6,50 @@
 <meta name="apple-mobile-web-app-title" content="<?= e(config('company.brand_name')) ?>">
 <link rel="apple-touch-icon" href="/assets/img/favicon.png">
 <?php /*
-   Service worker registration, with a self-heal.
+   NO service worker is registered any more — this only cleans up.
 
-   A user reported logging in and landing on the raw /sw.js source. That was fixed
-   in the worker itself (a55da2f) — but they hit it AGAIN afterwards, because
-   nothing here ever forced a stuck worker to pick the fix up. A browser only
-   checks for a new worker on its own schedule, so a client running a broken
-   worker from months ago can stay broken indefinitely while the server serves a
-   perfectly good one. Fixing the worker is useless if the fix never lands.
+   Logging in landed on the raw /sw.js source three times. It was patched twice
+   (once in the worker's fetch handler, once by forcing stuck clients to update)
+   and it kept happening. The worker is provably correct and the server cannot
+   emit /sw.js as a redirect, so the fault is browser-held state I can't see. I
+   couldn't reproduce it, so I couldn't honestly claim a third patch had fixed it.
 
-   So: check for an update on EVERY page load, and when a new worker takes over,
-   reload once so the page is being served by it rather than by the old one.
+   With nothing registered there is nothing to intercept a navigation and nothing
+   to go stale. The offline shell this bought (one stylesheet, two images) was not
+   worth the front door of the business.
 
-   The reload is guarded by a session flag — controllerchange fires on the very
-   first registration too, and reloading unconditionally would loop forever.
+   Two cleanup paths, because a stuck client will not come back on its own:
+   - Any EXISTING registration is unregistered here directly, and its caches
+     dropped, so a browser holding an old worker is cleaned on its next page view
+     even if it never re-fetches /sw.js.
+   - /sw.js itself still responds, with a worker that unregisters itself (see
+     PwaController). Returning a 404 instead would leave some browsers holding the
+     old worker indefinitely.
 
-   `?sw=reset` is a deliberate escape hatch: it unregisters every worker and drops
-   every cache. It exists so a stuck user can be unstuck over the phone without
-   being talked through devtools.
+   The manifest and icons stay, so add-to-home-screen still works.
 */ ?>
 <script>
 (function () {
     if (!('serviceWorker' in navigator)) { return; }
 
-    if (location.search.indexOf('sw=reset') !== -1) {
-        navigator.serviceWorker.getRegistrations().then(function (rs) {
-            return Promise.all(rs.map(function (r) { return r.unregister(); }));
-        }).then(function () {
+    navigator.serviceWorker.getRegistrations().then(function (rs) {
+        if (!rs.length) { return null; }
+        return Promise.all(rs.map(function (r) { return r.unregister(); })).then(function () {
             return window.caches ? caches.keys().then(function (ks) {
                 return Promise.all(ks.map(function (k) { return caches.delete(k); }));
             }) : null;
-        }).then(function () { location.replace(location.pathname); });
-        return;
-    }
-
-    window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js').then(function (reg) {
-            // Force the check rather than waiting for the browser's own cadence.
-            reg.update();
-        }).catch(function () {});
-    });
-
-    navigator.serviceWorker.addEventListener('controllerchange', function () {
-        try {
-            if (sessionStorage.getItem('ot_sw_reloaded')) { return; }
-            sessionStorage.setItem('ot_sw_reloaded', '1');
-        } catch (e) { return; }
-        location.reload();
-    });
+        }).then(function () {
+            // Only reload if a worker was actually controlling this page — the
+            // page in front of the user right now may have been served BY it.
+            // Session-flagged so this can never loop.
+            if (!navigator.serviceWorker.controller) { return; }
+            try {
+                if (sessionStorage.getItem('ot_sw_cleared')) { return; }
+                sessionStorage.setItem('ot_sw_cleared', '1');
+            } catch (e) { return; }
+            location.reload();
+        });
+    }).catch(function () {});
 })();
 </script>
 <script>(function(){var p=location.pathname;if(/^\/(admin|portal|account|t)(\/|$)/.test(p))return;try{fetch('/t?p='+encodeURIComponent(p)+'&r='+encodeURIComponent(document.referrer||''),{cache:'no-store',keepalive:true});}catch(e){}})();</script>

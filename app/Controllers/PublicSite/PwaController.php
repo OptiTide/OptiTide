@@ -39,79 +39,63 @@ class PwaController extends Controller
         );
     }
 
+    /**
+     * KILL SWITCH. This route no longer installs a service worker — it removes one.
+     *
+     * The owner reported three times that logging in landed him on the raw /sw.js
+     * source. It was "fixed" twice: once in the worker's fetch handler (a55da2f),
+     * once by forcing stuck clients to update. It kept happening. The deployed
+     * worker is provably correct — a real browser login with it active lands on
+     * /admin every time, and the server can only ever redirect to /admin, /portal
+     * or a validated intended path; `route()` resolves by exact name, so no code
+     * path can emit /sw.js as a Location.
+     *
+     * Which means the fault lives in browser-held state I cannot see or reach. I
+     * am not able to reproduce it, so I cannot honestly claim another patch fixes
+     * it. What I CAN do is remove the thing entirely: with no worker registered and
+     * no worker to install, there is nothing left to serve a wrong response and
+     * nothing to go stale. Logging in is the front door of the business; the offline
+     * shell this cached (one stylesheet and two images) is not worth risking it.
+     *
+     * Serving a self-destructing worker rather than a 404 is deliberate: every
+     * browser that already has one installed fetches this on its next update check,
+     * whereupon it purges every cache, unregisters itself, and reloads any open tab
+     * so the page is served straight from the network. A 404 leaves some browsers
+     * holding the old worker indefinitely.
+     *
+     * There is NO fetch handler here on purpose — even in the window before it
+     * unregisters, this worker cannot intercept a single request.
+     *
+     * The manifest and icons stay, so adding to the home screen still works.
+     */
     public function serviceWorker(Request $request): Response
     {
         $js = <<<'JS'
-const CACHE = 'optitide-v11';
-// Only static, safe-to-cache assets are precached. HTML pages are NEVER cached
-// (see the fetch handler) so a stale/auth/redirect page can never leak across
-// URLs after a login redirect.
-const SHELL = ['/offline', '/assets/css/app.css', '/assets/img/logo.png', '/assets/img/favicon.png'];
-
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE).then((c) => Promise.allSettled(SHELL.map((u) => c.add(u)))).then(() => self.skipWaiting())
-  );
-});
+// Self-destructing worker: removes itself and every cache a predecessor left.
+// Deliberately has no fetch handler, so it can never intercept a request.
+self.addEventListener('install', () => self.skipWaiting());
 
 self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys()
-      // Drop EVERY cache but the current one. Bumping the version is what makes
-      // this run: an older worker that cached HTML (which is how logging in could
-      // land on the raw /sw.js source) has its entire cache dropped the moment
-      // this version activates, so a stale page cannot be served again.
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => caches.open(CACHE))
-      // Belt and braces: purge anything HTML-ish or non-/assets/ that a previous
-      // version may have put in THIS cache name. Only static assets and the
-      // offline shell are ever legitimate entries here.
-      .then((c) => c.keys().then((reqs) => Promise.all(reqs.map((r) => {
-        const p = new URL(r.url).pathname;
-        return (p.startsWith('/assets/') || p === '/offline') ? null : c.delete(r);
-      }))))
-      .then(() => self.clients.claim())
-  );
-});
+  e.waitUntil((async () => {
+    try {
+      const keys = await caches.keys();
+      await Promise.all(keys.map((k) => caches.delete(k)));
+    } catch (err) { /* cache API unavailable — unregister anyway */ }
 
-self.addEventListener('fetch', (e) => {
-  const req = e.request;
-  if (req.method !== 'GET') return;
-  const url = new URL(req.url);
-  if (url.origin !== self.location.origin) return;
+    await self.registration.unregister();
 
-  // Static assets: stale-while-revalidate. Only cache genuine 200 responses
-  // (never redirects/errors/opaque), so we never serve back a bad asset.
-  if (url.pathname.startsWith('/assets/')) {
-    e.respondWith(
-      caches.open(CACHE).then((c) => c.match(req).then((hit) => {
-        const network = fetch(req).then((res) => {
-          if (res && res.ok && res.type === 'basic') { c.put(req, res.clone()); }
-          return res;
-        }).catch(() => hit);
-        return hit || network;
-      }))
-    );
-    return;
-  }
-
-  // Page navigations: ALWAYS go to the network (never cache, never serve a
-  // cached page). Only fall back to the offline page when the network is down.
-  // This makes it impossible for the SW to return the wrong page (e.g. the raw
-  // /sw.js or a stale dashboard) after a login redirect.
-  if (req.mode === 'navigate') {
-    e.respondWith(fetch(req).catch(() => caches.match('/offline')));
-    return;
-  }
-
-  // Everything else (the /sw.js update check, the manifest, tracking pings,
-  // API calls): pass straight through, untouched and uncached.
+    // Reload any open tab so it is served by the network, not by this worker.
+    const clients = await self.clients.matchAll({ type: 'window' });
+    clients.forEach((c) => { try { c.navigate(c.url); } catch (err) {} });
+  })());
 });
 JS;
 
         return Response::make($js, 200, [
             'Content-Type'  => 'application/javascript; charset=UTF-8',
-            'Cache-Control' => 'no-cache',
+            // must-revalidate so a browser cannot sit on a cached copy of the old
+            // worker instead of fetching this one.
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
         ]);
     }
 
