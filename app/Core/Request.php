@@ -174,6 +174,57 @@ final class Request
         return str_contains((string) $accept, 'application/json');
     }
 
+    /**
+     * Is this a real top-level page view, as opposed to a subresource the browser
+     * fetched for a page (a script, the service worker, an analytics beacon)?
+     *
+     * Used to decide what counts as "the page to come back to". Recording a
+     * subresource here is what let a failed login redirect to /sw.js: a browser
+     * fetches far more than the document, and every one of those is a GET.
+     *
+     * Sec-Fetch-Dest is the reliable signal and every current browser sends it
+     * (Chrome/Edge 80+, Firefox 90+, Safari 16.4+). Older clients that omit it fall
+     * back to "does it accept HTML", which a script or beacon fetch does not. The
+     * path blocklist is belt-and-braces for anything that slips past both.
+     */
+    public static function isPageNavigation(self $request): bool
+    {
+        if ($request->method() !== 'GET' || $request->wantsJson()) {
+            return false;
+        }
+
+        $dest = (string) $request->header('Sec-Fetch-Dest', '');
+        if ($dest !== '') {
+            // 'document' = a top-level navigation. Anything else (script, image,
+            // empty for fetch/XHR, worker, …) is a subresource.
+            if ($dest !== 'document') {
+                return false;
+            }
+        } elseif (! str_contains((string) $request->header('Accept', ''), 'text/html')) {
+            return false;
+        }
+
+        return ! self::isNonPagePath($request->path());
+    }
+
+    /** Endpoints that are never a place a human should be sent back to. */
+    public static function isNonPagePath(string $path): bool
+    {
+        // Anything with a file extension is an asset, not a page — this is what
+        // excludes /sw.js, /manifest.webmanifest, /robots.txt, /sitemap.xml.
+        if (pathinfo($path, PATHINFO_EXTENSION) !== '') {
+            return true;
+        }
+
+        foreach (['/assets', '/t', '/offline', '/logout', '/chat', '/api', '/webhooks', '/broadcasting'] as $prefix) {
+            if ($path === $prefix || str_starts_with($path, $prefix . '/')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function isSecure(): bool
     {
         return ($this->server['HTTPS'] ?? '') === 'on'

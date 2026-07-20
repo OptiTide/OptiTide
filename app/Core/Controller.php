@@ -28,7 +28,7 @@ abstract class Controller
 
     protected function back(): Response
     {
-        return Response::redirect(Session::get('_previous_url', '/'));
+        return Response::redirect(safe_back_url());
     }
 
     /** Validate request input; throws ValidationException handled by the kernel. */

@@ -22,8 +22,18 @@ Session::start();
 $request = Request::capture();
 $GLOBALS['__request'] = $request;
 
-// Remember the last visited page so back() and validation redirects land right.
-if ($request->method() === 'GET' && ! $request->wantsJson()) {
+// Remember the last visited PAGE so back() and validation redirects land right.
+//
+// This used to record EVERY non-JSON GET, which is how logging in could dump you
+// on the raw /sw.js source. A page does not only fetch itself: the browser also
+// fetches /sw.js (the service-worker update check) and the page fires a /t
+// analytics beacon, and both are routed GETs that reach this line. wantsJson()
+// only looks for 'application/json', and those requests send Accept: */*, so they
+// sailed through and overwrote _previous_url with their own URL. Then a WRONG
+// PASSWORD — which is the only path that reads it, via back() — redirected to
+// whichever subresource happened to land last. A successful login never reads it,
+// which is why this survived three attempts to find it.
+if (Request::isPageNavigation($request)) {
     Session::put('_previous_url', $request->uri());
 }
 
@@ -38,7 +48,9 @@ try {
         $request->all(),
         array_flip(['password', 'password_confirmation', 'current_password', '_token', '_method'])
     ));
-    $response = Response::redirect(Session::get('_previous_url', '/'));
+    // Validated, not raw — a session poisoned before the write-side fix above
+    // would otherwise still bounce a failed form submit onto /sw.js or /t.
+    $response = Response::redirect(safe_back_url());
 } catch (\Throwable $e) {
     $response = ErrorHandler::render($e, $request);
 }

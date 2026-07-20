@@ -74,10 +74,40 @@ if (! function_exists('redirect')) {
     }
 }
 
+if (! function_exists('safe_back_url')) {
+    /**
+     * Where "go back" should actually send someone.
+     *
+     * Validated on READ as well as filtered on write, deliberately. Sessions
+     * created before the write-side fix still hold a poisoned value (a wrong
+     * password would bounce the user to /sw.js or /t), and those sessions are live
+     * in people's browsers right now — a write-side fix alone would leave them
+     * broken until the session expired. Also stops an off-site redirect.
+     */
+    function safe_back_url(string $fallback = '/'): string
+    {
+        $url = Session::get('_previous_url', '');
+
+        if (! is_string($url) || $url === '') {
+            return $fallback;
+        }
+
+        // Site-relative only — never absolute (https://evil.com) or scheme-relative
+        // (//evil.com), both of which leave the site.
+        if (! str_starts_with($url, '/') || str_starts_with($url, '//')) {
+            return $fallback;
+        }
+
+        $path = parse_url($url, PHP_URL_PATH) ?: '';
+
+        return Request::isNonPagePath($path) ? $fallback : $url;
+    }
+}
+
 if (! function_exists('back')) {
     function back(): Response
     {
-        return Response::redirect(Session::get('_previous_url', '/'));
+        return Response::redirect(safe_back_url());
     }
 }
 
