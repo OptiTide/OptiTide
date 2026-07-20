@@ -42,7 +42,7 @@ class PwaController extends Controller
     public function serviceWorker(Request $request): Response
     {
         $js = <<<'JS'
-const CACHE = 'optitide-v10';
+const CACHE = 'optitide-v11';
 // Only static, safe-to-cache assets are precached. HTML pages are NEVER cached
 // (see the fetch handler) so a stale/auth/redirect page can never leak across
 // URLs after a login redirect.
@@ -56,7 +56,20 @@ self.addEventListener('install', (e) => {
 
 self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+    caches.keys()
+      // Drop EVERY cache but the current one. Bumping the version is what makes
+      // this run: an older worker that cached HTML (which is how logging in could
+      // land on the raw /sw.js source) has its entire cache dropped the moment
+      // this version activates, so a stale page cannot be served again.
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => caches.open(CACHE))
+      // Belt and braces: purge anything HTML-ish or non-/assets/ that a previous
+      // version may have put in THIS cache name. Only static assets and the
+      // offline shell are ever legitimate entries here.
+      .then((c) => c.keys().then((reqs) => Promise.all(reqs.map((r) => {
+        const p = new URL(r.url).pathname;
+        return (p.startsWith('/assets/') || p === '/offline') ? null : c.delete(r);
+      }))))
       .then(() => self.clients.claim())
   );
 });
