@@ -89,7 +89,12 @@ try {
             // Loads database/seeds/landing/*.json as DRAFT landing pages. Safe to
             // re-run: an existing slug is skipped, never overwritten, so it cannot
             // revert edits made in the admin.
-            (require BASE_PATH . '/database/seeds/landing_pages.php')->run($out);
+            // --refresh-drafts re-imports content over pages that are STILL DRAFT,
+            // to push a correction into pages nobody has published yet. A published
+            // page is never touched — reverting someone's edit is worse than
+            // leaving a fix unapplied.
+            (require BASE_PATH . '/database/seeds/landing_pages.php')
+                ->run($out, in_array('--refresh-drafts', $flags, true));
             break;
 
         case 'blacklist:check':

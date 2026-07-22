@@ -49,6 +49,14 @@ class LandingPage extends Model
             ->first();
     }
 
+    /** Any page by slug regardless of status — drafts included. */
+    public static function findBySlug(string $slug): ?array
+    {
+        return static::query()
+            ->where('slug', strtolower(trim($slug)))
+            ->first();
+    }
+
     /** Is this slug usable? (format, not reserved, not already taken) */
     public static function slugAvailable(string $slug, int|string|null $ignoreId = null): bool
     {

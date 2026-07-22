@@ -20,7 +20,13 @@ use App\Models\LandingPage;
  * strangers, a false claim is worse than a missing one.
  */
 return new class {
-    public function run(callable $out): void
+    /**
+     * @param bool $refreshDrafts Re-import content over rows that are STILL DRAFT.
+     *                            Off by default: the normal run must never overwrite
+     *                            a page someone has edited. Use only to push a
+     *                            correction into drafts nobody has published yet.
+     */
+    public function run(callable $out, bool $refreshDrafts = false): void
     {
         $dir = __DIR__ . '/landing';
 
@@ -38,6 +44,7 @@ return new class {
         }
 
         $created = 0;
+        $refreshed = 0;
         $skipped = 0;
         $bad = 0;
 
@@ -52,16 +59,6 @@ return new class {
 
             $slug = strtolower(trim($page['slug']));
 
-            if (! LandingPage::slugAvailable($slug)) {
-                // Either it already exists (fine — leave the live copy alone) or the
-                // slug collides with a real route, which must never be published.
-                $out('  exists/reserved: /' . $slug);
-                $skipped++;
-                continue;
-            }
-
-            $faqs = is_array($page['faqs'] ?? null) ? $page['faqs'] : [];
-
             // service_slug is what makes the service page link to this one. A typo
             // here fails SILENTLY — the page seeds fine, resolves fine, and is simply
             // never linked from anywhere, which is the one thing that stops it
@@ -70,6 +67,7 @@ return new class {
             // Read the valid slugs from the service pages themselves rather than a
             // second hardcoded list here — a copy would drift out of sync and
             // reintroduce the same silent failure one level up.
+            // Computed BEFORE the exists-check so the refresh path validates too.
             $valid = array_keys(\App\Controllers\PublicSite\PageController::serviceData());
             $serviceSlug = strtolower(trim((string) ($page['service_slug'] ?? '')));
             if ($serviceSlug !== '' && ! in_array($serviceSlug, $valid, true)) {
@@ -77,6 +75,39 @@ return new class {
                 $out('           valid: ' . implode(', ', $valid));
                 $serviceSlug = '';
             }
+
+            if (! LandingPage::slugAvailable($slug)) {
+                // Either it already exists (fine — leave the live copy alone) or the
+                // slug collides with a real route, which must never be published.
+                $existing = $refreshDrafts ? LandingPage::findBySlug($slug) : null;
+
+                // Refresh ONLY while still draft. A published page may have been
+                // edited by hand, and silently reverting someone's work is worse
+                // than leaving a correction unapplied — they can re-run this after
+                // unpublishing if they really want the seed copy back.
+                if ($existing && ($existing['status'] ?? null) === LandingPage::STATUS_DRAFT) {
+                    LandingPage::updateById($existing['id'], [
+                        'title'            => $page['title'],
+                        'meta_title'       => $page['meta_title'] ?? null,
+                        'meta_description' => $page['meta_description'] ?? null,
+                        'keyword'          => $page['keyword'] ?? null,
+                        'location'         => ($page['location'] ?? '') !== '' ? $page['location'] : null,
+                        'service_slug'     => $serviceSlug !== '' ? $serviceSlug : null,
+                        'intro'            => $page['intro'] ?? null,
+                        'body'             => $page['body_html'] ?? '',
+                        'faqs'             => ($page['faqs'] ?? []) !== [] ? json_encode($page['faqs'], JSON_UNESCAPED_UNICODE) : null,
+                    ]);
+                    $out('  refreshed draft: /' . $slug);
+                    $refreshed++;
+                    continue;
+                }
+
+                $out('  exists/reserved: /' . $slug . ($existing ? ' (published — left alone)' : ''));
+                $skipped++;
+                continue;
+            }
+
+            $faqs = is_array($page['faqs'] ?? null) ? $page['faqs'] : [];
 
             LandingPage::create([
                 'slug'             => $slug,
@@ -102,7 +133,7 @@ return new class {
         }
 
         $out('');
-        $out(sprintf('%d created as DRAFT, %d already present, %d unreadable.', $created, $skipped, $bad));
+        $out(sprintf('%d created as DRAFT, %d draft(s) refreshed, %d left alone, %d unreadable.', $created, $refreshed, $skipped, $bad));
         if ($created > 0) {
             $out('Review each one under Admin > Landing Pages, then switch it to Published.');
         }
