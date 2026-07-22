@@ -1,10 +1,24 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Redirect trailing slashes if not a folder.
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
+    # The trailing-slash redirect used to live here:
+    #
+    #     RewriteCond %{REQUEST_FILENAME} !-d
+    #     RewriteCond %{REQUEST_URI} (.+)/$
+    #     RewriteRule ^ %1 [L,R=301]
+    #
+    # Removed because it DOWNGRADED HTTPS TO HTTP. The target `%1` is relative, so
+    # Apache expands it to an absolute URL using its OWN scheme — and behind Coolify
+    # TLS terminates at the proxy, so Apache is only ever spoken to over plain http
+    # on port 80. https://optitide.io/services/ therefore answered
+    # "301 -> http://optitide.io/services": an extra plaintext hop on every
+    # trailing-slash link. Measured on production, not theorised.
+    #
+    # Canonicalisation now has exactly ONE owner: App\Core\CanonicalUrl in
+    # index.php, which reads the real scheme from X-Forwarded-Proto and resolves
+    # slash, host, case and retired URLs together in a single 301. Putting a rule
+    # back here would give two systems authority over the same thing, which is how
+    # redirect loops start.
 
     # Send everything that isn't a real file to the front controller.
     RewriteCond %{REQUEST_FILENAME} !-d
