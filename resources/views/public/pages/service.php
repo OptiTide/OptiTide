@@ -96,6 +96,38 @@
     </div>
 </section>
 
+<?php
+// Related landing pages for THIS service line. A landing page nothing links to is
+// an orphan, and orphans do not rank — Google weighs internal links, and a page
+// reachable only from the sitemap looks like something the site itself does not
+// rate. Only PUBLISHED pages are listed, so a draft can never be linked into a 404.
+$relatedLanding = array_values(array_filter(
+    \App\Models\LandingPage::published(),
+    fn ($lp) => ($lp['service_slug'] ?? null) === $slug
+));
+?>
+<?php if ($relatedLanding): ?>
+<section class="mk-section mk-section--alt">
+    <div class="mk-container">
+        <div class="text-center mb-4"><h2 class="mk-h2">More on <?= e($service['nav']) ?></h2></div>
+        <div class="row g-3 justify-content-center">
+            <?php foreach ($relatedLanding as $lp): ?>
+                <div class="col-md-6 col-lg-4">
+                    <a href="/<?= e($lp['slug']) ?>" class="card h-100 text-decoration-none text-reset">
+                        <div class="card-body">
+                            <div class="fw-semibold mb-1"><?= e($lp['title']) ?></div>
+                            <?php if (! empty($lp['intro'])): ?>
+                                <p class="small text-muted mb-0"><?= e(mb_strimwidth($lp['intro'], 0, 120, '…')) ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <!-- Other services -->
 <section class="mk-section">
     <div class="mk-container">

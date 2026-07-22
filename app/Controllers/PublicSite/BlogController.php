@@ -108,6 +108,12 @@ class BlogController extends Controller
             'ogType'         => 'article',
             'ogImage'        => $img,
             'post'           => $post,
+            // Sanitised, not raw. The view echoed $post['body'] straight out, which
+            // is stored XSS the moment a staff login is compromised — "only staff
+            // can write it" stops being a boundary once the output renders in every
+            // visitor's browser, admins included. Same DOM allow-list the landing
+            // pages use; verified against all 14 live articles with no content lost.
+            'body'           => \App\Support\HtmlSanitizer::clean((string) ($post['body'] ?? '')),
             'related'        => $related,
             'jsonLd'         => [
                 '@context' => 'https://schema.org',

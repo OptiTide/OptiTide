@@ -33,7 +33,9 @@ $coverFn = function (array $p) use ($appUrl): string {
         <?php endif; ?>
 
         <div class="mk-blog-body">
-            <?= $post['body'] ?>
+            <?php // $body is the sanitised copy built in the controller. Never echo
+                  // $post['body'] here again — that is unfiltered admin HTML. ?>
+            <?= $body ?>
         </div>
 
         <div class="mk-blog-cta mt-5">

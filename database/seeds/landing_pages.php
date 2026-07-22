@@ -62,6 +62,22 @@ return new class {
 
             $faqs = is_array($page['faqs'] ?? null) ? $page['faqs'] : [];
 
+            // service_slug is what makes the service page link to this one. A typo
+            // here fails SILENTLY — the page seeds fine, resolves fine, and is simply
+            // never linked from anywhere, which is the one thing that stops it
+            // ranking. ("smm" instead of "social-media" did exactly that.) So warn
+            // loudly and store null rather than a value nothing will ever match.
+            // Read the valid slugs from the service pages themselves rather than a
+            // second hardcoded list here — a copy would drift out of sync and
+            // reintroduce the same silent failure one level up.
+            $valid = array_keys(\App\Controllers\PublicSite\PageController::serviceData());
+            $serviceSlug = strtolower(trim((string) ($page['service_slug'] ?? '')));
+            if ($serviceSlug !== '' && ! in_array($serviceSlug, $valid, true)) {
+                $out('  WARNING /' . $slug . ': unknown service_slug "' . $serviceSlug . '" — this page will not be linked from any service page.');
+                $out('           valid: ' . implode(', ', $valid));
+                $serviceSlug = '';
+            }
+
             LandingPage::create([
                 'slug'             => $slug,
                 'title'            => $page['title'],
@@ -69,7 +85,7 @@ return new class {
                 'meta_description' => $page['meta_description'] ?? null,
                 'keyword'          => $page['keyword'] ?? null,
                 'location'         => ($page['location'] ?? '') !== '' ? $page['location'] : null,
-                'service_slug'     => ($page['service_slug'] ?? '') !== '' ? $page['service_slug'] : null,
+                'service_slug'     => $serviceSlug !== '' ? $serviceSlug : null,
                 'intro'            => $page['intro'] ?? null,
                 'body'             => $page['body_html'] ?? '',
                 'faqs'             => $faqs !== [] ? json_encode($faqs, JSON_UNESCAPED_UNICODE) : null,
