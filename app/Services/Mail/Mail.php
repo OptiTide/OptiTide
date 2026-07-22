@@ -106,8 +106,20 @@ final class Mail
      */
     public static function mailer(): Mailer
     {
-        $driver = config('mail.driver') === 'resend' ? 'resend' : 'log';
-        $mailer = $driver === 'resend' ? new ResendMailer() : new LogMailer();
+        // Unknown driver falls back to LogMailer rather than throwing: a typo in
+        // MAIL_DRIVER should write mail to a file, not 500 every request that
+        // sends one.
+        $driver = match (config('mail.driver')) {
+            'smtp'   => 'smtp',
+            'resend' => 'resend',
+            default  => 'log',
+        };
+
+        $mailer = match ($driver) {
+            'smtp'   => new SmtpMailer(),
+            'resend' => new ResendMailer(),
+            default  => new LogMailer(),
+        };
 
         if (! config('mail.log_to_db', true)) {
             return $mailer;

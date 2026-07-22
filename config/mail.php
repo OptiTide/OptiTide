@@ -16,6 +16,25 @@ return [
     ],
 
     /*
+    | SMTP (MAIL_DRIVER=smtp).
+    |
+    | encryption: 'tls' = STARTTLS, the normal choice on port 587.
+    |             'ssl' = implicit TLS, port 465.
+    | Anything else is refused rather than sending the password in the clear.
+    |
+    | The password belongs in .env (gitignored) or the host's environment
+    | panel — never in this file, which IS committed.
+    */
+    'smtp' => [
+        'host'       => env('SMTP_HOST', ''),
+        'port'       => (int) env('SMTP_PORT', 587),
+        'username'   => env('SMTP_USERNAME', ''),
+        'password'   => env('SMTP_PASSWORD', ''),
+        'encryption' => env('SMTP_ENCRYPTION', 'tls'),
+        'timeout'    => (int) env('SMTP_TIMEOUT', 20),
+    ],
+
+    /*
     | Record every send in the email_logs table (Admin > Email Log).
     |
     | ON by default and it should stay on — it is the only record of what the
