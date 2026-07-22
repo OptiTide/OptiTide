@@ -67,8 +67,11 @@ final class LoggingMailer implements Mailer
                 'status'      => EmailLog::STATUS_SENDING,
                 // Redacted at the point of storage, not on the way out — a body
                 // that never contains a live token cannot leak one through a
-                // route that forgets to redact.
-                'body_html'   => EmailLog::redact($message->html),
+                // route that forgets to redact. A sender may opt out of body
+                // storage entirely when the body IS the secret (the 2FA code);
+                // redact() cannot catch a bare digit run without also mangling
+                // invoice numbers. See MailMessage::$logBody.
+                'body_html'   => $message->logBody ? EmailLog::redact($message->html) : null,
                 // Names and sizes only. Attachment bodies are invoice PDFs; they
                 // are regenerable, and storing them would multiply the table size
                 // for no answer anyone needs.

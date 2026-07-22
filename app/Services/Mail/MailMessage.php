@@ -23,6 +23,25 @@ final class MailMessage
     public ?string $providerMessageId = null;
 
     /**
+     * Whether the rendered body may be stored in the email log.
+     *
+     * Default true. Set false for a message whose body IS a secret — the 2FA
+     * sign-in code is the case this exists for: it is deliberately hashed at
+     * rest in the cache, so storing the plaintext in a browsable admin table
+     * would make that table the only cleartext copy of a live second factor.
+     *
+     * A flag rather than a redaction pattern, because the secret is a bare
+     * 6-digit run with nothing to anchor on. A regex broad enough to catch it
+     * would also mangle invoice numbers, amounts, dates and phone numbers in
+     * every other email. The sender knows what it is sending; the sanitiser
+     * cannot.
+     *
+     * The metadata row is still written — you keep "a code was sent to X at
+     * 10:04, and it delivered", which is the part with audit value.
+     */
+    public bool $logBody = true;
+
+    /**
      * The company e-mail set in admin Settings wins over the .env default —
      * otherwise the address shown on the site and invoices differs from the one
      * mail actually sends from, and customer replies go to a dead mailbox.

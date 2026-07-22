@@ -68,6 +68,20 @@ final class Mail
         return $this;
     }
 
+    /**
+     * Keep this message's body OUT of the email log.
+     *
+     * For mail whose body is itself a credential — the 2FA sign-in code. The
+     * log still records that the email was sent, to whom, and whether it
+     * delivered; only the secret is withheld. See MailMessage::$logBody.
+     */
+    public function withoutBodyLogging(): self
+    {
+        $this->message->logBody = false;
+
+        return $this;
+    }
+
     public function attach(string $content, string $filename, string $contentType = 'application/pdf'): self
     {
         $this->message->attachments[] = compact('content', 'filename', 'contentType');

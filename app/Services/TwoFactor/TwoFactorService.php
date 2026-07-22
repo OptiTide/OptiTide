@@ -49,6 +49,13 @@ final class TwoFactorService
         Mail::to($user['email'], $user['name'])
             ->subject('Your ' . config('company.brand_name') . ' verification code')
             ->view('emails.two-factor-code', ['name' => $user['name'], 'code' => $code])
+            // The body IS the second factor. Only a bcrypt hash of it is kept
+            // above, so letting the email log store the rendered body would make
+            // that table the ONLY cleartext copy of a live 2FA code — readable by
+            // any admin, and present in every DB dump for the retention window.
+            // The log still records that a code was sent, to whom, and whether it
+            // delivered; it just does not record the code.
+            ->withoutBodyLogging()
             ->send();
     }
 

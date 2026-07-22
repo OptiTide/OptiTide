@@ -85,6 +85,12 @@ return new class {
         'job_applications',
         'visits',
         'audit_logs',
+        // Every email ever sent to a client, subject and stored body included.
+        // It has no client FK, so nothing else in this list cascades to it —
+        // without this line a reset that promises to clear "every client and all
+        // their data" would leave the entire correspondence history sitting in
+        // the admin, which is precisely the hazard note 2 warns about.
+        'email_logs',
         'password_resets',
         'clients',
     ];

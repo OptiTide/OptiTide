@@ -73,7 +73,16 @@
     </div>
     <div class="card-body p-0">
         <?php if (empty($row['body_html'])): ?>
-            <p class="text-muted small m-3 mb-0">The message body has been cleared by the retention policy. The record of who was emailed, when, and whether it sent is kept.</p>
+            <?php /* Two different reasons land here and the page cannot tell them
+                     apart, so it must not assert either one. Claiming "cleared by
+                     retention" for a 2FA code that was never stored would be a
+                     confident lie about where a credential has been. */ ?>
+            <p class="text-muted small m-3 mb-0">
+                No message body is stored for this email. Either it contained a credential that is
+                deliberately never logged — a sign-in code, for instance — or the body has since been
+                cleared by the retention policy. The record of who was emailed, when, and whether it
+                sent is kept either way.
+            </p>
         <?php else: ?>
             <?php /* Sandboxed: no scripts, no same-origin. The body interpolates
                      client-supplied values, so it is never inlined into this page. */ ?>

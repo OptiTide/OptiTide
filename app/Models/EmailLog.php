@@ -64,9 +64,18 @@ class EmailLog extends Model
 
         $search = trim((string) ($filters['search'] ?? ''));
         if ($search !== '') {
-            $where[] = '(to_email LIKE ? OR subject LIKE ?)';
-            $bind[] = '%' . $search . '%';
-            $bind[] = '%' . $search . '%';
+            // LOWER() on both sides rather than a bare LIKE.
+            //
+            // SQLite's LIKE is ASCII case-insensitive by default; PostgreSQL's is
+            // case-SENSITIVE. Dev is SQLite and production is Postgres, so a bare
+            // LIKE works perfectly everywhere you would test it and then quietly
+            // stops matching in production — searching "Hello@OptiTide.io" would
+            // find nothing because the column holds a different case. Folding
+            // explicitly makes the two behave the same.
+            $where[] = '(LOWER(to_email) LIKE ? OR LOWER(subject) LIKE ?)';
+            $needle = '%' . mb_strtolower($search) . '%';
+            $bind[] = $needle;
+            $bind[] = $needle;
         }
 
         $status = trim((string) ($filters['status'] ?? ''));
@@ -80,10 +89,15 @@ class EmailLog extends Model
 
         $total = (int) ($db->selectOne('SELECT COUNT(*) AS n FROM email_logs' . $sql, $bind)['n'] ?? 0);
 
+        // Explicit columns, not SELECT * — the list renders none of body_html,
+        // and pulling the largest column for 50 rows per page just to discard it
+        // is the whole cost of the query.
+        //
         // Bind the paging values rather than interpolating them, even though they
         // are cast ints — the habit is what keeps the next edit safe.
         $rows = $db->select(
-            'SELECT * FROM email_logs' . $sql . ' ORDER BY id DESC LIMIT ? OFFSET ?',
+            'SELECT id, to_email, to_name, subject, status, created_at FROM email_logs'
+                . $sql . ' ORDER BY id DESC LIMIT ? OFFSET ?',
             array_merge($bind, [$limit, $offset])
         );
 
