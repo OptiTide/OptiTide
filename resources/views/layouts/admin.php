@@ -42,6 +42,7 @@ $me = auth();
             <?php if (\App\Support\Features::enabled('blog')): ?>
                 <a class="nav-link <?= $active('/admin/blogs') ?>" href="<?= route('admin.blogs.index') ?>"><i class="bi bi-newspaper"></i> Blog</a>
             <?php endif; ?>
+            <a class="nav-link <?= $active('/admin/landing') ?>" href="<?= route('admin.landing.index') ?>"><i class="bi bi-signpost-split"></i> Landing Pages</a>
             <a class="nav-link <?= $active('/admin/backlinks') ?>" href="<?= route('admin.backlinks.index') ?>"><i class="bi bi-link-45deg"></i> Backlinks</a>
             <?php if (\App\Support\Features::enabled('careers')): ?>
                 <a class="nav-link <?= $active('/admin/careers') ?>" href="<?= route('admin.careers.index') ?>"><i class="bi bi-briefcase"></i> Careers</a>

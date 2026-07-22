@@ -214,6 +214,14 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->get('/visitors', [Admin\VisitorController::class, 'index'])->name('admin.visitors.index');
 
     // Backlinks & citations (SEO off-page toolkit)
+    // Keyword landing pages (admin CRUD; the public route is registered LAST)
+    $router->get('/landing', [Admin\LandingPageController::class, 'index'])->name('admin.landing.index');
+    $router->get('/landing/create', [Admin\LandingPageController::class, 'create'])->name('admin.landing.create');
+    $router->post('/landing', [Admin\LandingPageController::class, 'store'])->name('admin.landing.store');
+    $router->get('/landing/{id}/edit', [Admin\LandingPageController::class, 'edit'])->name('admin.landing.edit');
+    $router->put('/landing/{id}', [Admin\LandingPageController::class, 'update'])->name('admin.landing.update');
+    $router->post('/landing/{id}/delete', [Admin\LandingPageController::class, 'destroy'])->name('admin.landing.destroy');
+
     // Blacklist (RBL) monitoring — listings land as cards on the SEO/Hosting boards
     $router->get('/blacklists', [Admin\BlacklistController::class, 'index'])->name('admin.blacklists.index');
     $router->post('/blacklists', [Admin\BlacklistController::class, 'store'])->name('admin.blacklists.store');
@@ -349,3 +357,16 @@ $router->group(['prefix' => 'portal', 'middleware' => ['auth', 'role:client', 't
     $router->get('/profile', [Client\ProfileController::class, 'edit'])->name('portal.profile.edit');
     $router->put('/profile', [Client\ProfileController::class, 'update'])->name('portal.profile.update');
 });
+
+/*
+|------------------------------------------------------------------------------
+| Keyword landing pages — MUST BE THE LAST ROUTE IN THIS FILE
+|------------------------------------------------------------------------------
+| Root-level slugs (/web-design-perth) because they outrank and read better than
+| /pages/web-design-perth. Registered last so it is only ever reached after every
+| real route has failed to match, and it 404s on any slug without a published
+| page — so it cannot swallow a route added above it later. The slug is ALSO
+| checked against LandingPage::RESERVED when saved, so the two guards are
+| independent: order here, and validation at write time.
+*/
+$router->get('/{slug}', [PublicSite\LandingController::class, 'show'])->name('landing.show');

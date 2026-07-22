@@ -62,6 +62,18 @@ class SeoController extends Controller
             $urls[] = ['loc' => $url . '/blog', 'priority' => '0.8', 'changefreq' => 'daily', 'lastmod' => $today];
         }
 
+        // Keyword landing pages. Read from the table rather than a hand-kept list,
+        // so a page published in the admin is in the sitemap the moment it goes
+        // live — an unlisted page is one Google has to stumble across.
+        foreach (\App\Models\LandingPage::published() as $landing) {
+            $urls[] = [
+                'loc'        => $url . '/' . $landing['slug'],
+                'priority'   => '0.8',
+                'changefreq' => 'monthly',
+                'lastmod'    => substr((string) ($landing['updated_at'] ?: $today), 0, 10),
+            ];
+        }
+
         // The money pages — driven off the same map the nav and routes use, so a
         // new service page can never be missing from the sitemap.
         foreach (array_keys(\App\Controllers\PublicSite\PageController::serviceData()) as $slug) {

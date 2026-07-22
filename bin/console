@@ -85,6 +85,13 @@ try {
             (require BASE_PATH . '/database/seeds/DatabaseSeeder.php')->runDemo($out);
             break;
 
+        case 'seed:landing':
+            // Loads database/seeds/landing/*.json as DRAFT landing pages. Safe to
+            // re-run: an existing slug is skipped, never overwritten, so it cannot
+            // revert edits made in the admin.
+            (require BASE_PATH . '/database/seeds/landing_pages.php')->run($out);
+            break;
+
         case 'blacklist:check':
             // Scheduled (daily is plenty — listings move slowly). Raises one board
             // card per new listing; clears its guard on delisting.
