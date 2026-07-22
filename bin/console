@@ -187,6 +187,40 @@ try {
             $out("Cleared {$bodies} message body(ies) older than {$days} days; deleted {$rows} row(s) older than {$keep} days.");
             break;
 
+        case 'domains:check':
+            // Availability lookup against the configured registrar. READ-ONLY —
+            // it never registers anything, so it is safe to run against the live
+            // API, which is the only API there is (Spaceship publishes no sandbox).
+            $term = $flags[0] ?? null;
+            if (! $term || str_starts_with($term, '--')) {
+                $out('Usage: php bin/console domains:check <name-or-domain>');
+                $out('  e.g. php bin/console domains:check optitide');
+                exit(1);
+            }
+
+            $registrar = App\Services\Domains\DomainRegistrarFactory::make();
+            $out('Registrar: ' . (new ReflectionClass($registrar))->getShortName()
+                . ($registrar->isConfigured()
+                    ? ' (configured)'
+                    : ' (NOT configured — set SPACESHIP_API_KEY and SPACESHIP_API_SECRET)'));
+
+            $result = App\Services\Domains\DomainSearch::make()->search($term);
+            if ($result['error'] !== '') {
+                $out($result['error']);
+                exit(1);
+            }
+
+            $out('');
+            foreach ($result['results'] as $row) {
+                $out(sprintf(
+                    '  %-28s %-12s %s',
+                    $row['domain'],
+                    $row['available'] ? 'AVAILABLE' : 'taken',
+                    ($row['premium'] ? '[premium] ' : '') . $row['reason']
+                ));
+            }
+            break;
+
         case 'seo:reports':
             // SEO reports are due at the end of each month — run this on/near the 1st.
             $month = $flags[0] ?? null;
