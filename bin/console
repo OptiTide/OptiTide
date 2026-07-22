@@ -158,6 +158,35 @@ try {
             $out("Marked $count invoice(s) overdue.");
             break;
 
+        case 'emails:prune':
+            // Retention for the email log. Two stages: clear message BODIES after
+            // --days (they are the bulk of the table and the part holding personal
+            // data), then delete rows entirely after --keep-days. The metadata
+            // outlives the body on purpose — "did we invoice them, and when" is
+            // still worth answering a year later and costs almost nothing to keep.
+            $days = 90;
+            $keep = 730;
+            foreach ($flags as $flag) {
+                if (str_starts_with($flag, '--days=')) {
+                    $days = max(1, (int) substr($flag, 7));
+                }
+                if (str_starts_with($flag, '--keep-days=')) {
+                    $keep = max(1, (int) substr($flag, 12));
+                }
+            }
+
+            // Deleting a row before its body is cleared is not an error the way
+            // this is written, but it means --days is silently doing nothing.
+            // Refuse rather than pretend the retention policy is being honoured.
+            if ($keep < $days) {
+                fwrite(STDERR, "--keep-days ({$keep}) must be >= --days ({$days}): rows would be deleted before their bodies were cleared, making --days meaningless.\n");
+                exit(1);
+            }
+
+            [$bodies, $rows] = App\Models\EmailLog::prune($days, $keep);
+            $out("Cleared {$bodies} message body(ies) older than {$days} days; deleted {$rows} row(s) older than {$keep} days.");
+            break;
+
         case 'seo:reports':
             // SEO reports are due at the end of each month — run this on/near the 1st.
             $month = $flags[0] ?? null;

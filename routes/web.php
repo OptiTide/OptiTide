@@ -235,6 +235,11 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin,staff'
     $router->post('/backlinks/{id}', [Admin\BacklinkController::class, 'update'])->name('admin.backlinks.update');
     $router->post('/backlinks/{id}/delete', [Admin\BacklinkController::class, 'destroy'])->name('admin.backlinks.destroy');
 
+    // Email log (admin-only — holds message bodies for every client)
+    $router->get('/emails', [Admin\EmailLogController::class, 'index'])->name('admin.emails.index');
+    $router->get('/emails/{id}', [Admin\EmailLogController::class, 'show'])->name('admin.emails.show');
+    $router->get('/emails/{id}/body', [Admin\EmailLogController::class, 'body'])->name('admin.emails.body');
+
     // Audit log (admin-only — see the middleware guard on sensitive routes below)
     $router->get('/audit-log', [Admin\AuditLogController::class, 'index'])->name('admin.audit.index');
 

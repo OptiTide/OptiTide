@@ -15,6 +15,14 @@ final class MailMessage
     public array $attachments = [];
 
     /**
+     * The provider's own id for the accepted message, set by the driver after a
+     * successful send. Carried back on the message rather than returned, so the
+     * Mailer interface stays a plain bool and no existing caller changes.
+     * LoggingMailer stores it as the join key for future delivery webhooks.
+     */
+    public ?string $providerMessageId = null;
+
+    /**
      * The company e-mail set in admin Settings wins over the .env default —
      * otherwise the address shown on the site and invoices differs from the one
      * mail actually sends from, and customer replies go to a dead mailbox.

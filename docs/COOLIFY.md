@@ -65,14 +65,39 @@ PAYONEER_ENABLED=true  PAYONEER_MODE=manual
   first deploy, then remove it. **Change the seeded passwords immediately.**
 - Health check: `GET /health` returns `{"status":"ok"}`.
 
-## Scheduled Tasks (Recurring Billing)
+## Scheduled Tasks
 
-Add two Coolify **Scheduled Tasks** against the app container:
+Add these as Coolify **Scheduled Tasks** against the app container. A command
+that is never scheduled fails silently — nothing errors, the work simply never
+happens — so check this list against `bin/console` after adding any command.
 
-| Command                                             | Schedule        |
-|-----------------------------------------------------|-----------------|
-| `php bin/console invoices:recurring --send`         | daily, e.g. 6am |
-| `php bin/console invoices:overdue`                  | daily, e.g. 7am |
+| Command                                             | Schedule          | What breaks without it                      |
+|-----------------------------------------------------|-------------------|---------------------------------------------|
+| `php bin/console invoices:recurring --send`         | daily, e.g. 6am   | Recurring clients are never invoiced        |
+| `php bin/console invoices:overdue`                  | daily, e.g. 7am   | Overdue invoices never change status        |
+| `php bin/console clients:suspend-overdue`           | daily, e.g. 8am   | Non-payers keep their services indefinitely |
+| `php bin/console blacklist:check`                   | daily             | Domain/IP blacklisting goes unnoticed       |
+| `php bin/console seo:reports`                       | monthly, 1st      | No month-end SEO report cards are raised    |
+| `php bin/console emails:prune`                      | daily, e.g. 3am   | Email bodies are kept forever (see below)   |
+| `php bin/console tickets:import-email`              | every 5-15 min\*  | Inbound client emails never become tickets  |
+
+\* Only if IMAP is configured for the helpdesk; it needs the `imap` extension
+and is a no-op otherwise.
+
+### Email log retention
+
+`emails:prune` enforces retention for the Email Log (Admin > Email Log).
+Defaults: clear message **bodies** after 90 days, delete rows entirely after
+730. Override per environment:
+
+```
+php bin/console emails:prune --days=30 --keep-days=365
+```
+
+The two stages are separate on purpose. Bodies are the bulk of the table and the
+part holding personal data, so they go early. The metadata — who was emailed,
+when, and whether it sent — is small, and is exactly what you want a year later
+when a client says an invoice never arrived.
 
 ## Notes
 

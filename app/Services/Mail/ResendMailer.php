@@ -62,6 +62,14 @@ final class ResendMailer implements Mailer
             return false;
         }
 
+        // Hand the provider's message id back on the message so LoggingMailer can
+        // store it. It is what finds this exact send in the Resend dashboard, and
+        // it is the key a delivery/bounce webhook would match on later.
+        $decoded = json_decode((string) $response, true);
+        if (is_array($decoded) && ! empty($decoded['id'])) {
+            $message->providerMessageId = (string) $decoded['id'];
+        }
+
         return true;
     }
 }

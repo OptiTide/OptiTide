@@ -80,10 +80,25 @@ final class Mail
         return static::mailer()->send($this->message);
     }
 
+    /**
+     * The configured driver, wrapped in LoggingMailer so every send is recorded
+     * in email_logs. Wrapping here rather than at each call site is what makes
+     * "track all emails" actually true: nothing sends without going through this
+     * method, so nothing can send unlogged — including code written later by
+     * someone who has never heard of the log.
+     *
+     * Can be disabled with MAIL_LOG_TO_DB=false, but defaults ON. An audit trail
+     * you have to remember to switch on is not an audit trail.
+     */
     public static function mailer(): Mailer
     {
-        return config('mail.driver') === 'resend'
-            ? new ResendMailer()
-            : new LogMailer();
+        $driver = config('mail.driver') === 'resend' ? 'resend' : 'log';
+        $mailer = $driver === 'resend' ? new ResendMailer() : new LogMailer();
+
+        if (! config('mail.log_to_db', true)) {
+            return $mailer;
+        }
+
+        return new LoggingMailer($mailer, $driver);
     }
 }
