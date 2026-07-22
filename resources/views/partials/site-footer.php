@@ -56,7 +56,7 @@
                 <?php endif; ?>
                 <a href="mailto:<?= e($company['email']) ?>"><i class="bi bi-envelope"></i> <?= e($company['email']) ?></a>
                 <span class="mk-footer-note"><i class="bi bi-clock"></i> <?= e(config('company.hours')) ?></span>
-                <span class="mk-footer-note"><i class="bi bi-geo-alt"></i> <?= e(\App\Support\Company::addressLineOr('Australia-wide')) ?></span>
+                <span class="mk-footer-note"><i class="bi bi-geo-alt"></i> <?= e(\App\Support\Company::publicLocality('Australia-wide')) ?></span>
             </div>
         </div>
 

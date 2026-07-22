@@ -24,7 +24,7 @@
                     <li><i class="bi bi-envelope"></i> <a href="mailto:<?= e($company['email']) ?>" class="text-decoration-none"><?= e($company['email']) ?></a></li>
                     <li><i class="bi bi-clock"></i> <?= e(config('company.hours')) ?></li>
                     <?php if (\App\Support\Company::hasAddress()): ?>
-                        <li><i class="bi bi-geo-alt"></i> <?= e(\App\Support\Company::addressLine(true)) ?></li>
+                        <li><i class="bi bi-geo-alt"></i> <?= e(\App\Support\Company::publicLocality()) ?></li>
                     <?php else: ?>
                         <li><i class="bi bi-geo-alt"></i> Serving businesses Australia-wide</li>
                     <?php endif; ?>

@@ -40,8 +40,9 @@ $faqs = [
 ];
 
 // --- Structured data (schema.org) -----------------------------------------
+// Suburb + state only — no streetAddress. See Schema::address(): the registered
+// address is a home address, and JSON-LD is scraped harder than body text.
 $addr = array_filter([
-    'streetAddress' => $company['address']['line1'] ?? null,
     'addressLocality' => $company['address']['locality'] ?? null,
     'addressRegion' => $company['address']['region'] ?? null,
     'postalCode' => $company['address']['postcode'] ?? null,

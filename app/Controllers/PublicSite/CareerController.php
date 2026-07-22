@@ -284,8 +284,10 @@ class CareerController extends Controller
             $schema['applicantLocationRequirements'] = ['@type' => 'Country', 'name' => 'AU'];
         }
 
+        // Suburb + state only — no streetAddress. A job ad is broadcast to every
+        // job aggregator that consumes JobPosting schema; the registered address
+        // is a home address. See Schema::address().
         $addr = array_filter([
-            'streetAddress'   => $company['address']['line1'] ?? null,
             'addressLocality' => $company['address']['locality'] ?? null,
             'addressRegion'   => $company['address']['region'] ?? null,
             'postalCode'      => $company['address']['postcode'] ?? null,

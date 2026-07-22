@@ -49,9 +49,14 @@ final class Schema
     {
         $a = config('company.address', []);
 
+        // No streetAddress on purpose. This renders into public JSON-LD, which is
+        // machine-readable and scraped far more aggressively than body text — and
+        // the registered address is a home address with no premises to visit.
+        // Suburb + state is enough for local relevance. Invoices, which legally
+        // DO need the street, build their address separately via
+        // Company::addressLine() and are unaffected by this.
         $address = self::prune([
             '@type'           => 'PostalAddress',
-            'streetAddress'   => $a['line1'] ?? null,
             'addressLocality' => $a['locality'] ?? null,
             'addressRegion'   => $a['region'] ?? null,
             'postalCode'      => $a['postcode'] ?? null,

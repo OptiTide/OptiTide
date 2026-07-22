@@ -39,6 +39,32 @@ final class Company
         return self::addressLine() ?: $fallback;
     }
 
+    /**
+     * Locality only — "Doncaster VIC 3108", never the street.
+     *
+     * This is what the PUBLIC marketing site shows. The registered address is a
+     * home address, and a street address on pages built to rank is permanent:
+     * it gets scraped by data brokers and cached long after any edit. Nothing
+     * public needs it — the business is remote and has no premises to visit.
+     *
+     * Deliberately NOT used by invoices or quotes. A valid Australian tax
+     * invoice must show the supplier's address, so those keep addressLine()
+     * with the street. Two audiences, two rules: strangers get the suburb,
+     * paying clients get the legally required detail.
+     */
+    public static function publicLocality(string $fallback = 'Australia-wide'): string
+    {
+        $a = config('company.address', []);
+
+        $line = trim(implode(' ', array_filter([
+            $a['locality'] ?? null,
+            $a['region'] ?? null,
+            $a['postcode'] ?? null,
+        ])));
+
+        return $line !== '' ? $line : $fallback;
+    }
+
     /** True when enough of an address is set to be worth showing. */
     public static function hasAddress(): bool
     {
