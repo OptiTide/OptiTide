@@ -17,6 +17,12 @@ if (PHP_SAPI === 'cli-server') {
 
 require dirname(__DIR__) . '/bin/bootstrap.php';
 
+// One canonical URL per page (www -> apex, http -> https, /Path -> /path, no
+// trailing slash, retired blog URLs -> their replacements). Before Session::start
+// so a crawler never gets a session cookie on a URL that is about to 301, and
+// before routing so a redirect costs nothing.
+App\Core\CanonicalUrl::enforce();
+
 Session::start();
 
 $request = Request::capture();

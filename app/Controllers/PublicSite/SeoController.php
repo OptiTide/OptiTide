@@ -50,7 +50,9 @@ class SeoController extends Controller
             ['loc' => $url . '/terms', 'priority' => '0.2', 'changefreq' => 'yearly', 'lastmod' => $today],
             ['loc' => $url . '/privacy', 'priority' => '0.2', 'changefreq' => 'yearly', 'lastmod' => $today],
             ['loc' => $url . '/refund', 'priority' => '0.2', 'changefreq' => 'yearly', 'lastmod' => $today],
-            ['loc' => $url . '/login', 'priority' => '0.3', 'changefreq' => 'monthly', 'lastmod' => $today],
+            // /login is deliberately NOT here. It is noindex (a sign-in form has no
+            // business in search results), and listing a noindex URL in the sitemap
+            // is reported by Search Console as "Submitted URL marked noindex".
         ];
 
         if ($careers) {

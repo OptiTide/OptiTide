@@ -1,6 +1,17 @@
 <!doctype html>
 <html lang="en-AU">
-<head><?php $this->insert('partials.head', ['title' => $title ?? config('company.brand_name')]); ?></head>
+<?php // PUBLIC pages (terms, privacy, refund). These were rendered noindex by
+      // partials/head while sitemap.xml listed them — Search Console reports that
+      // combination as an error. They are legitimate pages and a visible legal
+      // policy is a trust signal, so they index. ?>
+<head><?php $this->insert('partials.head', [
+    'title'          => $title ?? config('company.brand_name'),
+    'seoTitle'       => $seoTitle ?? null,
+    'seoDescription' => $seoDescription ?? null,
+    'canonical'      => $canonical ?? null,
+    'jsonLd'         => $jsonLd ?? null,
+    'noindex'        => false,
+]); ?></head>
 <body class="mk">
 
 <?php $this->insert('partials.site-nav'); ?>

@@ -113,6 +113,9 @@ class PageController extends Controller
             'seoTitle' => 'Our Services & Pricing — Web Design, SEO, Social Media & Hosting | ' . $brand,
             'seoDescription' => $brand . '\'s digital services for Australian business: web design & development, SEO, social media marketing and web hosting — real pricing, GST included, no lock-in contracts.',
             'canonical' => rtrim(config('app.url'), '/') . '/services',
+            // Structured data: this page had title/description/canonical but no
+            // schema, so search engines had to infer what the business offers.
+            'jsonLd' => \App\Support\Schema::serviceList($services, rtrim(config('app.url'), '/') . '/services'),
             'services' => $services,
             // The same real catalogue the homepage prices from, so /services can
             // show every plan and be ordered from directly.
@@ -137,6 +140,13 @@ class PageController extends Controller
             'seoTitle' => $service['title'] . ' for Australian Business | ' . config('company.brand_name'),
             'seoDescription' => $service['intro'],
             'canonical' => rtrim(config('app.url'), '/') . '/services/' . $slug,
+            // Service schema naming the provider — this is the page that should
+            // tell Google "this business offers this service in Australia".
+            'jsonLd' => \App\Support\Schema::service(
+                $service['title'],
+                $service['intro'],
+                rtrim(config('app.url'), '/') . '/services/' . $slug
+            ),
             'slug' => $slug,
             'service' => $service,
             'plans' => Catalog::plansForSlug($service['category']),
@@ -150,10 +160,20 @@ class PageController extends Controller
     {
         $brand = config('company.brand_name');
 
+        $description = $brand . ' is an Australian-owned digital agency helping small businesses grow online with web design, SEO, social media and hosting — honest advice, fixed pricing, no lock-in contracts.';
+
         return $this->view('public.pages.about', [
             'seoTitle' => 'About ' . $brand . ' — Australian Digital Agency',
-            'seoDescription' => $brand . ' is an Australian-owned digital agency helping small businesses grow online with web design, SEO, social media and hosting — honest advice, fixed pricing, no lock-in contracts.',
+            'seoDescription' => $description,
             'canonical' => rtrim(config('app.url'), '/') . '/about',
+            // AboutPage carries the Organization block, so this is the page that
+            // tells search engines who the business actually is.
+            'jsonLd' => \App\Support\Schema::webPage(
+                'About ' . $brand,
+                $description,
+                rtrim(config('app.url'), '/') . '/about',
+                'AboutPage'
+            ),
         ]);
     }
 
@@ -167,10 +187,17 @@ class PageController extends Controller
     {
         $brand = config('company.brand_name');
 
+        $description = 'We work ' . \App\Support\Company::timezoneAbbr() . ' hours from Western Australia and often late into the evening — so you send feedback, we work while you sleep, and you review it the next morning.';
+
         return $this->view('public.pages.how-we-work', [
             'seoTitle'       => 'How We Work — ' . $brand . ' | ' . \App\Support\Company::timezoneAbbr() . ' hours, overnight turnaround',
-            'seoDescription' => 'We work ' . \App\Support\Company::timezoneAbbr() . ' hours from Western Australia and often late into the evening — so you send feedback, we work while you sleep, and you review it the next morning.',
+            'seoDescription' => $description,
             'canonical'      => rtrim(config('app.url'), '/') . '/how-we-work',
+            'jsonLd'         => \App\Support\Schema::webPage(
+                'How We Work',
+                $description,
+                rtrim(config('app.url'), '/') . '/how-we-work'
+            ),
         ]);
     }
 
@@ -178,10 +205,18 @@ class PageController extends Controller
     {
         $brand = config('company.brand_name');
 
+        $description = 'Get in touch with ' . $brand . ' for a free, no-obligation quote on web design, SEO, social media or hosting for your Australian business.';
+
         return $this->view('public.pages.contact', [
             'seoTitle' => 'Contact ' . $brand . ' — Get a Free Quote',
-            'seoDescription' => 'Get in touch with ' . $brand . ' for a free, no-obligation quote on web design, SEO, social media or hosting for your Australian business.',
+            'seoDescription' => $description,
             'canonical' => rtrim(config('app.url'), '/') . '/contact',
+            'jsonLd' => \App\Support\Schema::webPage(
+                'Contact ' . $brand,
+                $description,
+                rtrim(config('app.url'), '/') . '/contact',
+                'ContactPage'
+            ),
             'captcha' => Captcha::question(),
         ]);
     }
